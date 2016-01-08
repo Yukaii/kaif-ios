@@ -4,15 +4,34 @@ import React, {
   Text,
   TouchableHighlight
 } from 'react-native';
+import Router from '../routers';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class Article extends Component {
+  handleArticlePress = (event) => {
+    const { article, navigator } = this.props;
+    if (navigator) {
+      let route = Router.getDebateRoute({
+        article: article
+      })
+      navigator.push(route);
+    }
+  }
+
   render = () => {
-    const { article } = this.props;
+    const { article, style, touchableStyle } = this.props;
+
+    defaultTouchableStyle = {
+      underlayColor: "rgba(128, 128, 128, 0.19)"
+    }
 
     return(
-      <TouchableHighlight underlayColor="rgba(128, 128, 128, 0.19)">
-        <View style={{marginBottom: 8}} key={article.articleId} style={{paddingTop: 5, paddingLeft: 10, paddingRight: 10, marginBottom: 8}}>
+      <TouchableHighlight
+        {...{...defaultTouchableStyle, ...touchableStyle} }
+        onPress={this.handleArticlePress}
+      >
+        <View key={article.articleId}
+          style={{paddingTop: 5, paddingLeft: 10, paddingRight: 10, paddingBottom: 5, marginBottom: 5, ...style}}>
           <View style={{flexDirection: 'row', flex: 1}}>
             <View style={{marginRight: 5}}>
               <Icon name="arrow-up-b" size={20} color="#ff5619"/>

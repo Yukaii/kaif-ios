@@ -12,6 +12,10 @@ const ACCESS_TOKEN_URL = 'https://kaif.io/oauth/access-token';
 const OAUTH_REDIRECT_URI = 'kaiifios://oauth_callback';
 const API_BASE_URL = 'https://kaif.io/v1'
 
+/**
+ * A function that fetch access_token from AsyncStorage
+ * @return { Promise } resolve access_token{string} object, might be null
+ */
 getAccessToken = () => {
   return new Promise((resolve, reject) => {
     AsyncStorage.getItem(ACCESS_TOKEN_STORAGE_KEY).then(access_token => {
@@ -20,6 +24,11 @@ getAccessToken = () => {
   });
 }
 
+/**
+ * Generate authorize url from state
+ * @param  {string} state - a random generate string
+ * @return {string} encoded URI
+ */
 getAuthorizeUrl = (state) => {
   var url = [
     `https://kaif.io/oauth/authorize?`,
@@ -33,8 +42,20 @@ getAuthorizeUrl = (state) => {
   return encodeURI(url);
 }
 
+/**
+ * A function starts kaif.io OAuth Proccess
+ * @example
+ * KaifAPI.getAccessToken().then(access_token => {
+ *   if (access_token == null) {
+ *     KaifAPI.oauthLogin(access_token => {
+ *       alert(access_token)
+ *     })
+ *   }
+ * });
+ *
+ * @param  {Function} callback []
+ */
 oauthLogin = (callback) => {
-
   LinkingIOS.addEventListener('url', oauthCallbackHandler(callback));
   LinkingIOS.openURL(getAuthorizeUrl(utils.makeId()));
 }
@@ -48,14 +69,6 @@ oauthCallbackHandler = (callback) => {
 oauthCallback = (event, callback) => {
   var queryStart = event.url.indexOf('?')
   var params = qs(event.url.slice(queryStart+1, -1));
-
-  var postBody = {
-    client_id: config.clientId,
-    client_secret: config.clientSecret,
-    code: params.code,
-    redirect_uri: OAUTH_REDIRECT_URI,
-    grant_type: 'authorization_code'
-  };
 
   LinkingIOS.removeEventListener('url', oauthCallbackHandler);
 
@@ -83,12 +96,10 @@ oauthCallback = (event, callback) => {
   });
 }
 
-
-requestHotArticles = () => {
-  // simply block
+requestAPIGet = (endpoint) => {
   return new Promise((resolve, reject) => {
     getAccessToken().then(access_token => {
-      fetch(apiEndpoint('article/hot'), {
+      fetch(apiEndpoint(endpoint), {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -96,10 +107,57 @@ requestHotArticles = () => {
           'Content-Type': 'application/json;charset=UTF-8'
         }
       }).then(response => response.json()).then(data => resolve(data));
-    })
+    });
   });
 }
 
+/**
+ * KaifAPI hot articles endpoint
+ * @example
+ * KaifAPI.requestHotArticles().then(data => alert(data));
+ * @return {Promise} resolve JSON data
+ */
+requestHotArticles = () => {
+  return requestAPIGet('article/hot');
+}
+
+requestLatestArticles = () => {
+  return requestAPIGet('article/latest');
+}
+
+requestUserArticles = (username) => {
+  return requestAPIGet(`article/user/${username}/submitted`);
+}
+
+requestVotedArticles = () => {
+  return requestAPIGet('article/voted');
+}
+
+requestZoneExternalLinkArticles = (zone) => {
+  return requestAPIGet(`article/zone/${zone}/external-link`);
+}
+
+requestIfExternalExists = (zone, url) => {
+  return requestAPIGet(`article/zone/${zone}/external-link/exist?url=${url}`);
+}
+
+requestZoneHotArticles = (zone) => {
+  return requestAPIGet(`article/zone/${zone}/hot`);
+}
+
+requestZoneLatestArticles = (zone) => {
+  return requestAPIGet(`article/zone/${zone}/latest`);
+}
+
+requestArticleDebates = (articleId) => {
+  return requestAPIGet(`debate/article/${articleId}/tree`);
+}
+
+/**
+ * api endpoint url helper method
+ * @param  {string} endpoint
+ * @return {string}
+ */
 apiEndpoint = (endpoint) => {
   return [API_BASE_URL, endpoint].join('/');
 }
@@ -109,6 +167,7 @@ KaifAPI = {
   getAuthorizeUrl: getAuthorizeUrl,
   oauthLogin: oauthLogin,
   requestHotArticles: requestHotArticles,
+  requestArticleDebates: requestArticleDebates,
   apiEndpoint: apiEndpoint
 }
 

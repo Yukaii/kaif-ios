@@ -1,6 +1,7 @@
 import React from 'react-native';
 import Setting from '../components/Setting';
 import Profile from '../components/Profile';
+import DebateNode from '../components/DebateNode';
 import ArticleContainer from '../components/ArticleContainer';
 
 let Router = {
@@ -24,6 +25,19 @@ let Router = {
         return '設定';
       }
     };
+  },
+
+  getDebateRoute(props) {
+    return {
+      renderScene(navigator) {
+        return <DebateNode navigator={navigator} {...props} />;
+      },
+      onDidFocus(event) {
+      },
+      getTitle() {
+        return('文章連結');
+      }
+    }
   },
 
   getProfileRoute() {

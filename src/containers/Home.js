@@ -32,7 +32,8 @@ export default class Home extends Component {
   render() {
     return (
         <TabBarIOS
-        tintColor="gray">
+          tintColor="#0078e7"
+        >
         <Icon.TabBarItem
           title="文章"
           iconName="ios-paper"
@@ -76,8 +77,8 @@ export default class Home extends Component {
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="設定"
-          iconName="grid"
-          selectedIconName="grid"
+          iconName="ios-cog"
+          selectedIconName="ios-cog"
           selected={this.state.selectedTab === 'settingTab'}
           onPress={() => {
             this.setState({

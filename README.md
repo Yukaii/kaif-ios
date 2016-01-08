@@ -2,7 +2,8 @@
 [Kaif.io](https://kaif.io) unofficial iOS Client App.
 
 ## Screenshots
-![](screenshots/demo.png)
+![](screenshots/articles.png)
+![](screenshots/debates.png)
 
 ## Setup
 

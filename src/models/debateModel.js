@@ -9,6 +9,8 @@
 // downVote (integer): total down voted count,
 // createTime (string): create time in ISO8601 format,
 // lastUpdateTime (string): content last update time, same as create time if not updated (ISO8601 format)
+//
+import moment from 'moment';
 
 export default class debateModel {
   constructor(data) {
@@ -17,4 +19,7 @@ export default class debateModel {
     });
   }
 
+  lastUpdateTimeFromNow = () => {
+    return moment(this.lastUpdateTime).fromNow();
+  }
 }

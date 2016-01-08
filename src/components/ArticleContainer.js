@@ -3,6 +3,7 @@ import React, {
   Component,
   View,
   ScrollView,
+  ListView,
   LinkingIOS,
   PropTypes,
   AsyncStorage
@@ -28,7 +29,7 @@ export default class ArticleContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      articles: []
+      articles: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([])
     }
   }
 
@@ -36,7 +37,9 @@ export default class ArticleContainer extends Component {
     const { requestHotArticles } = this.props;
 
     requestHotArticles(data => {
-      this.setState({articles: data.data});
+      this.setState({
+        articles: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(data.data)
+      });
     });
 
     // this.handleOauthLogin();
@@ -45,7 +48,7 @@ export default class ArticleContainer extends Component {
   handleOauthLogin = () => {
     KaifAPI.getAccessToken().then(access_token => {
       // todo: test some api first
-      if (access_token == 'undefined') {
+      if (access_token == null) {
         KaifAPI.oauthLogin(access_token => {
           alert(access_token)
         })
@@ -54,14 +57,18 @@ export default class ArticleContainer extends Component {
   }
 
   render = () => {
+    const { navigator } = this.props;
+
     return(
-      <ScrollView
-        style={{flex: 1, paddingTop: 14}}
-        contentContainerStyle={{justifyContent: 'space-between', marginTop: 32}}>
-        { this.state.articles.map(article => {
-          return <Article article={ new articleModel(article) } key={ article.articleId } />
-        }) }
-      </ScrollView>
+      <ListView
+        showsVerticalScrollIndicator={true}
+        style={{flex: 1, marginTop: 44}}
+        contentContainerStyle={{justifyContent: 'space-between'}}
+        dataSource={this.state.articles}
+        renderRow={
+          (article, sectionID, rowID) => <Article article={ new articleModel(article) } key={ article.articleId } navigator={navigator} />
+        }
+      />
     );
   }
 }
