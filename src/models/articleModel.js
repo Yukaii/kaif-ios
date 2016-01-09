@@ -38,7 +38,11 @@ export default class articleModel {
   }
 
   linkHost = () => {
-    return this.articleType == ARTICLE_TYPE.EXTERNAL_LINK ? parseUri(this.link).host : "";
+    return this.isExternalLink() ? parseUri(this.link).host : "";
+  }
+
+  isExternalLink = () => {
+    return this.articleType == ARTICLE_TYPE.EXTERNAL_LINK;
   }
 
 }

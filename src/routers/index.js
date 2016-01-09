@@ -1,8 +1,10 @@
-import React from 'react-native';
+import React, { Navigator } from 'react-native';
 import Setting from '../components/Setting';
 import Profile from '../components/Profile';
 import DebateNode from '../components/DebateNode';
 import ArticleContainer from '../components/ArticleContainer';
+import ExternalWebView from '../components/ExternalWebView';
+import KaifIcon from '../components/KaifIcon';
 
 let Router = {
   getArticleRoute() {
@@ -10,8 +12,11 @@ let Router = {
       renderScene(navigator) {
         return <ArticleContainer navigator={navigator}/>;
       },
-      getTitle() {
-        return '文章';
+      renderTitle(){
+        return <KaifIcon style={{width: 18, height: 18, tintColor: "#ff5619", marginTop: 14}}/>;
+      },
+      configureScene() {
+        return Navigator.SceneConfigs.FloatFromRight;
       }
     };
   },
@@ -23,6 +28,9 @@ let Router = {
       },
       getTitle() {
         return '設定';
+      },
+      configureScene() {
+        return Navigator.SceneConfigs.FloatFromRight;
       }
     };
   },
@@ -35,7 +43,10 @@ let Router = {
       onDidFocus(event) {
       },
       getTitle() {
-        return('文章連結');
+        return('');
+      },
+      configureScene() {
+        return Navigator.SceneConfigs.FloatFromRight;
       }
     }
   },
@@ -50,6 +61,28 @@ let Router = {
       },
       getTitle() {
         return '哈哈';
+      },
+      configureScene() {
+        return Navigator.SceneConfigs.FloatFromRight;
+      }
+    }
+  },
+
+  getWebViewRoute(props) {
+    const { url } = props;
+
+    return {
+      renderScene(navigator) {
+        return <ExternalWebView navigator={navigator} {...props}/>;
+      },
+      onDidFocus(event) {
+        console.log('Home Scene received focus.');
+      },
+      getTitle() {
+        return url
+      },
+      configureScene() {
+        return Navigator.SceneConfigs.FloatFromRight;
       }
     }
   }

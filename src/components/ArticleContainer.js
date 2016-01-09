@@ -66,7 +66,7 @@ export default class ArticleContainer extends Component {
         contentContainerStyle={{justifyContent: 'space-between'}}
         dataSource={this.state.articles}
         renderRow={
-          (article, sectionID, rowID) => <Article article={ new articleModel(article) } key={ article.articleId } navigator={navigator} />
+          (article, sectionID, rowID) => <Article article={ new articleModel(article) } key={ article.articleId } navigator={navigator} canHandleArticlePress={true}/>
         }
       />
     );
