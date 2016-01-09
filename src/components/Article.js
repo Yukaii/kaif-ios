@@ -14,7 +14,7 @@ export default class Article extends Component {
     const { article, navigator, canHandleArticlePress } = this.props;
     if (navigator && canHandleArticlePress) {
       let route = Router.getDebateRoute({
-        article: article
+        article: article,
       })
       navigator.push(route);
     }

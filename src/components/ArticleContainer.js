@@ -36,13 +36,14 @@ export default class ArticleContainer extends Component {
   componentDidMount = () => {
     const { requestHotArticles } = this.props;
 
+    this.handleOauthLogin();
+
     requestHotArticles(data => {
       this.setState({
         articles: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(data.data)
       });
     });
 
-    // this.handleOauthLogin();
   }
 
   handleOauthLogin = () => {
@@ -50,7 +51,11 @@ export default class ArticleContainer extends Component {
       // todo: test some api first
       if (access_token == null) {
         KaifAPI.oauthLogin(access_token => {
-          alert(access_token)
+          requestHotArticles(data => {
+            this.setState({
+              articles: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(data.data)
+            });
+          });
         })
       }
     });

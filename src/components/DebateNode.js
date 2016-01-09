@@ -15,17 +15,30 @@ export default class DebateNode extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      debate: null
+      debate: null,
+      didFocus: false
     }
   }
 
   componentDidMount = () => {
-    const { article } = this.props;
+    const { article, navigator } = this.props;
     KaifAPI.requestArticleDebates(article.articleId).then(data => {
       this.setState({
         debate: data.data
       });
     });
+
+    let didFocusCallback = () => {
+      this.setState({
+        didFocus: true,
+      })
+    }
+    navigator.navigationContext.addListener('didfocus', didFocusCallback);
+  }
+
+  componentWillUnmount = () => {
+    const { navigator } = this.props;
+    navigator.navigationContext._bubbleEventEmitter.removeAllListeners('didfocus')
   }
 
   renderDebate = (data) => {
@@ -55,7 +68,7 @@ export default class DebateNode extends Component {
             }}
             navigator={navigator}
           />
-          { this.state.debate !== null ? this.state.debate.children.map(data => this.renderDebate(data)) : null }
+        { (this.state.debate !== null && this.state.didFocus) ? this.state.debate.children.map(data => this.renderDebate(data)) : null }
         </ScrollView>
       </View>
     );
