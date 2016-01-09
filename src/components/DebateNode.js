@@ -54,6 +54,7 @@ export default class DebateNode extends Component {
 
   render = () => {
     const { article, navigator } = this.props;
+
     return(
       <View style={{flex: 1, paddingTop: 64, paddingBottom: 48, backgroundColor: '#eeeeee'}}>
         <ScrollView
@@ -67,6 +68,7 @@ export default class DebateNode extends Component {
               backgroundColor: '#d1dbe5',
             }}
             navigator={navigator}
+            showVote={this.state.didFocus}
           />
         { (this.state.debate !== null && this.state.didFocus) ? this.state.debate.children.map(data => this.renderDebate(data)) : null }
         </ScrollView>
