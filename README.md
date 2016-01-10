@@ -4,6 +4,7 @@
 ## Screenshots
 ![](screenshots/articles.png)
 ![](screenshots/debates.png)
+![](screenshots/webview.png)
 
 ## Setup
 

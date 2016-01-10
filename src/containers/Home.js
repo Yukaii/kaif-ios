@@ -5,7 +5,8 @@ import React, {
   PropTypes,
   Navigator,
   TabBarIOS,
-  Button
+  Button,
+  StatusBarIOS
 } from 'react-native';
 
 import { bindActionCreators } from 'redux';
@@ -27,6 +28,10 @@ export default class Home extends Component {
     this.state = {
       selectedTab: 'articleList'
     }
+  }
+
+  componentDidMount = () => {
+    StatusBarIOS.setStyle('default');
   }
 
   render() {

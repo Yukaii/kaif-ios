@@ -81,7 +81,7 @@ export default class ArticleContainer extends Component {
           action();
         });
       }
-    })
+    });
   }
 
   render = () => {

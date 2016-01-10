@@ -30,16 +30,15 @@ getAccessToken = () => {
  * @return {string} encoded URI
  */
 getAuthorizeUrl = (state) => {
-  var url = [
-    `https://kaif.io/oauth/authorize?`,
-    `client_id=${config.clientId}`,
-    '&response_type=code',
-    `&state=${state}`,
-    `&scope=public feed article vote user debate`,
-    `&redirect_uri=${OAUTH_REDIRECT_URI}`
-  ].join('');
+  let queryString = utils.toQueryString({
+    'client_id': config.clientId,
+    'response_type': 'code',
+    'state': state,
+    'scope': 'public user feed article debate vote',
+    'redirect_uri': OAUTH_REDIRECT_URI
+  });
 
-  return encodeURI(url);
+  return `https://kaif.io/oauth/authorize?${queryString}`;
 }
 
 /**
