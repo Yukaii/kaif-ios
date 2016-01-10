@@ -94,7 +94,7 @@ export default class ArticleContainer extends Component {
   }
 
   render = () => {
-    const { navigator, rootNavigator } = this.props;
+    const { navigator, rootNavigator, events } = this.props;
 
     return(
       <ScrollView style={{flex: 1, marginTop: 43}}>
@@ -117,7 +117,7 @@ export default class ArticleContainer extends Component {
           contentContainerStyle={{justifyContent: 'space-between'}}
           dataSource={this.state.articles}
           renderRow={
-            (article, sectionID, rowID) => <Article article={ new articleModel(article) } key={ article.articleId } navigator={navigator} rootNavigator={rootNavigator} canHandleArticlePress={true}/>
+            (article, sectionID, rowID) => <Article article={ new articleModel(article) } key={ article.articleId } navigator={navigator} events={events} rootNavigator={rootNavigator} canHandleArticlePress={true}/>
         }/>
       </ScrollView>
     );

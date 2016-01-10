@@ -59,11 +59,11 @@ export default class ExternalWebView extends Component {
       <View style={{flex: 1}}>
         <View style={{height: 64, paddingBottom: 10, flexDirection: 'row', backgroundColor: '#2d3e50', borderWidth: 3, borderColor: '#2d3e50', borderTopLeftRadius: 5,  borderTopRightRadius: 5}}>
           <TouchableHighlight underlayColor="rgba(128, 128, 128, 0)" style={{alignSelf: 'flex-end', alignItems: 'center', flexDirection: 'row', width: 50}} onPress={() => { rootNavigator.pop(); }}>
-            <Icon name="close-round" size={20} color='#0078e7' style={{marginLeft: 12}}/>
+            <Icon name="close-round" size={20} color='#5ea7e9' style={{marginLeft: 12}}/>
           </TouchableHighlight>
           <View style={{flex: 1}}/>
           <TouchableHighlight underlayColor="rgba(128, 128, 128, 0)" style={{alignSelf: 'flex-end', alignItems: 'center', flexDirection: 'row', width: 50}} onPress={() => { }}>
-            <Text style={{color: '#0078e7', textAlign:'right', fontWeight: 'bold', fontSize: 16, marginBottom: 2}}>分享</Text>
+            <Text style={{color: '#5ea7e9', textAlign:'right', fontWeight: 'bold', fontSize: 16, marginBottom: 2}}>分享</Text>
           </TouchableHighlight>
         </View>
         <WebView

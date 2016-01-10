@@ -18,11 +18,12 @@ export default class Article extends Component {
   }
 
   handleArticlePress = (event) => {
-    const { article, navigator, canHandleArticlePress, rootNavigator } = this.props;
+    const { article, navigator, canHandleArticlePress, rootNavigator, events } = this.props;
     if (navigator && canHandleArticlePress) {
       let route = Router.getDebateRoute({
         article: article,
-        rootNavigator: rootNavigator
+        rootNavigator: rootNavigator,
+        events: events
       })
       navigator.push(route);
     }
@@ -48,7 +49,7 @@ export default class Article extends Component {
   }
 
   render = () => {
-    const { article, style, touchableStyle, showVote } = this.props;
+    const { article, style, touchableStyle } = this.props;
 
     defaultTouchableStyle = {
       underlayColor: "rgba(128, 128, 128, 0.19)"

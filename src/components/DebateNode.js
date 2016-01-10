@@ -5,6 +5,7 @@ import React, {
   ScrollView,
   ActivityIndicatorIOS
 } from 'react-native';
+import Subscribable from 'Subscribable';
 
 import KaifAPI from '../utils/KaifAPI';
 import Article from './Article';
@@ -12,17 +13,18 @@ import Debate from './Debate';
 import debateModel from '../models/debateModel';
 import articleModel from '../models/articleModel';
 
-export default class DebateNode extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+export default React.createClass({
+  mixins: [Subscribable.Mixin],
+
+  getInitialState() {
+    return {
       debate: null,
       didFocus: false
     }
-  }
+  },
 
-  componentDidMount = () => {
-    const { article, navigator } = this.props;
+  componentDidMount() {
+    const { article, navigator, events } = this.props;
     KaifAPI.requestArticleDebates(article.articleId).then(data => {
       this.setState({
         debate: data.data
@@ -35,14 +37,15 @@ export default class DebateNode extends Component {
       })
     }
     navigator.navigationContext.addListener('didfocus', didFocusCallback);
-  }
+    this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
+  },
 
-  componentWillUnmount = () => {
+  componentWillUnmount() {
     const { navigator } = this.props;
     navigator.navigationContext._bubbleEventEmitter.removeAllListeners('didfocus')
-  }
+  },
 
-  renderDebate = (data) => {
+  renderDebate(data) {
     return(
       <View key={data.debate.debateId} style={{paddingLeft: 5, paddingRight: 5}}>
         <Debate debate={new debateModel(data.debate)}/>
@@ -51,9 +54,9 @@ export default class DebateNode extends Component {
         </View>
       </View>
     );
-  }
+  },
 
-  render = () => {
+  render() {
     const { article, navigator, rootNavigator } = this.props;
 
     if (!this.state.didFocus) {
@@ -89,4 +92,4 @@ export default class DebateNode extends Component {
       </View>
     );
   }
-}
+});

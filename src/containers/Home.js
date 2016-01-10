@@ -9,6 +9,8 @@ import React, {
   StatusBarIOS
 } from 'react-native';
 
+import EventEmitter from 'EventEmitter';
+
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux/native';
 
@@ -26,13 +28,19 @@ export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedTab: 'articleList'
+      selectedTab: 'articleList',
+      shouldPop: false
     }
+  }
+
+  componentWillMount = () => {
+    this.eventEmitter = new EventEmitter();
   }
 
   componentDidMount = () => {
     StatusBarIOS.setStyle('default');
   }
+
 
   render() {
     return (
@@ -45,12 +53,15 @@ export default class Home extends Component {
           selectedIconName="ios-paper"
           selected={this.state.selectedTab === 'articleList'}
           onPress={() => {
+            if (this.state.selectedTab === 'articleList') {
+              this.eventEmitter.emit('shouldPop');
+            }
             this.setState({
               selectedTab: 'articleList',
             });
           }}>
           <ExNavigator
-            initialRoute={Router.getArticleRoute(this.props)}
+            initialRoute={Router.getArticleRoute({...this.props, events: this.eventEmitter})}
             style={{ flex: 1 }}
             sceneStyle={{  }}
             configureScene={ (route) => Navigator.SceneConfigs.FloatFromLeft }
