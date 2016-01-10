@@ -47,9 +47,12 @@ export default class ArticleContainer extends Component {
 
     return policyFunctions[this.state.articleRequestPolicy]().then(articleData => {
       KaifAPI.requestIfArticlesVoted(articleData.data.map(_ => _.articleId)).then(voteData => {
+
         let articles = articleData.data.map(art => {
-          for(let i = 0, l = voteData.data ? voteData.data.length : 0; i < l; i++) {
-            if (voteData[i].data.targetId == art.articleId) {
+          if (!voteData.data || voteData.data.length == 0) { return art; }
+
+          for(let i = 0, l = voteData.data.length; i < l; i++) {
+            if (voteData.data[i].targetId == art.articleId) {
               art.vote = voteData.data[i];
             }
           }

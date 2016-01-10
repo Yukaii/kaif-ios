@@ -1,8 +1,9 @@
 import React, { Navigator } from 'react-native';
 import Home from '../containers/Home';
+import Zone from '../components/Zone';
 import Setting from '../components/Setting';
 import Profile from '../components/Profile';
-import DebateNode from '../components/DebateNode';
+import DebateContainer from '../components/DebateContainer';
 import ArticleContainer from '../components/ArticleContainer';
 import ExternalWebView from '../components/ExternalWebView';
 import KaifIcon from '../components/KaifIcon';
@@ -47,12 +48,26 @@ let Router = {
   getDebateRoute(props) {
     return {
       renderScene(navigator) {
-        return <DebateNode navigator={navigator} {...props} />;
+        return <DebateContainer navigator={navigator} {...props} />;
       },
       onDidFocus(event) {
       },
       getTitle() {
         return('');
+      },
+      configureScene() {
+        return Navigator.SceneConfigs.FloatFromRight;
+      }
+    }
+  },
+
+  getZoneRoute(props) {
+    return {
+      renderScene(navigator) {
+        return <Zone navigator={navigator} {...props} />;
+      },
+      getTitle() {
+        return('討論區');
       },
       configureScene() {
         return Navigator.SceneConfigs.FloatFromRight;
@@ -69,7 +84,7 @@ let Router = {
         console.log('Home Scene received focus.');
       },
       getTitle() {
-        return '哈哈';
+        return '個人資料';
       },
       configureScene() {
         return Navigator.SceneConfigs.FloatFromRight;

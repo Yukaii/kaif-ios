@@ -176,6 +176,14 @@ requestArticleDebates = (articleId) => {
   return requestAPIGet(`debate/article/${articleId}/tree`);
 }
 
+requestZoneAll = () => {
+  return requestAPIGet('zone/all');
+}
+
+requestBasicUserProfile = () => {
+  return requestAPIGet('user/basic');
+}
+
 /**
  * api endpoint url helper method
  * @param  {string} endpoint
@@ -194,6 +202,8 @@ KaifAPI = {
   requestLatestArticles: requestLatestArticles,
   requestArticleDebates: requestArticleDebates,
   requestIfArticlesVoted: requestIfArticlesVoted,
+  requestZoneAll: requestZoneAll,
+  requestBasicUserProfile: requestBasicUserProfile,
   apiEndpoint: apiEndpoint
 }
 

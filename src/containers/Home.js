@@ -73,11 +73,19 @@ export default class Home extends Component {
           selectedIconName="chatboxes"
           selected={this.state.selectedTab === 'zoneList'}
           onPress={() => {
+            if (this.state.selectedTab === 'zoneList') {
+              this.eventEmitter.emit('shouldPop');
+            }
             this.setState({
               selectedTab: 'zoneList'
             });
         }}>
-        <View></View>
+          <ExNavigator
+            initialRoute={Router.getZoneRoute({...this.props, events: this.eventEmitter})}
+            style={{ flex: 1 }}
+            sceneStyle={{  }}
+            configureScene={ (route) => Navigator.SceneConfigs.FloatFromLeft }
+          />
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="個人資料"
@@ -85,11 +93,17 @@ export default class Home extends Component {
           selectedIconName="person"
           selected={this.state.selectedTab === 'profileTab'}
           onPress={() => {
+            if (this.state.selectedTab === 'profileTab') {
+              this.eventEmitter.emit('shouldPop');
+            }
             this.setState({
               selectedTab: 'profileTab'
             });
         }}>
-        <View></View>
+          <ExNavigator
+            initialRoute={Router.getProfileRoute({...this.props, events: this.eventEmitter})}
+            style={{ flex: 1 }}
+          />
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="設定"
@@ -104,8 +118,6 @@ export default class Home extends Component {
         <ExNavigator
           initialRoute={Router.getSettingRoute()}
           style={{ flex: 1 }}
-          sceneStyle={{ }}
-          configureScene={ (route) => Navigator.SceneConfigs.FloatFromLeft }
         />
         </Icon.TabBarItem>
       </TabBarIOS>
