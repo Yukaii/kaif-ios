@@ -2,7 +2,8 @@ import React, {
   View,
   Text,
   Component,
-  ScrollView
+  ScrollView,
+  ActivityIndicatorIOS
 } from 'react-native';
 
 import KaifAPI from '../utils/KaifAPI';
@@ -53,7 +54,19 @@ export default class DebateNode extends Component {
   }
 
   render = () => {
-    const { article, navigator } = this.props;
+    const { article, navigator, rootNavigator } = this.props;
+
+    if (!this.state.didFocus) {
+      return(
+        <View style={{flex: 1, paddingTop: 64, paddingBottom: 48, backgroundColor: '#eeeeee'}}>
+          <ActivityIndicatorIOS
+              animating={true}
+              style={{alignItems: 'center', justifyContent: 'center', height: 80}}
+              size="small"
+            />
+        </View>
+      );
+    }
 
     return(
       <View style={{flex: 1, paddingTop: 64, paddingBottom: 48, backgroundColor: '#eeeeee'}}>
@@ -68,6 +81,7 @@ export default class DebateNode extends Component {
               backgroundColor: '#d1dbe5',
             }}
             navigator={navigator}
+            rootNavigator={rootNavigator}
             showVote={this.state.didFocus}
           />
         { (this.state.debate !== null && this.state.didFocus) ? this.state.debate.children.map(data => this.renderDebate(data)) : null }

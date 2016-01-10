@@ -3,8 +3,7 @@ import React, {
   TouchableHighlight,
   Text,
   View,
-  Component,
-  NavigatorIOS
+  Component
 } from 'react-native';
 
 import TableView, {

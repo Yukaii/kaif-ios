@@ -1,4 +1,5 @@
 import React, { Navigator } from 'react-native';
+import Home from '../containers/Home';
 import Setting from '../components/Setting';
 import Profile from '../components/Profile';
 import DebateNode from '../components/DebateNode';
@@ -7,10 +8,18 @@ import ExternalWebView from '../components/ExternalWebView';
 import KaifIcon from '../components/KaifIcon';
 
 let Router = {
-  getArticleRoute() {
+  getHomeRoute(props) {
     return {
       renderScene(navigator) {
-        return <ArticleContainer navigator={navigator}/>;
+        return <Home rootNavigator={navigator} {...props}/>;
+      }
+    }
+  },
+
+  getArticleRoute(props) {
+    return {
+      renderScene(navigator) {
+        return <ArticleContainer navigator={navigator} {...props}/>;
       },
       renderTitle(){
         return <KaifIcon style={{width: 18, height: 18, tintColor: "#ff5619", marginTop: 14}}/>;
@@ -82,7 +91,10 @@ let Router = {
         return url
       },
       configureScene() {
-        return Navigator.SceneConfigs.FloatFromRight;
+        return Navigator.SceneConfigs.FloatFromBottom;
+      },
+      renderRightButton() {
+        return (null);
       }
     }
   }

@@ -22,6 +22,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		3225FFB31C414BED0013F55F /* libSafariViewManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3225FFB21C41432B0013F55F /* libSafariViewManager.a */; };
 		32C90A8B1C391242002C6355 /* libRNTableView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32C90A8A1C391205002C6355 /* libRNTableView.a */; };
 		32F23FA41C3B3ED6002CE19B /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32F826661C3A8A1200371DF4 /* libRNVectorIcons.a */; };
 		400EA8FEB67F47A8BC8186A6 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06EC2422DB8E47F29104BE80 /* MaterialIcons.ttf */; };
@@ -98,6 +99,13 @@
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
 		};
+		3225FFB11C41432B0013F55F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3225FFA11C41432A0013F55F /* SafariViewManager.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = SafariViewManager;
+		};
 		32C90A891C391205002C6355 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 32C90A7B1C391204002C6355 /* RNTableView.xcodeproj */;
@@ -150,6 +158,7 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = KaifIoIos/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		2F9C7044B1A9401B9D92FCD2 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
+		3225FFA11C41432A0013F55F /* SafariViewManager.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SafariViewManager.xcodeproj; path = "../node_modules/react-native-safari-view/SafariViewManager.xcodeproj"; sourceTree = "<group>"; };
 		32C90A7B1C391204002C6355 /* RNTableView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNTableView.xcodeproj; path = "../node_modules/react-native-tableview/RNTableView.xcodeproj"; sourceTree = "<group>"; };
 		4262B8A2C5064013BCA87F2A /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		4BA56515F5AA4629BC5E885B /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
@@ -174,6 +183,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3225FFB31C414BED0013F55F /* libSafariViewManager.a in Frameworks */,
 				32F23FA41C3B3ED6002CE19B /* libRNVectorIcons.a in Frameworks */,
 				32C90A8B1C391242002C6355 /* libRNTableView.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -287,6 +297,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		3225FFA21C41432A0013F55F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3225FFB21C41432B0013F55F /* libSafariViewManager.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		32C90A7C1C391204002C6355 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -314,6 +332,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				3225FFA11C41432A0013F55F /* SafariViewManager.xcodeproj */,
 				32C90A7B1C391204002C6355 /* RNTableView.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -420,7 +439,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 610;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
@@ -492,6 +511,10 @@
 					ProductGroup = 32F826571C3A8A1200371DF4 /* Products */;
 					ProjectRef = 2F9C7044B1A9401B9D92FCD2 /* RNVectorIcons.xcodeproj */;
 				},
+				{
+					ProductGroup = 3225FFA21C41432A0013F55F /* Products */;
+					ProjectRef = 3225FFA11C41432A0013F55F /* SafariViewManager.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -556,6 +579,13 @@
 			fileType = archive.ar;
 			path = libReact.a;
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3225FFB21C41432B0013F55F /* libSafariViewManager.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSafariViewManager.a;
+			remoteRef = 3225FFB11C41432B0013F55F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		32C90A8A1C391205002C6355 /* libRNTableView.a */ = {
@@ -692,6 +722,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KaifIoIos.app/KaifIoIos";
 			};
@@ -713,6 +744,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KaifIoIos.app/KaifIoIos";
 			};
@@ -733,6 +765,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				INFOPLIST_FILE = KaifIoIos/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.tendollarstudio.kaif-ios";
@@ -755,6 +788,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				INFOPLIST_FILE = KaifIoIos/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.tendollarstudio.kaif-ios";
@@ -783,6 +817,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;

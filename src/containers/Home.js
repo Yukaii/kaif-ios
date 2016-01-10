@@ -45,7 +45,7 @@ export default class Home extends Component {
             });
           }}>
           <ExNavigator
-            initialRoute={Router.getArticleRoute()}
+            initialRoute={Router.getArticleRoute(this.props)}
             style={{ flex: 1 }}
             sceneStyle={{  }}
             configureScene={ (route) => Navigator.SceneConfigs.FloatFromLeft }

@@ -96,7 +96,17 @@ oauthCallback = (event, callback) => {
   });
 }
 
-requestAPIGet = (endpoint) => {
+requestAPIGet = (endpoint, body=null) => {
+  let checkStatus = (response) => {
+    if (response.status >= 200 && response.status < 300) {
+      return response
+    } else {
+      var error = new Error(response.statusText)
+      error.response = response
+      throw error
+    }
+  }
+
   return new Promise((resolve, reject) => {
     getAccessToken().then(access_token => {
       fetch(apiEndpoint(endpoint), {
@@ -105,8 +115,9 @@ requestAPIGet = (endpoint) => {
           'Accept': 'application/json',
           'Authorization': `Bearer ${access_token}`,
           'Content-Type': 'application/json;charset=UTF-8'
-        }
-      }).then(response => response.json()).then(data => resolve(data));
+        },
+        body: body
+      }).then(checkStatus).then(response => response.json()).then(data => resolve(data));
     });
   });
 }
@@ -131,6 +142,19 @@ requestUserArticles = (username) => {
 
 requestVotedArticles = () => {
   return requestAPIGet('article/voted');
+}
+
+requestIfArticlesVoted = (articleIds) => {
+  return requestAPIGet(`vote/article?${utils.toQueryString({'article-id': articleIds.join(',')})}`)
+}
+
+testAPI = () => {
+  return new Promise((resolve, reject) => {
+    requestAPIGet('echo/current-time').then(data => {
+      let success = data.errors !== 'undefined'
+      resolve(success);
+    });
+  });
 }
 
 requestZoneExternalLinkArticles = (zone) => {
@@ -166,8 +190,10 @@ KaifAPI = {
   getAccessToken: getAccessToken,
   getAuthorizeUrl: getAuthorizeUrl,
   oauthLogin: oauthLogin,
+  testAPI: testAPI,
   requestHotArticles: requestHotArticles,
   requestArticleDebates: requestArticleDebates,
+  requestIfArticlesVoted: requestIfArticlesVoted,
   apiEndpoint: apiEndpoint
 }
 
