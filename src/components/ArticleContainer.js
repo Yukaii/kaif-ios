@@ -43,11 +43,7 @@ export default class ArticleContainer extends Component {
 
   articleRequestAction = (lastArticleId=null) => {
     const { articleRequestPolicy, rawArticles } = this.state;
-
-    let policyFunctions = {
-      "hot": KaifAPI.requestHotArticles,
-      "latest": KaifAPI.requestLatestArticles
-    }
+    const { policyFunctions } = this.props;
 
     return policyFunctions[articleRequestPolicy](lastArticleId).then(articleData => {
       KaifAPI.requestIfArticlesVoted(articleData.data.map(_ => _.articleId)).then(voteData => {
@@ -63,12 +59,15 @@ export default class ArticleContainer extends Component {
           return art;
         });
 
-        rawArticles[articleRequestPolicy] = rawArticles[articleRequestPolicy].concat(articles);
-        this.setState({
-          articles: this.dataSource.cloneWithRows(rawArticles[articleRequestPolicy]),
-          rawArticles: rawArticles,
-          onLoading: false
-        });
+
+        if (lastArticleId || (!lastArticleId && rawArticles[articleRequestPolicy].length == 0)) {
+          rawArticles[articleRequestPolicy] = rawArticles[articleRequestPolicy].concat(articles);
+          this.setState({
+            articles: this.dataSource.cloneWithRows(rawArticles[articleRequestPolicy]),
+            rawArticles: rawArticles,
+            onLoading: false
+          });
+        }
 
       })
     });
@@ -94,10 +93,14 @@ export default class ArticleContainer extends Component {
   handleArticleRequestPolicyChange = (policy) => {
     if (!this._isCurrentPolicyChanged) { return; }
 
+    const { rawArticles } = this.state;
+
     return () => {
       this.setState({
-        articleRequestPolicy: policy
+        articleRequestPolicy: policy,
+        articles: this.dataSource.cloneWithRows(rawArticles[policy]),
       });
+
       this.articleRequestAction();
     }
   }
@@ -152,7 +155,7 @@ export default class ArticleContainer extends Component {
           contentContainerStyle={{justifyContent: 'space-between'}}
           dataSource={this.state.articles}
           onEndReached={this._onEndReach}
-          onEndReachedThreshold={25}
+          onEndReachedThreshold={15}
           renderFooter={this._renderFooter}
           renderRow={
             (article, sectionID, rowID) => <Article article={ new articleModel(article) } key={ article.articleId } navigator={navigator} events={events} rootNavigator={rootNavigator} canHandleArticlePress={true}/>

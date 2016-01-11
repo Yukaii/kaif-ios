@@ -24,6 +24,8 @@ import ArticleContainer from '../components/ArticleContainer';
 
 import Router from '../routers';
 
+import KaifAPI from '../utils/KaifAPI';
+
 export default class Home extends Component {
   constructor(props) {
     super(props);
@@ -61,7 +63,15 @@ export default class Home extends Component {
             });
           }}>
           <ExNavigator
-            initialRoute={Router.getArticleRoute({...this.props, events: this.eventEmitter})}
+            initialRoute={Router.getArticleRoute(
+              {...this.props,
+                events: this.eventEmitter,
+                policyFunctions: {
+                  "hot": KaifAPI.requestHotArticles,
+                  "latest": KaifAPI.requestLatestArticles
+                }
+              })
+            }
             style={{ flex: 1 }}
             sceneStyle={{  }}
             configureScene={ (route) => Navigator.SceneConfigs.FloatFromLeft }
