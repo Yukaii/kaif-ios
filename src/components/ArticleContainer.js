@@ -31,21 +31,25 @@ export default class ArticleContainer extends Component {
         hot: [],
         latest: []
       },
-      articleRequestPolicy: "hot"
+      articleRequestPolicy: "hot",
+      onLoading: false
     }
   }
 
   componentDidMount = () => {
     this.handleOauthLogin();
+    this.dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
   }
 
-  articleRequestAction = () => {
+  articleRequestAction = (lastArticleId=null) => {
+    const { articleRequestPolicy, rawArticles } = this.state;
+
     let policyFunctions = {
       "hot": KaifAPI.requestHotArticles,
       "latest": KaifAPI.requestLatestArticles
     }
 
-    return policyFunctions[this.state.articleRequestPolicy]().then(articleData => {
+    return policyFunctions[articleRequestPolicy](lastArticleId).then(articleData => {
       KaifAPI.requestIfArticlesVoted(articleData.data.map(_ => _.articleId)).then(voteData => {
 
         let articles = articleData.data.map(art => {
@@ -59,20 +63,22 @@ export default class ArticleContainer extends Component {
           return art;
         });
 
+        rawArticles[articleRequestPolicy] = rawArticles[articleRequestPolicy].concat(articles);
         this.setState({
-          articles: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(articles)
+          articles: this.dataSource.cloneWithRows(rawArticles[articleRequestPolicy]),
+          rawArticles: rawArticles,
+          onLoading: false
         });
+
       })
     });
   }
 
-  currentPolicyChanged = (policy) => {
+  _isCurrentPolicyChanged = (policy) => {
     return policy != this.state.articleRequestPolicy
   }
 
   handleOauthLogin = () => {
-    const { requestHotArticles } = this.props;
-
     KaifAPI.testAPI().then(success => {
       if (success) {
         this.articleRequestAction();
@@ -86,7 +92,7 @@ export default class ArticleContainer extends Component {
   }
 
   handleArticleRequestPolicyChange = (policy) => {
-    if (!this.currentPolicyChanged) { return; }
+    if (!this._isCurrentPolicyChanged) { return; }
 
     return () => {
       this.setState({
@@ -96,11 +102,37 @@ export default class ArticleContainer extends Component {
     }
   }
 
+  _onEndReach = () => {
+    const { articleRequestPolicy, rawArticles } = this.state;
+
+    if (rawArticles[articleRequestPolicy].length == 0 || this.state.onLoading) { return }
+
+    this.setState({onLoading: true})
+
+    return this.articleRequestAction(
+      rawArticles[articleRequestPolicy][rawArticles[articleRequestPolicy].length-1].articleId
+    );
+  }
+
+  _renderFooter = () => {
+    if (!this.state.onLoading) { return; }
+    else {
+      return(
+        <ActivityIndicatorIOS
+            animating={true}
+            style={{alignItems: 'center', justifyContent: 'center', height: 80}}
+            size="small"
+          />
+      );
+    }
+
+  }
+
   render = () => {
     const { navigator, rootNavigator, events } = this.props;
 
     return(
-      <ScrollView style={{flex: 1, marginTop: 43}}>
+      <View style={{flex: 1, paddingTop: 64}} >
         <View style={{height: 28, flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5, borderColor: 'rgba(178, 178, 178, 0.62)'}}>
           <TouchableHighlight underlayColor="transparent" style={{flex: 1, height: 28, justifyContent: 'center'}} onPress={this.handleArticleRequestPolicyChange("hot")}>
             <Text style={{color: 'black', textAlign: 'center'}}>
@@ -119,10 +151,13 @@ export default class ArticleContainer extends Component {
           style={{flex: 1}}
           contentContainerStyle={{justifyContent: 'space-between'}}
           dataSource={this.state.articles}
+          onEndReached={this._onEndReach}
+          onEndReachedThreshold={25}
+          renderFooter={this._renderFooter}
           renderRow={
             (article, sectionID, rowID) => <Article article={ new articleModel(article) } key={ article.articleId } navigator={navigator} events={events} rootNavigator={rootNavigator} canHandleArticlePress={true}/>
-        }/>
-      </ScrollView>
+          }/>
+      </View>
     );
   }
 }

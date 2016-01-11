@@ -33,10 +33,10 @@ export default class Zone extends Component {
       return(
         <View style={{flex: 1, paddingTop: 64, marginBottom: 40, backgroundColor: '#eeeeee'}}>
           <ActivityIndicatorIOS
-              animating={true}
-              style={{alignItems: 'center', justifyContent: 'center', height: 80}}
-              size="small"
-            />
+            animating={true}
+            style={{alignItems: 'center', justifyContent: 'center', height: 80}}
+            size="small"
+          />
         </View>
       );
     }

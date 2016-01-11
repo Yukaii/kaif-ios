@@ -127,20 +127,28 @@ requestAPIGet = (endpoint, body=null) => {
  * KaifAPI.requestHotArticles().then(data => alert(data));
  * @return {Promise} resolve JSON data
  */
-requestHotArticles = () => {
-  return requestAPIGet('article/hot');
+requestHotArticles = (startArticleId=null) => {
+  return startArticleId ?
+    requestAPIGet(`article/hot?start-article-id=${startArticleId}`) :
+    requestAPIGet(`article/hot`);
 }
 
-requestLatestArticles = () => {
-  return requestAPIGet('article/latest');
+requestLatestArticles = (startArticleId=null) => {
+  return startArticleId ?
+    requestAPIGet(`article/latest?start-article-id=${startArticleId}`) :
+    requestAPIGet(`article/latest`)
 }
 
-requestUserArticles = (username) => {
-  return requestAPIGet(`article/user/${username}/submitted`);
+requestUserArticles = (username, startArticleId=null) => {
+  return startArticleId ?
+    requestAPIGet(`article/user/${username}/submitted?start-article-id=${startArticleId}`) :
+    requestAPIGet(`article/user/${username}/submitted`);
 }
 
-requestVotedArticles = () => {
-  return requestAPIGet('article/voted');
+requestVotedArticles = (startArticleId=null) => {
+  return startArticleId ?
+    requestAPIGet(`article/voted?start-article-id=${startArticleId}`) :
+    requestAPIGet(`article/voted`);
 }
 
 requestIfArticlesVoted = (articleIds) => {
