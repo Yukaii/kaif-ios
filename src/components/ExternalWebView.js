@@ -9,7 +9,8 @@ import React, {
   WebView,
   Component,
   TouchableHighlight,
-  StatusBarIOS
+  StatusBarIOS,
+  ActivityIndicatorIOS
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -26,6 +27,7 @@ export default class ExternalWebView extends Component {
       forwardButtonEnabled: false,
       loading: true,
       scalesPageToFit: true,
+      didFocus: false
     }
   }
 
@@ -43,6 +45,9 @@ export default class ExternalWebView extends Component {
   componentDidMount = () => {
     const { rootNavigator } = this.props;
     rootNavigator.navigationContext.addListener('didfocus', () => {
+      this.setState({
+        didFocus: true,
+      });
       StatusBarIOS.setStyle('light-content');
     });
   }
@@ -51,6 +56,37 @@ export default class ExternalWebView extends Component {
     const { rootNavigator } = this.props;
     rootNavigator.navigationContext._bubbleEventEmitter.removeAllListeners('didfocus')
     StatusBarIOS.setStyle('default');
+  }
+
+  _renderWebView = () => {
+    const { url, rootNavigator } = this.props;
+
+    if (!this.state.didFocus) {
+      return(
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <ActivityIndicatorIOS
+            animating={true}
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center', height: 80}}
+            size="small"
+            />
+        </View>
+      );
+    }
+
+    return(
+      <WebView
+        style={{flex: 1}}
+        ref={WEBVIEW_REF}
+        automaticallyAdjustContentInsets={true}
+        url={url}
+        javaScriptEnabled={true}
+        allowsInlineMediaPlayback={true}
+        scalesPageToFit={true}
+        onNavigationStateChange={this.onNavigationStateChange}
+        startInLoadingState={true}
+        scalesPageToFit={this.state.scalesPageToFit}
+        />
+    );
   }
 
   render(){
@@ -66,18 +102,7 @@ export default class ExternalWebView extends Component {
             <Text style={{color: '#5ea7e9', textAlign:'right', fontWeight: 'bold', fontSize: 16, marginBottom: 2}}>分享</Text>
           </TouchableHighlight>
         </View>
-        <WebView
-          style={{flex: 1}}
-          ref={WEBVIEW_REF}
-          automaticallyAdjustContentInsets={true}
-          url={url}
-          javaScriptEnabled={true}
-          allowsInlineMediaPlayback={true}
-          scalesPageToFit={true}
-          onNavigationStateChange={this.onNavigationStateChange}
-          startInLoadingState={true}
-          scalesPageToFit={this.state.scalesPageToFit}
-          />
+        { this._renderWebView() }
       </View>
     );
   }
