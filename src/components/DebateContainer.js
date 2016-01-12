@@ -3,7 +3,8 @@ import React, {
   Text,
   Component,
   ScrollView,
-  ActivityIndicatorIOS
+  ActivityIndicatorIOS,
+  InteractionManager
 } from 'react-native';
 import Subscribable from 'Subscribable';
 
@@ -36,13 +37,11 @@ export default React.createClass({
         didFocus: true,
       })
     }
-    navigator.navigationContext.addListener('didfocus', didFocusCallback);
-    this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
-  },
 
-  componentWillUnmount() {
-    const { navigator } = this.props;
-    navigator.navigationContext._bubbleEventEmitter.removeAllListeners('didfocus')
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({didFocus: true});
+    });
+    this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
   },
 
   renderDebate(data) {

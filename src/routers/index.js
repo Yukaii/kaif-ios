@@ -23,7 +23,7 @@ let Router = {
         return <ArticleContainer navigator={navigator} {...props}/>;
       },
       renderTitle(){
-        return <KaifIcon style={{width: 18, height: 18, tintColor: "#ff5619", marginTop: 14}}/>;
+        return <KaifIcon width={18} height={17} style={{ marginTop: 14}}/>;
       },
       configureScene() {
         return Navigator.SceneConfigs.FloatFromRight;

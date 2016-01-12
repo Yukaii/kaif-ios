@@ -6,7 +6,8 @@ import React, {
   ListView,
   PropTypes,
   ActivityIndicatorIOS,
-  TouchableHighlight
+  TouchableHighlight,
+  RefreshControl
 } from 'react-native';
 
 import Article from './Article';
@@ -32,7 +33,8 @@ export default class ArticleContainer extends Component {
         latest: []
       },
       articleRequestPolicy: "hot",
-      onLoading: false
+      onLoading: false,
+      changingPolicy: false
     }
   }
 
@@ -69,6 +71,8 @@ export default class ArticleContainer extends Component {
           });
         }
 
+        this.setState({changingPolicy: false});
+
       })
     });
   }
@@ -90,7 +94,7 @@ export default class ArticleContainer extends Component {
     });
   }
 
-  handleArticleRequestPolicyChange = (policy) => {
+  _handleArticleRequestPolicyChange = (policy) => {
     if (!this._isCurrentPolicyChanged) { return; }
 
     const { rawArticles } = this.state;
@@ -98,6 +102,7 @@ export default class ArticleContainer extends Component {
     return () => {
       this.setState({
         articleRequestPolicy: policy,
+        changingPolicy: true,
         articles: this.dataSource.cloneWithRows(rawArticles[policy]),
       });
 
@@ -117,49 +122,83 @@ export default class ArticleContainer extends Component {
     );
   }
 
+  _renderActivityIndicator = () => {
+    return(
+      <ActivityIndicatorIOS
+        animating={true}
+        style={{alignItems: 'center', justifyContent: 'center', height: 80}}
+        size="small"
+      />
+    );
+  }
+
   _renderFooter = () => {
     if (!this.state.onLoading) { return; }
     else {
-      return(
-        <ActivityIndicatorIOS
-            animating={true}
-            style={{alignItems: 'center', justifyContent: 'center', height: 80}}
-            size="small"
-          />
-      );
+      return this._renderActivityIndicator();
     }
+  }
 
+  _onRefresh = () => {
+    // alert("refresh!")
+  }
+
+  _renderTabButton = (policy, text) => {
+    const { articleRequestPolicy } = this.state;
+    let selectedStyle = articleRequestPolicy == policy ? { backgroundColor: '#eeeeee'} : {}
+
+    return(
+      <TouchableHighlight underlayColor="transparent" style={{flex: 1, height: 28, justifyContent: 'center', ...selectedStyle}} onPress={this._handleArticleRequestPolicyChange(policy)}>
+        <Text style={{color: 'black', textAlign: 'center'}}>
+          {text}
+        </Text>
+      </TouchableHighlight>
+    );
+  }
+
+  _renderTabSeperator = () => {
+    return(
+      <View style={{width: 1, height: 18, borderLeftWidth: 0.5, borderColor: 'rgba(178, 178, 178, 0.62)'}}/>
+    );
   }
 
   render = () => {
     const { navigator, rootNavigator, events } = this.props;
 
     return(
-      <View style={{flex: 1, paddingTop: 64}} >
-        <View style={{height: 28, flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5, borderColor: 'rgba(178, 178, 178, 0.62)'}}>
-          <TouchableHighlight underlayColor="transparent" style={{flex: 1, height: 28, justifyContent: 'center'}} onPress={this.handleArticleRequestPolicyChange("hot")}>
-            <Text style={{color: 'black', textAlign: 'center'}}>
-              綜合熱門
-            </Text>
-          </TouchableHighlight>
-          <View style={{width: 1, height: 18, borderLeftWidth: 0.5, borderColor: 'rgba(178, 178, 178, 0.62)'}}/>
-          <TouchableHighlight underlayColor="transparent" style={{flex: 1, height: 28, justifyContent: 'center'}} onPress={this.handleArticleRequestPolicyChange("latest")}>
-            <Text style={{color: 'black', textAlign: 'center'}}>
-              綜合最新
-            </Text>
-          </TouchableHighlight>
+      <View style={{flex: 1, paddingTop: 64, overflow: 'hidden'}} >
+        <View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5, borderColor: 'rgba(178, 178, 178, 0.62)'}}>
+          { this._renderTabButton("hot", "綜合熱門") }
+          { this._renderTabButton("latest", "綜合最新") }
         </View>
-        <ListView
-          showsVerticalScrollIndicator={true}
-          style={{flex: 1}}
-          contentContainerStyle={{justifyContent: 'space-between'}}
-          dataSource={this.state.articles}
-          onEndReached={this._onEndReach}
-          onEndReachedThreshold={15}
-          renderFooter={this._renderFooter}
-          renderRow={
-            (article, sectionID, rowID) => <Article article={ new articleModel(article) } key={ article.articleId } navigator={navigator} events={events} rootNavigator={rootNavigator} canHandleArticlePress={true}/>
-          }/>
+        {
+          this.state.changingPolicy ?
+            this._renderActivityIndicator() :
+            <ListView
+              showsVerticalScrollIndicator={true}
+              style={{flex: 1}}
+              contentContainerStyle={{justifyContent: 'space-between'}}
+              dataSource={this.state.articles}
+              onEndReached={this._onEndReach}
+              onEndReachedThreshold={15}
+              renderFooter={this._renderFooter}
+              removeClippedSubviews={true}
+              renderRow={
+                (article, sectionID, rowID) => {
+                  return(
+                    <Article
+                      article={ new articleModel(article) }
+                      key={ article.articleId }
+                      navigator={navigator}
+                      events={events}
+                      rootNavigator={rootNavigator}
+                      canHandleArticlePress={true}
+                    />
+                  );
+                }
+              }
+            />
+        }
       </View>
     );
   }

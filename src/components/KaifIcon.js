@@ -1,21 +1,44 @@
 import React, {
   Component,
   Image,
-  View
+  View,
+  StyleSheet
 } from 'react-native';
+
+let styles = StyleSheet.create({
+  triangle: {
+      width: 0,
+      height: 0,
+      backgroundColor: 'transparent',
+      borderStyle: 'solid',
+      borderLeftWidth: 7,
+      borderRightWidth: 7,
+      borderBottomWidth: 13,
+      borderLeftColor: 'transparent',
+      borderRightColor: 'transparent',
+      borderBottomColor: '#ff5619'
+    }
+});
+
+/*
+  <Image
+    source={require("../assets/images/kaif-icon.png")}
+  />
+*/
 
 export default class KaifIcon extends Component {
   render() {
-    let newProps = this.props;
-    delete newProps.iconName;
+    const { color, width, height, style } = this.props;
+
+    let borderColorStyle = {
+      borderBottomColor: color || '#ff5619',
+      borderLeftWidth: width/2 || 7,
+      borderRightWidth: width/2 || 7,
+      borderBottomWidth: height || 13
+    }
 
     return(
-      <View>
-        <Image
-          source={require("../assets/images/kaif-icon.png")}
-          {...newProps}
-        />
-      </View>
+      <View style={[styles.triangle, borderColorStyle, style]} />
     );
   }
 }

@@ -10,7 +10,8 @@ import React, {
   Component,
   TouchableHighlight,
   StatusBarIOS,
-  ActivityIndicatorIOS
+  ActivityIndicatorIOS,
+  InteractionManager
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -44,17 +45,15 @@ export default class ExternalWebView extends Component {
 
   componentDidMount = () => {
     const { rootNavigator } = this.props;
-    rootNavigator.navigationContext.addListener('didfocus', () => {
-      this.setState({
-        didFocus: true,
-      });
+
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({didFocus: true});
       StatusBarIOS.setStyle('light-content');
     });
   }
 
   componentWillUnmount = () => {
     const { rootNavigator } = this.props;
-    rootNavigator.navigationContext._bubbleEventEmitter.removeAllListeners('didfocus')
     StatusBarIOS.setStyle('default');
   }
 

@@ -67,7 +67,7 @@ export default class Article extends Component {
           <View style={{flexDirection: 'row', flex: 1}}>
             <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)' style={{marginRight: 8, paddingTop: 1}}>
               <View style={{flexDirection: 'column', width: 22, alignItems: 'center'}}>
-                <KaifIcon style={{width: 13, height: 13, tintColor: voteColor, paddingTop: 3}}/>
+                <KaifIcon color={voteColor} style={{}}/>
                 <Text style={{textAlign: 'left', color: voteColor, marginTop: 3}}>{article.upVote}</Text>
               </View>
             </TouchableHighlight>
