@@ -20,10 +20,9 @@ import * as ArticleActions from '../actions/article';
 
 import KaifAPI from '../utils/KaifAPI';
 
-class ArticleContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+let ArticleContainer = React.createClass({
+  getInitialState: function() {
+    return({
       articles: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
       rawArticles: {
         hot: [],
@@ -32,15 +31,15 @@ class ArticleContainer extends Component {
       articleRequestPolicy: "hot",
       onLoading: false,
       changingPolicy: false
-    }
-  }
+    });
+  },
 
-  componentDidMount = () => {
+  componentDidMount: function() {
     this.handleOauthLogin();
     this.dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
-  };
+  },
 
-  articleRequestAction = (lastArticleId=null) => {
+  articleRequestAction: function(lastArticleId=null) {
     const { articleRequestPolicy, rawArticles } = this.state;
     const { policyFunctions } = this.props;
 
@@ -72,13 +71,13 @@ class ArticleContainer extends Component {
 
       })
     });
-  };
+  },
 
-  _isCurrentPolicyChanged = (policy) => {
+  _isCurrentPolicyChanged: function(policy) {
     return policy != this.state.articleRequestPolicy
-  };
+  },
 
-  handleOauthLogin = () => {
+  handleOauthLogin: function() {
     KaifAPI.testAPI().then(success => {
       if (success) {
         this.articleRequestAction();
@@ -89,9 +88,9 @@ class ArticleContainer extends Component {
         });
       }
     });
-  };
+  },
 
-  _handleArticleRequestPolicyChange = (policy) => {
+  _handleArticleRequestPolicyChange: function(policy) {
     if (!this._isCurrentPolicyChanged) { return; }
 
     const { rawArticles } = this.state;
@@ -105,9 +104,9 @@ class ArticleContainer extends Component {
 
       this.articleRequestAction();
     }
-  };
+  },
 
-  _onEndReach = () => {
+  _onEndReach: function() {
     const { articleRequestPolicy, rawArticles } = this.state;
 
     if (rawArticles[articleRequestPolicy].length == 0 || this.state.onLoading) { return }
@@ -117,9 +116,9 @@ class ArticleContainer extends Component {
     return this.articleRequestAction(
       rawArticles[articleRequestPolicy][rawArticles[articleRequestPolicy].length-1].articleId
     );
-  };
+  },
 
-  _renderActivityIndicator = () => {
+  _renderActivityIndicator: function() {
     return(
       <ActivityIndicatorIOS
         animating={true}
@@ -127,20 +126,20 @@ class ArticleContainer extends Component {
         size="small"
       />
     );
-  };
+  },
 
-  _renderFooter = () => {
+  _renderFooter: function() {
     if (!this.state.onLoading) { return; }
     else {
       return this._renderActivityIndicator();
     }
-  };
+  },
 
-  _onRefresh = () => {
+  _onRefresh: function() {
     // alert("refresh!")
-  };
+  },
 
-  _renderTabButton = (policy, text) => {
+  _renderTabButton: function(policy, text) {
     const { articleRequestPolicy } = this.state;
     let selectedStyle = articleRequestPolicy == policy ? { backgroundColor: '#eeeeee'} : {}
 
@@ -151,15 +150,15 @@ class ArticleContainer extends Component {
         </Text>
       </TouchableHighlight>
     );
-  };
+  },
 
-  _renderTabSeperator = () => {
+  _renderTabSeperator: function() {
     return(
       <View style={{width: 1, height: 18, borderLeftWidth: 0.5, borderColor: 'rgba(178, 178, 178, 0.62)'}}/>
     );
-  };
+  },
 
-  render = () => {
+  render: function() {
     const { navigator, rootNavigator, events } = this.props;
 
     return(
@@ -199,8 +198,8 @@ class ArticleContainer extends Component {
         }
       </View>
     );
-  };
-}
+  }
+});
 
 ArticleContainer.propTypes = {
   requestHotArticles: PropTypes.func.isRequired
