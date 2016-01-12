@@ -12,11 +12,7 @@ import Router from '../routers';
 import Icon from 'react-native-vector-icons/Ionicons';
 import KaifIcon from './KaifIcon';
 
-export default class Article extends Component {
-  static defaultProps = {
-    showVote: true
-  }
-
+class Article extends Component {
   handleArticlePress = (event) => {
     const { article, navigator, canHandleArticlePress, rootNavigator, events } = this.props;
     if (navigator && canHandleArticlePress) {
@@ -27,7 +23,7 @@ export default class Article extends Component {
       })
       navigator.push(route);
     }
-  }
+  };
 
   handleArticleTitlePress = (event) => {
     const { article, rootNavigator } = this.props;
@@ -46,7 +42,7 @@ export default class Article extends Component {
         }
       // });
     }
-  }
+  };
 
   render = () => {
     const { article, style, touchableStyle } = this.props;
@@ -98,5 +94,11 @@ export default class Article extends Component {
         </View>
       </TouchableHighlight>
     );
-  }
+  };
 }
+
+Article.defaultProps = {
+  showVote: true
+}
+
+export default Article;

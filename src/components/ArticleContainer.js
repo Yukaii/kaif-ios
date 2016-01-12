@@ -9,6 +9,7 @@ import React, {
   TouchableHighlight,
   RefreshControl
 } from 'react-native';
+import SGListView from 'react-native-sglistview';
 
 import Article from './Article';
 import articleModel from '../models/articleModel';
@@ -19,11 +20,7 @@ import * as ArticleActions from '../actions/article';
 
 import KaifAPI from '../utils/KaifAPI';
 
-export default class ArticleContainer extends Component {
-  static propTypes = {
-    requestHotArticles: PropTypes.func.isRequired
-  }
-
+class ArticleContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,7 +38,7 @@ export default class ArticleContainer extends Component {
   componentDidMount = () => {
     this.handleOauthLogin();
     this.dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
-  }
+  };
 
   articleRequestAction = (lastArticleId=null) => {
     const { articleRequestPolicy, rawArticles } = this.state;
@@ -75,11 +72,11 @@ export default class ArticleContainer extends Component {
 
       })
     });
-  }
+  };
 
   _isCurrentPolicyChanged = (policy) => {
     return policy != this.state.articleRequestPolicy
-  }
+  };
 
   handleOauthLogin = () => {
     KaifAPI.testAPI().then(success => {
@@ -92,7 +89,7 @@ export default class ArticleContainer extends Component {
         });
       }
     });
-  }
+  };
 
   _handleArticleRequestPolicyChange = (policy) => {
     if (!this._isCurrentPolicyChanged) { return; }
@@ -108,7 +105,7 @@ export default class ArticleContainer extends Component {
 
       this.articleRequestAction();
     }
-  }
+  };
 
   _onEndReach = () => {
     const { articleRequestPolicy, rawArticles } = this.state;
@@ -120,7 +117,7 @@ export default class ArticleContainer extends Component {
     return this.articleRequestAction(
       rawArticles[articleRequestPolicy][rawArticles[articleRequestPolicy].length-1].articleId
     );
-  }
+  };
 
   _renderActivityIndicator = () => {
     return(
@@ -130,18 +127,18 @@ export default class ArticleContainer extends Component {
         size="small"
       />
     );
-  }
+  };
 
   _renderFooter = () => {
     if (!this.state.onLoading) { return; }
     else {
       return this._renderActivityIndicator();
     }
-  }
+  };
 
   _onRefresh = () => {
     // alert("refresh!")
-  }
+  };
 
   _renderTabButton = (policy, text) => {
     const { articleRequestPolicy } = this.state;
@@ -154,13 +151,13 @@ export default class ArticleContainer extends Component {
         </Text>
       </TouchableHighlight>
     );
-  }
+  };
 
   _renderTabSeperator = () => {
     return(
       <View style={{width: 1, height: 18, borderLeftWidth: 0.5, borderColor: 'rgba(178, 178, 178, 0.62)'}}/>
     );
-  }
+  };
 
   render = () => {
     const { navigator, rootNavigator, events } = this.props;
@@ -180,9 +177,10 @@ export default class ArticleContainer extends Component {
               contentContainerStyle={{justifyContent: 'space-between'}}
               dataSource={this.state.articles}
               onEndReached={this._onEndReach}
-              onEndReachedThreshold={15}
+              onEndReachedThreshold={20}
               renderFooter={this._renderFooter}
               removeClippedSubviews={true}
+              premptiveLoading={30}
               renderRow={
                 (article, sectionID, rowID) => {
                   return(
@@ -201,7 +199,11 @@ export default class ArticleContainer extends Component {
         }
       </View>
     );
-  }
+  };
+}
+
+ArticleContainer.propTypes = {
+  requestHotArticles: PropTypes.func.isRequired
 }
 
 function mapStateToProps(state) {
