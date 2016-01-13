@@ -9,7 +9,7 @@ import React, {
   TouchableHighlight,
   RefreshControl
 } from 'react-native';
-import SGListView from 'react-native-sglistview';
+import SGListView from '../utils/SGListView';
 
 import Article from './Article';
 import articleModel from '../models/articleModel';
@@ -20,14 +20,17 @@ import * as ArticleActions from '../actions/article';
 
 import KaifAPI from '../utils/KaifAPI';
 
+let articleCache = {
+  hot: [],
+  latest: []
+}
+
 let ArticleContainer = React.createClass({
   getInitialState: function() {
+    let dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+
     return({
-      articles: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows([]),
-      rawArticles: {
-        hot: [],
-        latest: []
-      },
+      dataSource: dataSource,
       articleRequestPolicy: "hot",
       onLoading: false,
       changingPolicy: false
@@ -36,17 +39,16 @@ let ArticleContainer = React.createClass({
 
   componentDidMount: function() {
     this.handleOauthLogin();
-    this.dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
   },
 
   articleRequestAction: function(lastArticleId=null) {
-    const { articleRequestPolicy, rawArticles } = this.state;
+    const { articleRequestPolicy, dataSource } = this.state;
     const { policyFunctions } = this.props;
 
     return policyFunctions[articleRequestPolicy](lastArticleId).then(articleData => {
       KaifAPI.requestIfArticlesVoted(articleData.data.map(_ => _.articleId)).then(voteData => {
 
-        let articles = articleData.data.map(art => {
+        let newArticles = articleData.data.map(art => {
           if (!voteData.data || voteData.data.length == 0) { return art; }
 
           for(let i = 0, l = voteData.data.length; i < l; i++) {
@@ -57,12 +59,15 @@ let ArticleContainer = React.createClass({
           return art;
         });
 
+        if(articleCache[articleRequestPolicy] === 'undefined') {
+          articleCache[articleRequestPolicy] = []
+        }
 
-        if (lastArticleId || (!lastArticleId && rawArticles[articleRequestPolicy].length == 0)) {
-          rawArticles[articleRequestPolicy] = rawArticles[articleRequestPolicy].concat(articles);
+        if (lastArticleId || (!lastArticleId && articleCache[articleRequestPolicy].length == 0)) {
+          articleCache[articleRequestPolicy] = articleCache[articleRequestPolicy].concat(newArticles);
+
           this.setState({
-            articles: this.dataSource.cloneWithRows(rawArticles[articleRequestPolicy]),
-            rawArticles: rawArticles,
+            dataSource: dataSource.cloneWithRows(articleCache[articleRequestPolicy]),
             onLoading: false
           });
         }
@@ -93,13 +98,13 @@ let ArticleContainer = React.createClass({
   _handleArticleRequestPolicyChange: function(policy) {
     if (!this._isCurrentPolicyChanged) { return; }
 
-    const { rawArticles } = this.state;
+    const { dataSource } = this.state;
 
     return () => {
       this.setState({
         articleRequestPolicy: policy,
         changingPolicy: true,
-        articles: this.dataSource.cloneWithRows(rawArticles[policy]),
+        dataSource: dataSource.cloneWithRows(articleCache[policy]),
       });
 
       this.articleRequestAction();
@@ -107,14 +112,14 @@ let ArticleContainer = React.createClass({
   },
 
   _onEndReach: function() {
-    const { articleRequestPolicy, rawArticles } = this.state;
+    const { articleRequestPolicy } = this.state;
 
-    if (rawArticles[articleRequestPolicy].length == 0 || this.state.onLoading) { return }
+    if (articleCache[articleRequestPolicy].length == 0 || this.state.onLoading) { return }
 
     this.setState({onLoading: true})
 
     return this.articleRequestAction(
-      rawArticles[articleRequestPolicy][rawArticles[articleRequestPolicy].length-1].articleId
+      articleCache[articleRequestPolicy][articleCache[articleRequestPolicy].length-1].articleId
     );
   },
 
@@ -158,6 +163,11 @@ let ArticleContainer = React.createClass({
     );
   },
 
+  _onChangeVisibleRows: function(visibleRows, changedRows) {
+    // alert('onChangeVisibleRows called with', arguments);
+
+  },
+
   render: function() {
     const { navigator, rootNavigator, events } = this.props;
 
@@ -171,20 +181,24 @@ let ArticleContainer = React.createClass({
           this.state.changingPolicy ?
             this._renderActivityIndicator() :
             <ListView
-              showsVerticalScrollIndicator={true}
+              showsVerticalScrollIndicator={false}
               style={{flex: 1}}
               contentContainerStyle={{justifyContent: 'space-between'}}
-              dataSource={this.state.articles}
+              dataSource={this.state.dataSource}
               onEndReached={this._onEndReach}
-              onEndReachedThreshold={20}
+              // onEndReachedThreshold={20}
               renderFooter={this._renderFooter}
-              removeClippedSubviews={true}
-              premptiveLoading={30}
+              // removeClippedSubviews={true}
+              initialListSize={10}
+              onChangeVisibleRows={this._onChangeVisibleRows}
+              pageSize={3}
+              // scrollRenderAheadDistance={200}
+              // premptiveLoading={65}
               renderRow={
                 (article, sectionID, rowID) => {
                   return(
                     <Article
-                      article={ new articleModel(article) }
+                      article={ article }
                       key={ article.articleId }
                       navigator={navigator}
                       events={events}

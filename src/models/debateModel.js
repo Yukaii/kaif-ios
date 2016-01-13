@@ -17,9 +17,9 @@ export default class debateModel {
     Object.keys(data).map(k => {
       this[k] = data[k];
     });
-  }
+  };
 
   lastUpdateTimeFromNow = () => {
     return moment(this.lastUpdateTime).fromNow();
-  }
+  };
 }

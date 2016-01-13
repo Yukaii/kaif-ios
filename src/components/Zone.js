@@ -12,23 +12,22 @@ import TableView, {
 import KaifAPI from '../utils/KaifAPI';
 import Router from '../routers';
 
-export default class Zone extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+let Zone = React.createClass({
+  getInitialState: function() {
+    return({
       zones: []
-    }
-  }
+    });
+  },
 
-  componentDidMount = () => {
+  componentDidMount: function() {
     KaifAPI.requestZoneAll().then(data => {
       if (data.data) {
         this.setState({zones: data.data});
       }
     });
-  }
+  },
 
-  render() {
+  render: function() {
     if (this.state.zones.length == 0) {
       return(
         <View style={{flex: 1, paddingTop: 64, marginBottom: 40, backgroundColor: '#eeeeee'}}>
@@ -56,4 +55,6 @@ export default class Zone extends Component {
       </View>
     );
   }
-}
+});
+
+export default Zone;

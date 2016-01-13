@@ -30,7 +30,7 @@ export default class ExternalWebView extends Component {
       scalesPageToFit: true,
       didFocus: false
     }
-  }
+  };
 
   onNavigationStateChange = (navState) => {
     this.setState({
@@ -41,7 +41,7 @@ export default class ExternalWebView extends Component {
       loading: navState.loading,
       // scalesPageToFit: true
     });
-  }
+  };
 
   componentDidMount = () => {
     const { rootNavigator } = this.props;
@@ -50,12 +50,12 @@ export default class ExternalWebView extends Component {
       this.setState({didFocus: true});
       StatusBarIOS.setStyle('light-content');
     });
-  }
+  };
 
   componentWillUnmount = () => {
     const { rootNavigator } = this.props;
     StatusBarIOS.setStyle('default');
-  }
+  };
 
   _renderWebView = () => {
     const { url, rootNavigator } = this.props;
@@ -86,7 +86,7 @@ export default class ExternalWebView extends Component {
         scalesPageToFit={this.state.scalesPageToFit}
         />
     );
-  }
+  };
 
   render(){
     const { url, rootNavigator } = this.props;
@@ -104,5 +104,5 @@ export default class ExternalWebView extends Component {
         { this._renderWebView() }
       </View>
     );
-  }
+  };
 }

@@ -77,7 +77,7 @@ export default React.createClass({
           contentContainerStyle={{ paddingBottom: 32, justifyContent: 'space-between', backgroundColor: '#eeeeee'}}
         >
           <Article
-            article={ new articleModel(article) }
+            article={ article }
             touchableStyle={{underlayColor: '#eeeeee'}}
             style={{
               backgroundColor: '#d1dbe5',

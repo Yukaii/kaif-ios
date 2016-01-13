@@ -26,25 +26,24 @@ import Router from '../routers';
 
 import KaifAPI from '../utils/KaifAPI';
 
-export default class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+let Home = React.createClass({
+  getInitialState: function() {
+    return({
       selectedTab: 'articleList',
       shouldPop: false
-    }
-  }
+    });
+  },
 
-  componentWillMount = () => {
+  componentWillMount: function() {
     this.eventEmitter = new EventEmitter();
-  }
+  },
 
-  componentDidMount = () => {
+  componentDidMount: function() {
     StatusBarIOS.setStyle('default');
-  }
+  },
 
 
-  render() {
+  render: function() {
     return (
         <TabBarIOS
           tintColor="#0078e7"
@@ -133,4 +132,6 @@ export default class Home extends Component {
       </TabBarIOS>
     );
   }
-}
+});
+
+export default Home;
