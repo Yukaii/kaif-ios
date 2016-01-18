@@ -87,11 +87,11 @@ class Article extends Component {
       );
     }
 
-    // <TouchableHighlight
-    //   {...{...defaultTouchableStyle, ...touchableStyle} }
-    //   // onPress={this.handleArticlePress.bind(this)}
-    // >
     return(
+      <TouchableHighlight
+        {...{...defaultTouchableStyle, ...touchableStyle} }
+        onPress={this.handleArticlePress.bind(this)}
+      >
         <View key={article.articleId}
           style={{paddingTop: 5, paddingLeft: 6, paddingRight: 10, paddingBottom: 5, marginBottom: 5, ...style}}>
           <View style={{flexDirection: 'row', flex: 1}}>
@@ -104,7 +104,7 @@ class Article extends Component {
             <View style={{flexDirection: 'column', flex: 1}}>
               <View style={{flex: 3}}>
                 <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)'
-                  onLongPress={this.handleArticleTitlePress.bind(this)}
+                  onPress={this.handleArticleTitlePress.bind(this)}
                   >
                   <Text style={{fontSize: 16, marginBottom: 2}}>{ArticleHelper.procceedTitle(article.title)}</Text>
                 </TouchableHighlight>
@@ -126,10 +126,10 @@ class Article extends Component {
             </View>
           </View>
         </View>
+      </TouchableHighlight>
     );
   };
 }
-// </TouchableHighlight>
 
 Article.defaultProps = {
   showVote: true

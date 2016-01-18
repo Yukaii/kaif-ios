@@ -7,7 +7,8 @@ import React, {
   PropTypes,
   ActivityIndicatorIOS,
   TouchableHighlight,
-  RefreshControl
+  RefreshControl,
+  InteractionManager
 } from 'react-native';
 
 import TableView, {
@@ -27,10 +28,6 @@ import * as ArticleActions from '../actions/article';
 
 import KaifAPI from '../utils/KaifAPI';
 
-let articleCache = {
-  hot: [],
-  latest: []
-}
 
 let ArticleContainer = React.createClass({
   propTypes: {
@@ -41,16 +38,30 @@ let ArticleContainer = React.createClass({
     let dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
     return({
-      // dataSource: dataSource,
+      dataSource: dataSource,
       articleRequestPolicy: "hot",
-      // onLoadingMore: false,
       changingPolicy: false,
-      articles: []
+      onloading: true,
+      didFocus: false
+    });
+  },
+
+  getDefaultProps: function() {
+    return({
+      zoneTitle: "綜合"
     });
   },
 
   componentDidMount: function() {
     this.handleOauthLogin();
+    this.articleCache = {
+      hot: [],
+      latest: []
+    }
+
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({didFocus: true});
+    });
   },
 
   articleRequestAction: function(lastArticleId=null) {
@@ -70,20 +81,18 @@ let ArticleContainer = React.createClass({
           return art;
         });
 
-        if(articleCache[articleRequestPolicy] === 'undefined') {
-          articleCache[articleRequestPolicy] = []
+        if(this.articleCache[articleRequestPolicy] === 'undefined') {
+          this.articleCache[articleRequestPolicy] = []
         }
 
-        articlesLength = articleCache[articleRequestPolicy].length;
+        articlesLength = this.articleCache[articleRequestPolicy].length;
         if (lastArticleId || (!lastArticleId && articlesLength == 0)) {
 
-          if (articleCache[articleRequestPolicy][articlesLength-1] != newArticles[newArticles.length-1]) {
-            articleCache[articleRequestPolicy] = articleCache[articleRequestPolicy].concat(newArticles);
+          if (this.articleCache[articleRequestPolicy][articlesLength-1] != newArticles[newArticles.length-1]) {
+            this.articleCache[articleRequestPolicy] = this.articleCache[articleRequestPolicy].concat(newArticles);
 
             this.setState({
-              // dataSource: dataSource.cloneWithRows(articleCache[articleRequestPolicy]),
-              articles: articleCache[articleRequestPolicy],
-              // onLoadingMore: false
+              dataSource: dataSource.cloneWithRows(this.articleCache[articleRequestPolicy]),
             });
           }
         }
@@ -92,6 +101,7 @@ let ArticleContainer = React.createClass({
           this.setState({changingPolicy: false});
         }
 
+        this.setState({onloading: false})
         this.hasFired = false;
       })
     });
@@ -123,8 +133,7 @@ let ArticleContainer = React.createClass({
       this.setState({
         articleRequestPolicy: policy,
         changingPolicy: true,
-        // dataSource: dataSource.cloneWithRows(articleCache[policy]),
-        articles: articleCache[policy]
+        dataSource: dataSource.cloneWithRows(this.articleCache[policy]),
       });
 
       this.articleRequestAction();
@@ -134,12 +143,12 @@ let ArticleContainer = React.createClass({
   _onEndReach: function(e) {
     const { articleRequestPolicy } = this.state;
 
-    if (articleCache[articleRequestPolicy].length == 0 || this.hasFired == true) { return }
+    if (this.articleCache[articleRequestPolicy].length == 0 || this.hasFired == true) { return }
 
     this.hasFired = true;
 
     return this.articleRequestAction(
-      articleCache[articleRequestPolicy][articleCache[articleRequestPolicy].length-1].articleId
+      this.articleCache[articleRequestPolicy][this.articleCache[articleRequestPolicy].length-1].articleId
     );
   },
 
@@ -153,14 +162,20 @@ let ArticleContainer = React.createClass({
     );
   },
 
-  _renderTabButton: function(policy, text) {
+  _renderTabButton: function(policy) {
     const { articleRequestPolicy } = this.state;
+    const { zoneTitle } = this.props;
     let selectedStyle = articleRequestPolicy == policy ? { backgroundColor: '#eeeeee'} : {}
+
+    let titleHash = {
+      "hot": "熱門",
+      "latest": "最新"
+    }
 
     return(
       <TouchableHighlight underlayColor="transparent" style={{flex: 1, height: 28, justifyContent: 'center', ...selectedStyle}} onPress={this._handleArticleRequestPolicyChange(policy)}>
         <Text style={{color: 'black', textAlign: 'center'}}>
-          {text}
+          {zoneTitle + titleHash[policy]}
         </Text>
       </TouchableHighlight>
     );
@@ -172,35 +187,10 @@ let ArticleContainer = React.createClass({
     );
   },
 
-  _handleArticlePress(event) {
-    const {
-      navigator,
-      rootNavigator,
-      events
-    } = this.props;
-
-    let article = this.state.articles[event.selectedIndex]
-
-    if (navigator) {
-      let route = Router.getDebateRoute({
-        article: article,
-        rootNavigator: rootNavigator,
-        events: events
-      })
-      navigator.push(route);
-    }
-  },
-
-  onScroll(event) {
-    let contentLength = event.nativeEvent.contentSize['height']
-    let visibleLength = event.nativeEvent.layoutMeasurement['height']
-    let offset = event.nativeEvent.contentOffset['y']
-
-    let maxLength = Math.max(contentLength, visibleLength)
-
-    if (maxLength - visibleLength - offset < 40 && this._sentEndForContentLength !== contentLength) {
-      this._sentEndForContentLength = contentLength;
-      this._onEndReach(event);
+  _renderFooter: function() {
+    if (!this.state.onLoading) { return; }
+    else {
+      return this._renderActivityIndicator();
     }
   },
 
@@ -210,76 +200,46 @@ let ArticleContainer = React.createClass({
     return(
       <View style={{flex: 1, paddingTop: 64, paddingBottom: 50, overflow: 'hidden'}} >
         <View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5, borderColor: 'rgba(178, 178, 178, 0.62)'}}>
-          { this._renderTabButton("hot", "綜合熱門") }
-          { this._renderTabButton("latest", "綜合最新") }
+          { this._renderTabButton("hot") }
+          { this._renderTabButton("latest") }
         </View>
         {
-          this.state.changingPolicy || this.state.articles.length == 0 ?
+          this.state.changingPolicy || !this.state.didFocus ?
             this._renderActivityIndicator() :
-              <TableView style={{flex:1}}
-                separatorStyle={TableView.Consts.SeparatorStyle.None}
-                onPress={this._handleArticlePress}
-                onScroll={this.onScroll}
-              >
-                <Section>
-                  {
-                    this.state.articles.map(article => {
-                      return(
-                        <Cell key={ article.articleId }>
-                          <Article
-                            article={ article }
-                            key={ article.articleId }
-                            navigator={navigator}
-                            events={events}
-                            rootNavigator={rootNavigator}
-                          />
-                        </Cell>
-                      );
-                    })
+              <ListView
+                showsVerticalScrollIndicator={true}
+                style={{flex: 1}}
+                contentContainerStyle={{justifyContent: 'space-between'}}
+                dataSource={this.state.dataSource}
+                onEndReached={this._onEndReach}
+                // onEndReachedThreshold={20}
+                renderFooter={this._renderFooter}
+                removeClippedSubviews={true}
+                initialListSize={10}
+                onChangeVisibleRows={this._onChangeVisibleRows}
+                pageSize={5}
+                // scrollRenderAheadDistance={200}
+                // premptiveLoading={65}
+                renderRow={
+                  (article, sectionID, rowID) => {
+                    return(
+                      <Article
+                        article={ article }
+                        key={ article.articleId }
+                        navigator={navigator}
+                        events={events}
+                        rootNavigator={rootNavigator}
+                        canHandleArticlePress={true}
+                      />
+                    );
                   }
-                  <Cell>
-                    { this._renderActivityIndicator() }
-                  </Cell>
-                </Section>
-              </TableView>
+                }
+              />
         }
       </View>
     );
   }
 });
-
-
-/*
-<ListView
-  showsVerticalScrollIndicator={false}
-  style={{flex: 1}}
-  contentContainerStyle={{justifyContent: 'space-between'}}
-  dataSource={this.state.dataSource}
-  onEndReached={this._onEndReach}
-  // onEndReachedThreshold={20}
-  renderFooter={this._renderFooter}
-  // removeClippedSubviews={true}
-  initialListSize={10}
-  onChangeVisibleRows={this._onChangeVisibleRows}
-  pageSize={5}
-  // scrollRenderAheadDistance={200}
-  // premptiveLoading={65}
-  renderRow={
-    (article, sectionID, rowID) => {
-      return(
-        <Article
-          article={ article }
-          key={ article.articleId }
-          navigator={navigator}
-          events={events}
-          rootNavigator={rootNavigator}
-          canHandleArticlePress={true}
-        />
-      );
-    }
-  }
-/>
-*/
 
 function mapStateToProps(state) {
   return state;

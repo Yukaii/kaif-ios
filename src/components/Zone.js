@@ -27,10 +27,28 @@ let Zone = React.createClass({
         this.setState({zones: data.data});
       }
     });
+  },
 
-    // this.eventEmitter = NativeAppEventEmitter.addListener('OnEndReach', (h) => {
-    //   // alert(h);
-    // })
+  onZonePress: function(event) {
+    const { navigator } = this.props;
+    let [zoneName, zoneTitle] = event.value.split(',');
+
+    let zoneFunction = (func, zone) => {
+      return (startId) => {
+        return func(zone, startId);
+      }
+    }
+
+    let route = Router.getArticleRoute({
+      ...this.props,
+      policyFunctions: {
+        "hot": zoneFunction(KaifAPI.requestZoneHotArticles, zoneName),
+        "latest": zoneFunction(KaifAPI.requestZoneLatestArticles, zoneName)
+      },
+      zoneTitle: zoneTitle
+    });
+
+    navigator.push(route);
   },
 
   render: function() {
@@ -51,11 +69,9 @@ let Zone = React.createClass({
         <TableView style={{flex:1}}
           tableViewStyle={TableView.Consts.Style.Plain}
           tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
-          onPress={(event) => {
-            alert(JSON.stringify(event.value));
-          }}>
+          onPress={this.onZonePress}>
           <Section arrow={true}>
-            { this.state.zones.map(zone => <Item value={zone.name} key={zone.name}>{zone.title}</Item>) }
+            { this.state.zones.map(zone => <Item value={zone.name + ',' + zone.title} key={zone.name}>{zone.title}</Item>) }
           </Section>
         </TableView>
       </View>
