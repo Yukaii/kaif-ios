@@ -1,4 +1,4 @@
-import React, { Navigator } from 'react-native';
+import React, { Navigator, Text } from 'react-native';
 import Home from '../containers/Home';
 import Zone from '../components/Zone';
 import Setting from '../components/Setting';
@@ -18,17 +18,28 @@ let Router = {
   },
 
   getArticleRoute(props) {
-    return {
+    let defaultRoute = {
       renderScene(navigator) {
         return <ArticleContainer navigator={navigator} {...props}/>;
       },
       renderTitle(){
         return <KaifIcon width={18} height={17} style={{ marginTop: 14}}/>;
       },
+      getTitle() {
+        return props.zoneTitle
+      },
       configureScene() {
         return Navigator.SceneConfigs.FloatFromRight;
       }
     };
+
+    if (props.zoneTitle) {
+      delete defaultRoute.renderTitle
+    } else {
+      delete defaultRoute.getTitle
+    }
+
+    return defaultRoute;
   },
 
   getSettingRoute() {

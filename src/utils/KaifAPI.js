@@ -172,12 +172,16 @@ requestIfExternalExists = (zone, url) => {
   return requestAPIGet(`article/zone/${zone}/external-link/exist?url=${url}`);
 }
 
-requestZoneHotArticles = (zone) => {
-  return requestAPIGet(`article/zone/${zone}/hot`);
+requestZoneHotArticles = (zone, startArticleId=null) => {
+  return startArticleId ?
+    requestAPIGet(`article/zone/${zone}/hot?start-article-id=${startArticleId}`) :
+    requestAPIGet(`article/zone/${zone}/hot`);
 }
 
-requestZoneLatestArticles = (zone) => {
-  return requestAPIGet(`article/zone/${zone}/latest`);
+requestZoneLatestArticles = (zone, startArticleId=null) => {
+  return startArticleId ?
+    requestAPIGet(`article/zone/${zone}/latest?start-article-id=${startArticleId}`) :
+    requestAPIGet(`article/zone/${zone}/latest`);
 }
 
 requestArticleDebates = (articleId) => {
@@ -208,6 +212,8 @@ KaifAPI = {
   testAPI: testAPI,
   requestHotArticles: requestHotArticles,
   requestLatestArticles: requestLatestArticles,
+  requestZoneHotArticles: requestZoneHotArticles,
+  requestZoneLatestArticles: requestZoneLatestArticles,
   requestArticleDebates: requestArticleDebates,
   requestIfArticlesVoted: requestIfArticlesVoted,
   requestZoneAll: requestZoneAll,

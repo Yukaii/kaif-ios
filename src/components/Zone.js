@@ -1,34 +1,57 @@
 import React, {
   Component,
   View,
-  ActivityIndicatorIOS
+  ActivityIndicatorIOS,
+  NativeAppEventEmitter
 } from 'react-native';
 
 import TableView, {
   Section,
-  Item
+  Item,
+  Cell
 } from 'react-native-tableview';
 
 import KaifAPI from '../utils/KaifAPI';
 import Router from '../routers';
 
-export default class Zone extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+let Zone = React.createClass({
+  getInitialState: function() {
+    return({
       zones: []
-    }
-  }
+    });
+  },
 
-  componentDidMount = () => {
+  componentDidMount: function() {
     KaifAPI.requestZoneAll().then(data => {
       if (data.data) {
         this.setState({zones: data.data});
       }
     });
-  }
+  },
 
-  render() {
+  onZonePress: function(event) {
+    const { navigator } = this.props;
+    let [zoneName, zoneTitle] = event.value.split(',');
+
+    let zoneFunction = (func, zone) => {
+      return (startId) => {
+        return func(zone, startId);
+      }
+    }
+
+    let route = Router.getArticleRoute({
+      ...this.props,
+      policyFunctions: {
+        "hot": zoneFunction(KaifAPI.requestZoneHotArticles, zoneName),
+        "latest": zoneFunction(KaifAPI.requestZoneLatestArticles, zoneName)
+      },
+      zoneTitle: zoneTitle
+    });
+
+    navigator.push(route);
+  },
+
+  render: function() {
     if (this.state.zones.length == 0) {
       return(
         <View style={{flex: 1, paddingTop: 64, marginBottom: 40, backgroundColor: '#eeeeee'}}>
@@ -46,14 +69,14 @@ export default class Zone extends Component {
         <TableView style={{flex:1}}
           tableViewStyle={TableView.Consts.Style.Plain}
           tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
-          onPress={(event) => {
-            alert(JSON.stringify(event.value));
-          }}>
+          onPress={this.onZonePress}>
           <Section arrow={true}>
-            { this.state.zones.map(zone => <Item value={zone.name} key={zone.name}>{zone.title}</Item>) }
+            { this.state.zones.map(zone => <Item value={zone.name + ',' + zone.title} key={zone.name}>{zone.title}</Item>) }
           </Section>
         </TableView>
       </View>
     );
   }
-}
+});
+
+export default Zone;

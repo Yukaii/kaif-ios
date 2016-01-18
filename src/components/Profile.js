@@ -8,23 +8,22 @@ import React, {
 import moment from 'moment';
 import KaifAPI from '../utils/KaifAPI';
 
-export default class Profile extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+let Profile = React.createClass({
+  getInitialState: function() {
+    return({
       profile: null
-    }
-  }
+    });
+  },
 
-  componentDidMount = () => {
+  componentDidMount: function() {
     KaifAPI.requestBasicUserProfile().then(data => {
       if(data.data) {
         this.setState({profile: data.data});
       }
     })
-  }
+  },
 
-  _renderUserData = () => {
+  _renderUserData: function() {
     const { profile } = this.state;
     if (!profile) {
       return(
@@ -43,9 +42,9 @@ export default class Profile extends Component {
         </View>
       );
     }
-  }
+  },
 
-  render = () => {
+  render: function() {
     return(
       <View style={{flex:1, paddingTop: 64, marginBottom: 48, paddingLeft: 5, paddingRight: 5}}>
         { this._renderUserData() }
@@ -55,4 +54,6 @@ export default class Profile extends Component {
       </View>
     );
   }
-}
+});
+
+export default Profile;
