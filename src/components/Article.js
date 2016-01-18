@@ -14,6 +14,26 @@ import ArticleHelper from '../utils/ArticleHelper';
 import KaifIcon from './KaifIcon';
 
 class Article extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      visibility: true
+    }
+  }
+
+  componentDidMount() {
+    this.viewProperties = {
+      width: 0,
+      height: 0
+    }
+  }
+
+  onLayout(evt) {
+    // When the cell has actually been layed out, record the rendered width & height
+    this.viewProperties.width = evt.nativeEvent.layout.width;
+    this.viewProperties.height = evt.nativeEvent.layout.height;
+  }
+
   handleArticlePress(event) {
     const {
       article,
@@ -61,11 +81,17 @@ class Article extends Component {
 
     let voteColor = article.vote && article.vote.voteState == "UP" ? '#ff5619' : '#b3b3b3'
 
+    if (!this.state.visibility) {
+      return(
+        <View style={{width: this.viewProperties.width, height: this.viewProperties.height}}></View>
+      );
+    }
+
+    // <TouchableHighlight
+    //   {...{...defaultTouchableStyle, ...touchableStyle} }
+    //   // onPress={this.handleArticlePress.bind(this)}
+    // >
     return(
-      <TouchableHighlight
-        {...{...defaultTouchableStyle, ...touchableStyle} }
-        onPress={this.handleArticlePress.bind(this)}
-      >
         <View key={article.articleId}
           style={{paddingTop: 5, paddingLeft: 6, paddingRight: 10, paddingBottom: 5, marginBottom: 5, ...style}}>
           <View style={{flexDirection: 'row', flex: 1}}>
@@ -78,7 +104,7 @@ class Article extends Component {
             <View style={{flexDirection: 'column', flex: 1}}>
               <View style={{flex: 3}}>
                 <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)'
-                  onPress={this.handleArticleTitlePress.bind(this)}
+                  onLongPress={this.handleArticleTitlePress.bind(this)}
                   >
                   <Text style={{fontSize: 16, marginBottom: 2}}>{ArticleHelper.procceedTitle(article.title)}</Text>
                 </TouchableHighlight>
@@ -100,10 +126,10 @@ class Article extends Component {
             </View>
           </View>
         </View>
-      </TouchableHighlight>
     );
   };
 }
+// </TouchableHighlight>
 
 Article.defaultProps = {
   showVote: true

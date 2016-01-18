@@ -1,12 +1,14 @@
 import React, {
   Component,
   View,
-  ActivityIndicatorIOS
+  ActivityIndicatorIOS,
+  NativeAppEventEmitter
 } from 'react-native';
 
 import TableView, {
   Section,
-  Item
+  Item,
+  Cell
 } from 'react-native-tableview';
 
 import KaifAPI from '../utils/KaifAPI';
@@ -25,6 +27,10 @@ let Zone = React.createClass({
         this.setState({zones: data.data});
       }
     });
+
+    // this.eventEmitter = NativeAppEventEmitter.addListener('OnEndReach', (h) => {
+    //   // alert(h);
+    // })
   },
 
   render: function() {
