@@ -49,7 +49,7 @@ let Profile = React.createClass({
       <View style={{flex:1, paddingTop: 64, marginBottom: 48, paddingLeft: 5, paddingRight: 5}}>
         { this._renderUserData() }
         <View style={{paddingTop: 10}}>
-          <SegmentedControlIOS values={['我分享的文章', '我的評論']} />
+          <SegmentedControlIOS values={['我的分享', '贊同文章', '我的評論']} />
         </View>
       </View>
     );

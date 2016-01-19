@@ -12,12 +12,15 @@ import Router from '../routers';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ArticleHelper from '../utils/ArticleHelper';
 import KaifIcon from './KaifIcon';
+import KaifAPI from '../utils/KaifAPI';
 
 class Article extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      visibility: true
+      visibility: true,
+      voteState: props.article.vote ? props.article.vote.voteState : 'EMPTY',
+      voteCount: props.article.upVote
     }
   }
 
@@ -72,6 +75,30 @@ class Article extends Component {
     }
   }
 
+  _handleVotePress(event) {
+    const { article } = this.props;
+
+    let changeArticleVoteState = (voteState, successCallback=null) => {
+      KaifAPI.requestVoteForArticle(article.articleId, voteState).then(r => {
+        if (r.hasOwnProperty("data")) {
+          if (successCallback) { successCallback(); }
+        }
+      });
+    }
+
+    if (this.state.voteState == 'UP') {
+      changeArticleVoteState('EMPTY', () => {
+        let voteCount = this.state.voteCount
+        this.setState({voteState: 'EMPTY', voteCount: voteCount - 1})
+      })
+    } else {
+      changeArticleVoteState('UP', () => {
+        let voteCount = this.state.voteCount
+        this.setState({voteState: 'UP', voteCount: voteCount + 1})
+      })
+    }
+  }
+
   render() {
     const { article, style, touchableStyle } = this.props;
 
@@ -79,7 +106,7 @@ class Article extends Component {
       underlayColor: "rgba(128, 128, 128, 0.19)"
     }
 
-    let voteColor = article.vote && article.vote.voteState == "UP" ? '#ff5619' : '#b3b3b3'
+    let voteColor = this.state.voteState == "UP" ? '#ff5619' : '#b3b3b3'
 
     if (!this.state.visibility) {
       return(
@@ -95,10 +122,13 @@ class Article extends Component {
         <View key={article.articleId}
           style={{paddingTop: 5, paddingLeft: 6, paddingRight: 10, paddingBottom: 5, marginBottom: 5, ...style}}>
           <View style={{flexDirection: 'row', flex: 1}}>
-            <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)' style={{marginRight: 8, paddingTop: 1}}>
+            <TouchableHighlight
+              underlayColor='rgba(255, 255, 255, 0)'
+              style={{marginRight: 8, paddingTop: 1}}
+              onPress={this._handleVotePress.bind(this)}>
               <View style={{flexDirection: 'column', width: 22, alignItems: 'center'}}>
                 <KaifIcon color={voteColor} style={{}}/>
-                <Text style={{textAlign: 'left', color: voteColor, marginTop: 3}}>{article.upVote}</Text>
+                <Text style={{textAlign: 'left', color: voteColor, marginTop: 3}}>{this.state.voteCount}</Text>
               </View>
             </TouchableHighlight>
             <View style={{flexDirection: 'column', flex: 1}}>

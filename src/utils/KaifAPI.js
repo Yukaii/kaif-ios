@@ -95,7 +95,7 @@ oauthCallback = (event, callback) => {
   });
 }
 
-requestAPIGet = (endpoint, body=null) => {
+requestAPI = (endpoint, body=null, method='GET') => {
   let checkStatus = (response) => {
     if (response.status >= 200 && response.status < 300) {
       return response
@@ -109,7 +109,7 @@ requestAPIGet = (endpoint, body=null) => {
   return new Promise((resolve, reject) => {
     getAccessToken().then(access_token => {
       fetch(apiEndpoint(endpoint), {
-        method: 'GET',
+        method: method,
         headers: {
           'Accept': 'application/json',
           'Authorization': `Bearer ${access_token}`,
@@ -129,35 +129,35 @@ requestAPIGet = (endpoint, body=null) => {
  */
 requestHotArticles = (startArticleId=null) => {
   return startArticleId ?
-    requestAPIGet(`article/hot?start-article-id=${startArticleId}`) :
-    requestAPIGet(`article/hot`);
+    requestAPI(`article/hot?start-article-id=${startArticleId}`) :
+    requestAPI(`article/hot`);
 }
 
 requestLatestArticles = (startArticleId=null) => {
   return startArticleId ?
-    requestAPIGet(`article/latest?start-article-id=${startArticleId}`) :
-    requestAPIGet(`article/latest`)
+    requestAPI(`article/latest?start-article-id=${startArticleId}`) :
+    requestAPI(`article/latest`)
 }
 
 requestUserArticles = (username, startArticleId=null) => {
   return startArticleId ?
-    requestAPIGet(`article/user/${username}/submitted?start-article-id=${startArticleId}`) :
-    requestAPIGet(`article/user/${username}/submitted`);
+    requestAPI(`article/user/${username}/submitted?start-article-id=${startArticleId}`) :
+    requestAPI(`article/user/${username}/submitted`);
 }
 
 requestVotedArticles = (startArticleId=null) => {
   return startArticleId ?
-    requestAPIGet(`article/voted?start-article-id=${startArticleId}`) :
-    requestAPIGet(`article/voted`);
+    requestAPI(`article/voted?start-article-id=${startArticleId}`) :
+    requestAPI(`article/voted`);
 }
 
 requestIfArticlesVoted = (articleIds) => {
-  return requestAPIGet(`vote/article?${utils.toQueryString({'article-id': articleIds.join(',')})}`)
+  return requestAPI(`vote/article?${utils.toQueryString({'article-id': articleIds.join(',')})}`)
 }
 
 testAPI = () => {
   return new Promise((resolve, reject) => {
-    requestAPIGet('echo/current-time').then(data => {
+    requestAPI('echo/current-time').then(data => {
       let success = data.errors !== 'undefined'
       resolve(success);
     });
@@ -165,35 +165,42 @@ testAPI = () => {
 }
 
 requestZoneExternalLinkArticles = (zone) => {
-  return requestAPIGet(`article/zone/${zone}/external-link`);
+  return requestAPI(`article/zone/${zone}/external-link`);
 }
 
 requestIfExternalExists = (zone, url) => {
-  return requestAPIGet(`article/zone/${zone}/external-link/exist?url=${url}`);
+  return requestAPI(`article/zone/${zone}/external-link/exist?url=${url}`);
 }
 
 requestZoneHotArticles = (zone, startArticleId=null) => {
   return startArticleId ?
-    requestAPIGet(`article/zone/${zone}/hot?start-article-id=${startArticleId}`) :
-    requestAPIGet(`article/zone/${zone}/hot`);
+    requestAPI(`article/zone/${zone}/hot?start-article-id=${startArticleId}`) :
+    requestAPI(`article/zone/${zone}/hot`);
 }
 
 requestZoneLatestArticles = (zone, startArticleId=null) => {
   return startArticleId ?
-    requestAPIGet(`article/zone/${zone}/latest?start-article-id=${startArticleId}`) :
-    requestAPIGet(`article/zone/${zone}/latest`);
+    requestAPI(`article/zone/${zone}/latest?start-article-id=${startArticleId}`) :
+    requestAPI(`article/zone/${zone}/latest`);
 }
 
 requestArticleDebates = (articleId) => {
-  return requestAPIGet(`debate/article/${articleId}/tree`);
+  return requestAPI(`debate/article/${articleId}/tree`);
 }
 
 requestZoneAll = () => {
-  return requestAPIGet('zone/all');
+  return requestAPI('zone/all');
 }
 
 requestBasicUserProfile = () => {
-  return requestAPIGet('user/basic');
+  return requestAPI('user/basic');
+}
+
+requestVoteForArticle = (articleId, voteState='UP') => {
+  return requestAPI('vote/article', JSON.stringify({
+    articleId: articleId,
+    voteState: voteState
+  }), 'POST');
 }
 
 /**
@@ -218,6 +225,7 @@ KaifAPI = {
   requestIfArticlesVoted: requestIfArticlesVoted,
   requestZoneAll: requestZoneAll,
   requestBasicUserProfile: requestBasicUserProfile,
+  requestVoteForArticle: requestVoteForArticle,
   apiEndpoint: apiEndpoint
 }
 

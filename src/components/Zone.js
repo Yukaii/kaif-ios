@@ -10,11 +10,14 @@ import TableView, {
   Item,
   Cell
 } from 'react-native-tableview';
+import Subscribable from 'Subscribable';
 
 import KaifAPI from '../utils/KaifAPI';
 import Router from '../routers';
 
 let Zone = React.createClass({
+  mixins: [Subscribable.Mixin],
+
   getInitialState: function() {
     return({
       zones: []
@@ -22,11 +25,15 @@ let Zone = React.createClass({
   },
 
   componentDidMount: function() {
+    const { events, navigator } = this.props;
+
     KaifAPI.requestZoneAll().then(data => {
       if (data.data) {
         this.setState({zones: data.data});
       }
     });
+
+    this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
   },
 
   onZonePress: function(event) {

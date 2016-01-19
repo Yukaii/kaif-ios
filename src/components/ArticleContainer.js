@@ -17,7 +17,6 @@ import TableView, {
   Cell
 } from 'react-native-tableview';
 
-// import SGListView from '../utils/SGListView';
 import Router from '../routers';
 import Article from './Article';
 import ArticleHelper from '../utils/ArticleHelper';
@@ -68,9 +67,9 @@ let ArticleContainer = React.createClass({
     const { articleRequestPolicy, dataSource } = this.state;
     const { policyFunctions } = this.props;
 
-    return policyFunctions[articleRequestPolicy](lastArticleId).then(articleData => {
-      KaifAPI.requestIfArticlesVoted(articleData.data.map(_ => _.articleId)).then(voteData => {
-        let newArticles = articleData.data.map(art => {
+    return policyFunctions[articleRequestPolicy](lastArticleId).then(r => {
+      KaifAPI.requestIfArticlesVoted(r.data.map(_ => _.articleId)).then(voteData => {
+        let newArticles = r.data.map(art => {
           if (!voteData.data || voteData.data.length == 0) { return art; }
 
           for(let i = 0, l = voteData.data.length; i < l; i++) {

@@ -33,6 +33,7 @@ let Router = {
       }
     };
 
+    // Choose one
     if (props.zoneTitle) {
       delete defaultRoute.renderTitle
     } else {

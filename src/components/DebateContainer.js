@@ -86,7 +86,9 @@ export default React.createClass({
             rootNavigator={rootNavigator}
             showVote={this.state.didFocus}
           />
-        { (this.state.debate !== null && this.state.didFocus) ? this.state.debate.children.map(data => this.renderDebate(data)) : null }
+          <View style={{paddingHorizontal: 5}}>
+            { (this.state.debate !== null && this.state.didFocus) ? this.state.debate.children.map(data => this.renderDebate(data)) : null }
+          </View>
         </ScrollView>
       </View>
     );
