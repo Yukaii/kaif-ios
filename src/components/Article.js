@@ -41,7 +41,7 @@ let Article = React.createClass({
     })
   },
 
-  handleArticlePress: function(event) {
+  componentDidUpdate: function(prevProps, prevState) {
     const {
       article,
       navigator,
@@ -51,8 +51,25 @@ let Article = React.createClass({
       handleVotePress
     } = this.props;
 
-    // article.vote.voteState = this.state.voteState
-    // article.upVote = this.state.upVote
+    if (prevProps.article != article && navigator.getCurrentRoutes().length == 2) {
+      navigator.replace(Router.getDebateRoute({
+        article: article,
+        rootNavigator: rootNavigator,
+        events: events,
+        handleVotePress: handleVotePress
+      }));
+    }
+  },
+
+  handleArticlePress: function(event) {
+    const {
+      article,
+      navigator,
+      canHandleArticlePress,
+      rootNavigator,
+      events,
+      handleVotePress
+    } = this.props;
 
     if (navigator && canHandleArticlePress) {
       let route = Router.getDebateRoute({
@@ -98,12 +115,7 @@ let Article = React.createClass({
       underlayColor: "rgba(128, 128, 128, 0.19)"
     }
 
-    // let voteColor = '#b3b3b3'
-    // if (article.hasOwnProperty("vote")) {
     let voteColor = article.vote.voteState == "UP" ? '#ff5619' : '#b3b3b3'
-    // } else {
-      // alert(JSON.stringify(article))
-    // }
 
     if (!this.state.visibility) {
       return(
