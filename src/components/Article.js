@@ -14,49 +14,65 @@ import ArticleHelper from '../utils/ArticleHelper';
 import KaifIcon from './KaifIcon';
 import KaifAPI from '../utils/KaifAPI';
 
-class Article extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
+let Article = React.createClass({
+  getInitialState: function() {
+    return {
       visibility: true,
-      voteState: props.article.vote ? props.article.vote.voteState : 'EMPTY',
-      voteCount: props.article.upVote
     }
-  }
+  },
 
-  componentDidMount() {
+  getDefaultProps: function() {
+    return {
+      showVote: true
+    }
+  },
+
+  componentDidMount: function() {
+    const { article } = this.props;
+
     this.viewProperties = {
       width: 0,
       height: 0
     }
-  }
 
-  onLayout(evt) {
-    // When the cell has actually been layed out, record the rendered width & height
-    this.viewProperties.width = evt.nativeEvent.layout.width;
-    this.viewProperties.height = evt.nativeEvent.layout.height;
-  }
+    this.setState({
+      voteState: article.vote ? article.vote.voteState : 'EMPTY',
+      upVote: article.upVote
+    })
+  },
 
-  handleArticlePress(event) {
+  handleArticlePress: function(event) {
     const {
       article,
       navigator,
       canHandleArticlePress,
       rootNavigator,
-      events
+      events,
+      handleVotePress
     } = this.props;
+
+    // article.vote.voteState = this.state.voteState
+    // article.upVote = this.state.upVote
 
     if (navigator && canHandleArticlePress) {
       let route = Router.getDebateRoute({
         article: article,
         rootNavigator: rootNavigator,
-        events: events
+        events: events,
+        handleVotePress: handleVotePress
       })
       navigator.push(route);
     }
-  }
+  },
 
-  handleArticleTitlePress(event) {
+  onLayout: function(evt) {
+    // When the cell has actually been layed out, record the rendered width & height
+    this.viewProperties.width = evt.nativeEvent.layout.width;
+    this.viewProperties.height = evt.nativeEvent.layout.height;
+  },
+
+
+  handleArticleTitlePress: function(event) {
     const { article, rootNavigator } = this.props;
     if (ArticleHelper.isExternalLink(article.articleType)) {
       // SafariView.isAvailable()
@@ -73,40 +89,21 @@ class Article extends Component {
         }
       // });
     }
-  }
+  },
 
-  _handleVotePress(event) {
-    const { article } = this.props;
-
-    let changeArticleVoteState = (voteState, successCallback=null) => {
-      KaifAPI.requestVoteForArticle(article.articleId, voteState).then(r => {
-        if (r.hasOwnProperty("data")) {
-          if (successCallback) { successCallback(); }
-        }
-      });
-    }
-
-    if (this.state.voteState == 'UP') {
-      changeArticleVoteState('EMPTY', () => {
-        let voteCount = this.state.voteCount
-        this.setState({voteState: 'EMPTY', voteCount: voteCount - 1})
-      })
-    } else {
-      changeArticleVoteState('UP', () => {
-        let voteCount = this.state.voteCount
-        this.setState({voteState: 'UP', voteCount: voteCount + 1})
-      })
-    }
-  }
-
-  render() {
-    const { article, style, touchableStyle } = this.props;
+  render: function() {
+    const { article, style, touchableStyle, handleVotePress } = this.props;
 
     defaultTouchableStyle = {
       underlayColor: "rgba(128, 128, 128, 0.19)"
     }
 
-    let voteColor = this.state.voteState == "UP" ? '#ff5619' : '#b3b3b3'
+    // let voteColor = '#b3b3b3'
+    // if (article.hasOwnProperty("vote")) {
+    let voteColor = article.vote.voteState == "UP" ? '#ff5619' : '#b3b3b3'
+    // } else {
+      // alert(JSON.stringify(article))
+    // }
 
     if (!this.state.visibility) {
       return(
@@ -117,7 +114,7 @@ class Article extends Component {
     return(
       <TouchableHighlight
         {...{...defaultTouchableStyle, ...touchableStyle} }
-        onPress={this.handleArticlePress.bind(this)}
+        onPress={this.handleArticlePress}
       >
         <View key={article.articleId}
           style={{paddingTop: 5, paddingLeft: 6, paddingRight: 10, paddingBottom: 5, marginBottom: 5, ...style}}>
@@ -125,16 +122,16 @@ class Article extends Component {
             <TouchableHighlight
               underlayColor='rgba(255, 255, 255, 0)'
               style={{marginRight: 8, paddingTop: 1}}
-              onPress={this._handleVotePress.bind(this)}>
+              onPress={handleVotePress}>
               <View style={{flexDirection: 'column', width: 22, alignItems: 'center'}}>
                 <KaifIcon color={voteColor} style={{}}/>
-                <Text style={{textAlign: 'left', color: voteColor, marginTop: 3}}>{this.state.voteCount}</Text>
+                <Text style={{textAlign: 'left', color: voteColor, marginTop: 3}}>{article.upVote}</Text>
               </View>
             </TouchableHighlight>
             <View style={{flexDirection: 'column', flex: 1}}>
               <View style={{flex: 3}}>
                 <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)'
-                  onPress={this.handleArticleTitlePress.bind(this)}
+                  onPress={this.handleArticleTitlePress}
                   >
                   <Text style={{fontSize: 16, marginBottom: 2}}>{ArticleHelper.procceedTitle(article.title)}</Text>
                 </TouchableHighlight>
@@ -158,11 +155,8 @@ class Article extends Component {
         </View>
       </TouchableHighlight>
     );
-  };
-}
+  }
+});
 
-Article.defaultProps = {
-  showVote: true
-}
 
 export default Article;

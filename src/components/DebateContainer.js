@@ -56,7 +56,7 @@ export default React.createClass({
   },
 
   render() {
-    const { article, navigator, rootNavigator } = this.props;
+    const { article, navigator, rootNavigator, handleVotePress } = this.props;
 
     if (!this.state.didFocus) {
       return(
@@ -85,6 +85,7 @@ export default React.createClass({
             navigator={navigator}
             rootNavigator={rootNavigator}
             showVote={this.state.didFocus}
+            handleVotePress={handleVotePress}
           />
           <View style={{paddingHorizontal: 5}}>
             { (this.state.debate !== null && this.state.didFocus) ? this.state.debate.children.map(data => this.renderDebate(data)) : null }

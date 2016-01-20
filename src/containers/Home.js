@@ -42,11 +42,11 @@ let Home = React.createClass({
     StatusBarIOS.setStyle('default');
   },
 
-
   render: function() {
     return (
         <TabBarIOS
           tintColor="#0078e7"
+          translucent={true}
         >
         <Icon.TabBarItem
           title="文章"

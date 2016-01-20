@@ -17,6 +17,8 @@ import TableView, {
   Cell
 } from 'react-native-tableview';
 
+import RefreshableListView from 'react-native-refreshable-listview';
+
 import Router from '../routers';
 import Article from './Article';
 import ArticleHelper from '../utils/ArticleHelper';
@@ -34,14 +36,19 @@ let ArticleContainer = React.createClass({
   },
 
   getInitialState: function() {
-    let dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+    let dataSource = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => {
+        return r1 !== r2
+      }
+    })
 
     return({
       dataSource: dataSource,
       articleRequestPolicy: "hot",
       changingPolicy: false,
       onloading: true,
-      didFocus: false
+      didFocus: false,
+      isRefreshing: false
     });
   },
 
@@ -63,13 +70,14 @@ let ArticleContainer = React.createClass({
     });
   },
 
-  articleRequestAction: function(lastArticleId=null) {
+  articleRequestAction: function(lastArticleId=null, callback=null) {
     const { articleRequestPolicy, dataSource } = this.state;
     const { policyFunctions } = this.props;
 
     return policyFunctions[articleRequestPolicy](lastArticleId).then(r => {
       KaifAPI.requestIfArticlesVoted(r.data.map(_ => _.articleId)).then(voteData => {
         let newArticles = r.data.map(art => {
+          art.vote = {}
           if (!voteData.data || voteData.data.length == 0) { return art; }
 
           for(let i = 0, l = voteData.data.length; i < l; i++) {
@@ -80,7 +88,7 @@ let ArticleContainer = React.createClass({
           return art;
         });
 
-        if(this.articleCache[articleRequestPolicy] === 'undefined') {
+        if (this.articleCache[articleRequestPolicy] === 'undefined') {
           this.articleCache[articleRequestPolicy] = []
         }
 
@@ -102,6 +110,8 @@ let ArticleContainer = React.createClass({
 
         this.setState({onloading: false})
         this.hasFired = false;
+
+        if (callback) { callback(); }
       })
     });
   },
@@ -124,7 +134,7 @@ let ArticleContainer = React.createClass({
   },
 
   _handleArticleRequestPolicyChange: function(policy) {
-    if (!this._isCurrentPolicyChanged) { return; }
+    if (policy == this.state.articleRequestPolicy) { return; }
 
     const { dataSource } = this.state;
 
@@ -193,6 +203,44 @@ let ArticleContainer = React.createClass({
     }
   },
 
+  reloadArticles: function() {
+    const { articleRequestPolicy } = this.state;
+    this.articleCache[articleRequestPolicy] = [];
+    this.articleRequestAction();
+  },
+
+  _handleVotePress: function(article) {
+    const { articleRequestPolicy } = this.state;
+
+    return (event) => {
+      let changeArticleVoteState = (voteState, newArticle=null) => {
+        KaifAPI.requestVoteForArticle(article.articleId, voteState).then(r => {
+          if (r.hasOwnProperty("data")) {
+            let articleIndex = this.articleCache[articleRequestPolicy].indexOf(article);
+            let newArticles = this.articleCache[articleRequestPolicy].slice();
+            newArticles[articleIndex] = newArticle;
+
+            this.setState({dataSource: this.state.dataSource.cloneWithRows(newArticles)});
+            this.articleCache[articleRequestPolicy] = newArticles;
+          }
+        });
+      }
+
+      if (article.vote.voteState == 'UP') {
+          let newArticle = {...article};
+          newArticle.upVote = article.upVote - 1;
+          newArticle.vote.voteState = 'EMPTY';
+        changeArticleVoteState('EMPTY', newArticle);
+      } else {
+          let newArticle = {...article};
+          newArticle.upVote = article.upVote + 1;
+          newArticle.vote.voteState = 'UP';
+        changeArticleVoteState('UP', newArticle);
+      }
+    }
+  },
+
+
   render: function() {
     const { navigator, rootNavigator, events } = this.props;
 
@@ -205,7 +253,7 @@ let ArticleContainer = React.createClass({
         {
           this.state.changingPolicy || !this.state.didFocus ?
             this._renderActivityIndicator() :
-              <ListView
+              <RefreshableListView
                 showsVerticalScrollIndicator={true}
                 style={{flex: 1}}
                 contentContainerStyle={{justifyContent: 'space-between'}}
@@ -219,6 +267,7 @@ let ArticleContainer = React.createClass({
                 pageSize={5}
                 // scrollRenderAheadDistance={200}
                 // premptiveLoading={65}
+                loadData={this.reloadArticles}
                 renderRow={
                   (article, sectionID, rowID) => {
                     return(
@@ -229,6 +278,7 @@ let ArticleContainer = React.createClass({
                         events={events}
                         rootNavigator={rootNavigator}
                         canHandleArticlePress={true}
+                        handleVotePress={this._handleVotePress(article)}
                       />
                     );
                   }
