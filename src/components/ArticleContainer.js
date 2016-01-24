@@ -53,7 +53,7 @@ let ArticleContainer = React.createClass({
     return({
       articleRequestPolicy: "hot",
       changingPolicy: false,
-      onloading: true,
+      isLoadingMore: true,
       didFocus: false,
       isRefreshing: false
     });
@@ -73,15 +73,12 @@ let ArticleContainer = React.createClass({
     this.setState({zone: zone});
 
     // handle oauth login
-    KaifAPI.testAPI().then(success => {
-      if (success) {
-        requestArticles(null, null, articleRequestPolicy, zone);
-      }
-      else {
-        KaifAPI.oauthLogin(access_token => {
-          requestArticles(null, null, articleRequestPolicy, zone);
-        });
-      }
+    KaifAPI.testAPI().then(data => {
+      requestArticles(() => {this.setState({isLoadingMore: false})}, null, articleRequestPolicy, zone);
+    }).catch(error => {
+      KaifAPI.oauthLogin(access_token => {
+        requestArticles(() => {this.setState({isLoadingMore: false})}, null, articleRequestPolicy, zone);
+      });
     });
 
     InteractionManager.runAfterInteractions(() => {
@@ -98,7 +95,7 @@ let ArticleContainer = React.createClass({
         this.setState({changingPolicy: true})
 
         requestArticles(
-          () => { this.setState({changingPolicy: false}) },
+          () => { this.setState({changingPolicy: false, isLoadingMore: false}) },
           null,
           policy,
           zone
@@ -124,7 +121,7 @@ let ArticleContainer = React.createClass({
     });
 
     requestArticles(
-      () => { this.setState({fetchingArticles: false}) },  // callback
+      () => { this.setState({fetchingArticles: false, isLoadingMore: false}) },  // callback
       currentArticles[currentArticles.length-1].articleId, // last articleId
       articleRequestPolicy,                                // "hot" or "latest"
       zone                                                 // default is null
@@ -143,13 +140,15 @@ let ArticleContainer = React.createClass({
 
   _renderTabButton: function(policy) {
     const { articleRequestPolicy } = this.state;
-    const { zoneTitle } = this.props;
+    const { zoneTitle, zone } = this.props;
     let selectedStyle = (articleRequestPolicy == policy) ? { backgroundColor: '#eeeeee'} : {}
 
     let titleHash = {
       "hot": "熱門",
       "latest": "最新"
     }
+
+    if (zone == "kaif-faq" || zone == "kaif-terms") return null;
 
     return(
       <TouchableHighlight underlayColor="transparent" style={{flex: 1, height: 28, justifyContent: 'center', ...selectedStyle}} onPress={this._handleArticleRequestPolicyChange(policy)}>
@@ -167,7 +166,9 @@ let ArticleContainer = React.createClass({
   },
 
   _renderFooter: function() {
-    return this._renderActivityIndicator();
+    if (this.state.isLoadingMore)
+      return this._renderActivityIndicator();
+    else {return null};
   },
 
   reloadArticles: function() {

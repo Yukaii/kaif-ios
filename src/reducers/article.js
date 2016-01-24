@@ -2,8 +2,11 @@ import {
   REQUEST_ARTICLES,
   REQUEST_ZONE_ARTICLES,
   VOTE_FOR_ARTICLE,
-  RELOAD_ARTICLES
+  RELOAD_ARTICLES,
+  LOGOUT
 } from '../actions/article';
+
+import * as _ from 'underscore';
 
 let initialState = {
   hot: [],
@@ -26,7 +29,9 @@ export default function article(state={...initialState, zoneArticles: null}, act
 
     case REQUEST_ARTICLES:
       var newState = {...state};
-      newState[action.articleType] = state[action.articleType].concat(action.articles);
+      if (!_.isEqual(state[action.articleType], action.articles)) {
+        newState[action.articleType] = state[action.articleType].concat(action.articles);
+      }
       return newState;
 
     case REQUEST_ZONE_ARTICLES:
@@ -39,7 +44,11 @@ export default function article(state={...initialState, zoneArticles: null}, act
       if(!newState.zoneArticles[zoneName]){ newState.zoneArticles[zoneName] = {} }
       if(!newState.zoneArticles[zoneName][action.articleType]){ newState.zoneArticles[zoneName][action.articleType] = [] }
 
-      newState.zoneArticles[zoneName][action.articleType] = newState.zoneArticles[zoneName][action.articleType].concat(action.articles)
+      if (!_.isEqual(newState.zoneArticles[zoneName][action.articleType], action.articles)) {
+        newState.zoneArticles[zoneName][action.articleType]
+          = newState.zoneArticles[zoneName][action.articleType]
+            .concat(action.articles)
+      }
       return newState;
 
     case VOTE_FOR_ARTICLE:
@@ -73,6 +82,8 @@ export default function article(state={...initialState, zoneArticles: null}, act
         newState[articleType] = []
       }
       return newState;
+    case LOGOUT:
+      return initialState;
     default:
       return state;
   }

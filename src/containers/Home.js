@@ -120,12 +120,15 @@ let Home = React.createClass({
           selectedIconName="ios-cog"
           selected={this.state.selectedTab === 'settingTab'}
           onPress={() => {
+            if (this.state.selectedTab === 'settingTab') {
+              this.eventEmitter.emit('shouldPop');
+            }
             this.setState({
               selectedTab: 'settingTab'
             });
         }}>
         <ExNavigator
-          initialRoute={Router.getSettingRoute()}
+          initialRoute={Router.getSettingRoute({...this.props, events: this.eventEmitter})}
           style={{ flex: 1 }}
         />
         </Icon.TabBarItem>

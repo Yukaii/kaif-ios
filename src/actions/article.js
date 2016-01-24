@@ -2,6 +2,7 @@ export const REQUEST_ARTICLES = 'REQUEST_ARTICLES';
 export const REQUEST_ZONE_ARTICLES = 'REQUEST_ZONE_ARTICLES';
 export const VOTE_FOR_ARTICLE = 'VOTE_FOR_ARTICLE';
 export const RELOAD_ARTICLES = 'RELOAD_ARTICLES';
+export const LOGOUT = 'LOGOUT';
 
 import KaifAPI from '../utils/KaifAPI';
 
@@ -95,5 +96,14 @@ export function reloadArticles(callback=null, articleType, zone=null) {
       zone: zone
     });
     if (callback) { callback(); }
+  }
+}
+
+export function logout(callback=null) {
+  return dispatch => {
+    dispatch({
+      type: LOGOUT
+    });
+    KaifAPI.logout().then(data => callback(data)).catch(error => error);
   }
 }

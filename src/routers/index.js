@@ -43,10 +43,10 @@ let Router = {
     return defaultRoute;
   },
 
-  getSettingRoute() {
+  getSettingRoute(props) {
     return {
       renderScene(navigator) {
-        return <Setting navigator={navigator}/>;
+        return <Setting navigator={navigator} {...props}/>;
       },
       getTitle() {
         return '設定';

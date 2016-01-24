@@ -92,7 +92,7 @@ oauthCallback = (event, callback) => {
     AsyncStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, data.access_token).then(() => {
       callback(data.access_token);
     });
-  });
+  }).catch(error => error);
 }
 
 requestAPI = (endpoint, body=null, method='GET') => {
@@ -116,7 +116,7 @@ requestAPI = (endpoint, body=null, method='GET') => {
           'Content-Type': 'application/json;charset=UTF-8'
         },
         body: body
-      }).then(checkStatus).then(response => response.json()).then(data => resolve(data));
+      }).then(checkStatus).then(response => response.json()).then(data => resolve(data)).catch(error => reject(error));
     });
   });
 }
@@ -157,10 +157,7 @@ requestIfArticlesVoted = (articleIds) => {
 
 testAPI = () => {
   return new Promise((resolve, reject) => {
-    requestAPI('echo/current-time').then(data => {
-      let success = data.errors !== 'undefined'
-      resolve(success);
-    });
+    requestAPI('echo/current-time').then(data => resolve(data)).catch(error => reject(error));
   });
 }
 
@@ -212,6 +209,12 @@ apiEndpoint = (endpoint) => {
   return [API_BASE_URL, endpoint].join('/');
 }
 
+logout = () => {
+  return new Promise((resolve, reject) => {
+    AsyncStorage.clear().then(data => resolve(data)).catch(error => reject(error));
+  });
+}
+
 KaifAPI = {
   getAccessToken: getAccessToken,
   getAuthorizeUrl: getAuthorizeUrl,
@@ -226,7 +229,8 @@ KaifAPI = {
   requestZoneAll: requestZoneAll,
   requestBasicUserProfile: requestBasicUserProfile,
   requestVoteForArticle: requestVoteForArticle,
-  apiEndpoint: apiEndpoint
+  apiEndpoint: apiEndpoint,
+  logout: logout
 }
 
 export default KaifAPI;
