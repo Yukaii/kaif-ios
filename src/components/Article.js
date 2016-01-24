@@ -3,10 +3,13 @@ import React, {
   Component,
   Text,
   TouchableHighlight,
-  RCTNativeAppEventEmitter
+  RCTNativeAppEventEmitter,
+  ActionSheetIOS,
+  AlertIOS
 } from 'react-native';
 
 import SafariView from "react-native-safari-view";
+import PasteBoard from 'react-native-pasteboard';
 
 import Router from '../routers';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -55,25 +58,75 @@ let Article = React.createClass({
     }, 1500)
   },
 
-  handleArticlePress: function(event) {
+  _pushDebateRoute: function() {
     const {
       article,
       navigator,
-      canHandleArticlePress,
       rootNavigator,
       events,
       handleVotePress
     } = this.props;
+    let route = Router.getDebateRoute({
+      article: article,
+      rootNavigator: rootNavigator,
+      events: events,
+      handleVotePress: handleVotePress
+    })
+    navigator.push(route);
+  },
+
+  handleArticlePress: function(event) {
+    const {
+      navigator,
+      canHandleArticlePress
+    } = this.props;
 
     if (navigator && canHandleArticlePress) {
-      let route = Router.getDebateRoute({
-        article: article,
-        rootNavigator: rootNavigator,
-        events: events,
-        handleVotePress: handleVotePress
-      })
-      navigator.push(route);
+      this._pushDebateRoute();
     }
+  },
+
+  openShareAction: function(article) {
+    ActionSheetIOS.showShareActionSheetWithOptions({
+      url: article.link,
+      message: article.link,
+      subject: '透過 kaif.io 分享'
+    },
+    (error) => {
+      console.error(error);
+    },
+    (success, method) => {
+    });
+  },
+
+  _handleArticleLongPress: function() {
+    const { article, navigator } = this.props;
+
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: ['打開連結', '複製連結', '進入討論', '分享連結', '取消'],
+      cancelButtonIndex: 4,
+      // destructiveButtonIndex: DESTRUCTIVE_INDEX,
+    },
+    (buttonIndex) => {
+      switch(buttonIndex) {
+        case 0:
+          this.openExternalLink();
+          return;
+        case 1:
+          PasteBoard.copyText(article.link , (callback) => {
+            AlertIOS.alert('Alert', '已複製！');
+          });
+          return
+        case 2:
+          this._pushDebateRoute();
+          return;
+        case 3:
+          this.openShareAction(article);
+          return;
+        default:
+          return;
+      }
+    });
   },
 
   onLayout: function(evt) {
@@ -82,8 +135,7 @@ let Article = React.createClass({
     this.viewProperties.height = evt.nativeEvent.layout.height;
   },
 
-
-  handleArticleTitlePress: function(event) {
+  openExternalLink: function(event) {
     const { article, rootNavigator } = this.props;
     if (ArticleHelper.isExternalLink(article.articleType)) {
       // SafariView.isAvailable()
@@ -99,6 +151,8 @@ let Article = React.createClass({
           rootNavigator.push(route);
         }
       // });
+    } else {
+      this._pushDebateRoute();
     }
   },
 
@@ -121,6 +175,7 @@ let Article = React.createClass({
       <TouchableHighlight
         {...{...defaultTouchableStyle, ...touchableStyle} }
         onPress={this.handleArticlePress}
+        onLongPress={this._handleArticleLongPress}
       >
         <View key={article.articleId}
           style={{paddingTop: 5, paddingLeft: 6, paddingRight: 10, paddingBottom: 5, marginBottom: 5, ...style}}>
@@ -137,7 +192,7 @@ let Article = React.createClass({
             <View style={{flexDirection: 'column', flex: 1}}>
               <View style={{flex: 3}}>
                 <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)'
-                  onPress={this.handleArticleTitlePress}
+                  onPress={this.openExternalLink}
                   >
                   <Text style={{fontSize: 16, marginBottom: 2}}>{ArticleHelper.procceedTitle(article.title)}</Text>
                 </TouchableHighlight>

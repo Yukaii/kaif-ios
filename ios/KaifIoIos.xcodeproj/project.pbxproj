@@ -23,6 +23,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		3225FFB31C414BED0013F55F /* libSafariViewManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3225FFB21C41432B0013F55F /* libSafariViewManager.a */; };
+		323356101C55017100E69D82 /* PasteBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 3233560F1C55017100E69D82 /* PasteBoard.m */; };
 		32C90A8B1C391242002C6355 /* libRNTableView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32C90A8A1C391205002C6355 /* libRNTableView.a */; };
 		32F23FA41C3B3ED6002CE19B /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32F826661C3A8A1200371DF4 /* libRNVectorIcons.a */; };
 		400EA8FEB67F47A8BC8186A6 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06EC2422DB8E47F29104BE80 /* MaterialIcons.ttf */; };
@@ -159,6 +160,8 @@
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		2F9C7044B1A9401B9D92FCD2 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		3225FFA11C41432A0013F55F /* SafariViewManager.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SafariViewManager.xcodeproj; path = "../node_modules/react-native-safari-view/SafariViewManager.xcodeproj"; sourceTree = "<group>"; };
+		3233560E1C55017100E69D82 /* PasteBoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasteBoard.h; sourceTree = "<group>"; };
+		3233560F1C55017100E69D82 /* PasteBoard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasteBoard.m; sourceTree = "<group>"; };
 		32C90A7B1C391204002C6355 /* RNTableView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNTableView.xcodeproj; path = "../node_modules/react-native-tableview/RNTableView.xcodeproj"; sourceTree = "<group>"; };
 		4262B8A2C5064013BCA87F2A /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		4BA56515F5AA4629BC5E885B /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
@@ -305,6 +308,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		3233560D1C55017100E69D82 /* RCTPasteBoard */ = {
+			isa = PBXGroup;
+			children = (
+				3233560E1C55017100E69D82 /* PasteBoard.h */,
+				3233560F1C55017100E69D82 /* PasteBoard.m */,
+			);
+			name = RCTPasteBoard;
+			path = "../node_modules/react-native-pasteboard/RCTPasteBoard";
+			sourceTree = "<group>";
+		};
 		32C90A7C1C391204002C6355 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -360,6 +373,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				3233560D1C55017100E69D82 /* RCTPasteBoard */,
 				13B07FAE1A68108700A75B9A /* KaifIoIos */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* KaifIoIosTests */,
@@ -676,6 +690,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				323356101C55017100E69D82 /* PasteBoard.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
