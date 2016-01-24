@@ -10,6 +10,7 @@ import React, {
   RefreshControl,
   InteractionManager
 } from 'react-native';
+import Subscribable from 'Subscribable';
 
 import TableView, {
   Section,
@@ -30,6 +31,8 @@ import * as ArticleActions from '../actions/article';
 import KaifAPI from '../utils/KaifAPI';
 
 let ArticleContainer = React.createClass({
+  mixins: [Subscribable.Mixin],
+
   propTypes: {
     dataSource: PropTypes.object,
     requestArticles: PropTypes.func.isRequired
@@ -67,23 +70,24 @@ let ArticleContainer = React.createClass({
   },
 
   componentDidMount: function() {
-    const { requestArticles, zone } = this.props;
+    const { requestArticles, zone, events, navigator } = this.props;
     const { articleRequestPolicy }  = this.state;
 
     this.setState({zone: zone});
 
-    // handle oauth login
-    KaifAPI.testAPI().then(data => {
-      requestArticles(() => {this.setState({isLoadingMore: false})}, null, articleRequestPolicy, zone);
-    }).catch(error => {
-      KaifAPI.oauthLogin(access_token => {
-        requestArticles(() => {this.setState({isLoadingMore: false})}, null, articleRequestPolicy, zone);
-      });
-    });
-
     InteractionManager.runAfterInteractions(() => {
+      // handle oauth login
+      KaifAPI.testAPI().then(data => {
+        requestArticles(() => {this.setState({isLoadingMore: false})}, null, articleRequestPolicy, zone);
+      }).catch(error => {
+        KaifAPI.oauthLogin(access_token => {
+          requestArticles(() => {this.setState({isLoadingMore: false})}, null, articleRequestPolicy, zone);
+        });
+      });
       this.setState({didFocus: true});
     });
+
+    this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
   },
 
   _handleArticleRequestPolicyChange: function(policy) {
@@ -192,7 +196,7 @@ let ArticleContainer = React.createClass({
         article.articleId,
         voteState,
         articleRequestPolicy,
-        zone
+        (zone || article.zone)
       );
     }
   },

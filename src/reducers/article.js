@@ -55,12 +55,14 @@ export default function article(state={...initialState, zoneArticles: null}, act
       var newState = {...state};
       var { voteState, articleId, articleType, zone } = action;
 
-      if (zone) {
+      if (zone && newState.zoneArticles && newState.zoneArticles[zone]) {
         var articleIndex = newState.zoneArticles[zone][articleType].findIndex(art => art.articleId == articleId);
-        var newArticle = newState.zoneArticles[zone][articleType][articleIndex];
-        newArticle.upVote += changeVoteCount(newArticle.vote.voteState, voteState);
-        newArticle.vote.voteState = voteState;
-        newState.zoneArticles[zone][articleType][articleIndex] = newArticle;
+        if (articleIndex != -1) {
+          var newArticle = newState.zoneArticles[zone][articleType][articleIndex];
+          newArticle.upVote += changeVoteCount(newArticle.vote.voteState, voteState);
+          newArticle.vote.voteState = voteState;
+          newState.zoneArticles[zone][articleType][articleIndex] = newArticle;
+        }
       }
 
       var articleIndex = newState[articleType].findIndex(art => art.articleId == articleId);

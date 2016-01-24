@@ -22,7 +22,7 @@ import Router from '../routers';
 
 let Setting = React.createClass({
   handleSettingOptionPress: function(event) {
-    const { navigator, rootNavigator, logout } = this.props;
+    const { navigator, rootNavigator, logout, events } = this.props;
 
     switch(event.value) {
       case "faq":

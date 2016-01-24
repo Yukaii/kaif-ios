@@ -121,6 +121,10 @@ requestAPI = (endpoint, body=null, method='GET') => {
   });
 }
 
+requestArticle = (articleId) => {
+  return requestAPI(`article/${articleId}`);
+}
+
 /**
  * KaifAPI hot articles endpoint
  * @example
@@ -220,6 +224,7 @@ KaifAPI = {
   getAuthorizeUrl: getAuthorizeUrl,
   oauthLogin: oauthLogin,
   testAPI: testAPI,
+  requestArticle: requestArticle,
   requestHotArticles: requestHotArticles,
   requestLatestArticles: requestLatestArticles,
   requestZoneHotArticles: requestZoneHotArticles,
