@@ -41,24 +41,18 @@ let Article = React.createClass({
     })
   },
 
-  componentDidUpdate: function(prevProps, prevState) {
-    const {
-      article,
-      navigator,
-      canHandleArticlePress,
-      rootNavigator,
-      events,
-      handleVotePress
-    } = this.props;
+  componentWillReceiveProps: function(nextProps) {
+    const { article, navigator } = this.props;
 
-    if (prevProps.article != article && navigator.getCurrentRoutes().length == 2) {
-      navigator.replace(Router.getDebateRoute({
-        article: article,
-        rootNavigator: rootNavigator,
-        events: events,
-        handleVotePress: handleVotePress
-      }));
-    }
+    let newArticle = nextProps.article;
+    this.setState({
+      voteState: newArticle.vote ? newArticle.vote.voteState : 'EMPTY',
+      upVote: newArticle.upVote,
+    })
+
+    setTimeout(() => {
+      navigator.forceUpdate();
+    }, 1500)
   },
 
   handleArticlePress: function(event) {
@@ -115,7 +109,7 @@ let Article = React.createClass({
       underlayColor: "rgba(128, 128, 128, 0.19)"
     }
 
-    let voteColor = article.vote.voteState == "UP" ? '#ff5619' : '#b3b3b3'
+    let voteColor = this.state.voteState == "UP" ? '#ff5619' : '#b3b3b3'
 
     if (!this.state.visibility) {
       return(
@@ -137,7 +131,7 @@ let Article = React.createClass({
               onPress={handleVotePress}>
               <View style={{flexDirection: 'column', width: 22, alignItems: 'center'}}>
                 <KaifIcon color={voteColor} style={{}}/>
-                <Text style={{textAlign: 'left', color: voteColor, marginTop: 3}}>{article.upVote}</Text>
+                <Text style={{textAlign: 'left', color: voteColor, marginTop: 3}}>{this.state.upVote}</Text>
               </View>
             </TouchableHighlight>
             <View style={{flexDirection: 'column', flex: 1}}>
