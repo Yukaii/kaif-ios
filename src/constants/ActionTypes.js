@@ -1,6 +1,0 @@
-const ActionTypes = {
-  REQUEST_HOT_ARTICLES: 'REQUEST_HOT_ARTICLES',
-  REQUEST_LATEST_ARTICLES: 'REQUEST_LATEST_ARTICLES'
-}
-
-export default ActionTypes;

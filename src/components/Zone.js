@@ -48,10 +48,7 @@ let Zone = React.createClass({
 
     let route = Router.getArticleRoute({
       ...this.props,
-      policyFunctions: {
-        "hot": zoneFunction(KaifAPI.requestZoneHotArticles, zoneName),
-        "latest": zoneFunction(KaifAPI.requestZoneLatestArticles, zoneName)
-      },
+      zone: zoneName,
       zoneTitle: zoneTitle
     });
 

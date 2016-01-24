@@ -29,21 +29,28 @@ import * as ArticleActions from '../actions/article';
 
 import KaifAPI from '../utils/KaifAPI';
 
-
 let ArticleContainer = React.createClass({
   propTypes: {
-    requestHotArticles: PropTypes.func.isRequired
+    dataSource: PropTypes.object,
+    requestArticles: PropTypes.func.isRequired
+  },
+
+  _currentArticles: function(_policy=null) {
+    const { articleRequestPolicy } = this.state;
+    const { article, zone } = this.props;
+
+    let policy = _policy || articleRequestPolicy;
+
+    if (zone && article.zoneArticles) {
+      return article.zoneArticles[zone] && article.zoneArticles[zone][policy] || [];
+    }
+    else {
+      return article[policy];
+    }
   },
 
   getInitialState: function() {
-    let dataSource = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => {
-        return r1 !== r2
-      }
-    })
-
     return({
-      dataSource: dataSource,
       articleRequestPolicy: "hot",
       changingPolicy: false,
       onloading: true,
@@ -54,110 +61,73 @@ let ArticleContainer = React.createClass({
 
   getDefaultProps: function() {
     return({
-      zoneTitle: "綜合"
+      zoneTitle: "綜合",
+      zone: null
     });
   },
 
   componentDidMount: function() {
-    this.handleOauthLogin();
-    this.articleCache = {
-      hot: [],
-      latest: []
-    }
+    const { requestArticles, zone } = this.props;
+    const { articleRequestPolicy }  = this.state;
+
+    this.setState({zone: zone});
+
+    // handle oauth login
+    KaifAPI.testAPI().then(success => {
+      if (success) {
+        requestArticles(null, null, articleRequestPolicy, zone);
+      }
+      else {
+        KaifAPI.oauthLogin(access_token => {
+          requestArticles(null, null, articleRequestPolicy, zone);
+        });
+      }
+    });
 
     InteractionManager.runAfterInteractions(() => {
       this.setState({didFocus: true});
     });
   },
 
-  articleRequestAction: function(lastArticleId=null, callback=null) {
-    const { articleRequestPolicy, dataSource } = this.state;
-    const { policyFunctions } = this.props;
-
-    return policyFunctions[articleRequestPolicy](lastArticleId).then(r => {
-      KaifAPI.requestIfArticlesVoted(r.data.map(_ => _.articleId)).then(voteData => {
-        let newArticles = r.data.map(art => {
-          art.vote = {}
-          if (!voteData.data || voteData.data.length == 0) { return art; }
-
-          for(let i = 0, l = voteData.data.length; i < l; i++) {
-            if (voteData.data[i].targetId == art.articleId) {
-              art.vote = voteData.data[i];
-            }
-          }
-          return art;
-        });
-
-        if (this.articleCache[articleRequestPolicy] === 'undefined') {
-          this.articleCache[articleRequestPolicy] = []
-        }
-
-        articlesLength = this.articleCache[articleRequestPolicy].length;
-        if (lastArticleId || (!lastArticleId && articlesLength == 0)) {
-
-          if (this.articleCache[articleRequestPolicy][articlesLength-1] != newArticles[newArticles.length-1]) {
-            this.articleCache[articleRequestPolicy] = this.articleCache[articleRequestPolicy].concat(newArticles);
-
-            this.setState({
-              dataSource: dataSource.cloneWithRows(this.articleCache[articleRequestPolicy]),
-            });
-          }
-        }
-
-        if (this.state.changingPolicy == true) {
-          this.setState({changingPolicy: false});
-        }
-
-        this.setState({onloading: false})
-        this.hasFired = false;
-
-        if (callback) { callback(); }
-      })
-    });
-  },
-
-  _isCurrentPolicyChanged: function(policy) {
-    return policy != this.state.articleRequestPolicy
-  },
-
-  handleOauthLogin: function() {
-    KaifAPI.testAPI().then(success => {
-      if (success) {
-        this.articleRequestAction();
-      }
-      else {
-        KaifAPI.oauthLogin(access_token => {
-          this.articleRequestAction();
-        });
-      }
-    });
-  },
-
   _handleArticleRequestPolicyChange: function(policy) {
-    if (policy == this.state.articleRequestPolicy) { return; }
-
-    const { dataSource } = this.state;
+    if (policy == this.state.articleRequestPolicy) { return }
+    const { zone, requestArticles } = this.props;
 
     return () => {
+      if (this._currentArticles(policy).length == 0) {
+        this.setState({changingPolicy: true})
+
+        requestArticles(
+          () => { this.setState({changingPolicy: false}) },
+          null,
+          policy,
+          zone
+        );
+      }
+
       this.setState({
         articleRequestPolicy: policy,
-        changingPolicy: true,
-        dataSource: dataSource.cloneWithRows(this.articleCache[policy]),
       });
-
-      this.articleRequestAction();
     }
   },
 
   _onEndReach: function(e) {
-    const { articleRequestPolicy } = this.state;
+    const { articleRequestPolicy }           = this.state;
+    const { article, requestArticles, zone } = this.props;
 
-    if (this.articleCache[articleRequestPolicy].length == 0 || this.hasFired == true) { return }
+    let currentArticles = this._currentArticles();
 
-    this.hasFired = true;
+    if (currentArticles.length == 0 || this.state.fetchingArticles) { return }
 
-    return this.articleRequestAction(
-      this.articleCache[articleRequestPolicy][this.articleCache[articleRequestPolicy].length-1].articleId
+    this.setState({
+      fetchingArticles: true
+    });
+
+    requestArticles(
+      () => { this.setState({fetchingArticles: false}) },  // callback
+      currentArticles[currentArticles.length-1].articleId, // last articleId
+      articleRequestPolicy,                                // "hot" or "latest"
+      zone                                                 // default is null
     );
   },
 
@@ -174,7 +144,7 @@ let ArticleContainer = React.createClass({
   _renderTabButton: function(policy) {
     const { articleRequestPolicy } = this.state;
     const { zoneTitle } = this.props;
-    let selectedStyle = articleRequestPolicy == policy ? { backgroundColor: '#eeeeee'} : {}
+    let selectedStyle = (articleRequestPolicy == policy) ? { backgroundColor: '#eeeeee'} : {}
 
     let titleHash = {
       "hot": "熱門",
@@ -197,52 +167,43 @@ let ArticleContainer = React.createClass({
   },
 
   _renderFooter: function() {
-    if (!this.state.onLoading) { return; }
-    else {
-      return this._renderActivityIndicator();
-    }
+    return this._renderActivityIndicator();
   },
 
   reloadArticles: function() {
-    const { articleRequestPolicy } = this.state;
-    this.articleCache[articleRequestPolicy] = [];
-    this.articleRequestAction();
+    const { articleRequestPolicy, zone } = this.state;
+    const { reloadArticles, requestArticles } = this.props;
+    reloadArticles(
+      () => { requestArticles(null, null, articleRequestPolicy, zone);},
+      articleRequestPolicy,
+      zone
+    )
   },
 
   _handleVotePress: function(article) {
     const { articleRequestPolicy } = this.state;
+    const { zone, voteForArticle, navigator } = this.props;
 
     return (event) => {
-      let changeArticleVoteState = (voteState, newArticle=null) => {
-        KaifAPI.requestVoteForArticle(article.articleId, voteState).then(r => {
-          if (r.hasOwnProperty("data")) {
-            let articleIndex = this.articleCache[articleRequestPolicy].indexOf(article);
-            let newArticles = this.articleCache[articleRequestPolicy].slice();
-            newArticles[articleIndex] = newArticle;
-
-            this.setState({dataSource: this.state.dataSource.cloneWithRows(newArticles)});
-            this.articleCache[articleRequestPolicy] = newArticles;
-          }
-        });
-      }
-
-      if (article.vote.voteState == 'UP') {
-          let newArticle = {...article};
-          newArticle.upVote = article.upVote - 1;
-          newArticle.vote.voteState = 'EMPTY';
-        changeArticleVoteState('EMPTY', newArticle);
-      } else {
-          let newArticle = {...article};
-          newArticle.upVote = article.upVote + 1;
-          newArticle.vote.voteState = 'UP';
-        changeArticleVoteState('UP', newArticle);
-      }
+      let voteState = (article.vote.voteState == 'EMPTY') ? 'UP' : 'EMPTY';
+      voteForArticle(
+        null, // callback
+        article.articleId,
+        voteState,
+        articleRequestPolicy,
+        zone
+      );
     }
   },
 
-
   render: function() {
-    const { navigator, rootNavigator, events } = this.props;
+    const {
+      article,
+      navigator,
+      rootNavigator,
+      events,
+      dataSource
+    } = this.props;
 
     return(
       <View style={{flex: 1, paddingTop: 64, paddingBottom: 50, overflow: 'hidden'}} >
@@ -257,14 +218,14 @@ let ArticleContainer = React.createClass({
                 showsVerticalScrollIndicator={true}
                 style={{flex: 1}}
                 contentContainerStyle={{justifyContent: 'space-between'}}
-                dataSource={this.state.dataSource}
+                dataSource={dataSource.cloneWithRows(this._currentArticles())}
                 onEndReached={this._onEndReach}
                 // onEndReachedThreshold={20}
                 renderFooter={this._renderFooter}
                 removeClippedSubviews={true}
                 initialListSize={10}
                 onChangeVisibleRows={this._onChangeVisibleRows}
-                pageSize={5}
+                // pageSize={5}
                 // scrollRenderAheadDistance={200}
                 // premptiveLoading={65}
                 loadData={this.reloadArticles}
@@ -291,7 +252,26 @@ let ArticleContainer = React.createClass({
 });
 
 function mapStateToProps(state) {
-  return state;
+  // via https://github.com/rackt/redux/issues/683
+  const { articleRequestPolicy, zone, article } = state;
+  const dataSource = new ListView.DataSource({
+    rowHasChanged: (r1, r2) => r1 !== r2,
+  });
+
+  let policy = articleRequestPolicy;
+  let articles;
+
+  if (zone && article.zoneArticles) {
+    articles = article.zoneArticles[zone] && article.zoneArticles[zone][policy] || [];
+  }
+  else {
+    articles = article[policy] || [];
+  }
+
+  return {
+    ...state,
+    dataSource: dataSource.cloneWithRows(articles),
+  };
 }
 
 function mapDispatchToProps(dispatch) {
