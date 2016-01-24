@@ -194,7 +194,7 @@ let Article = React.createClass({
                 <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)'
                   onPress={this.openExternalLink}
                   >
-                  <Text style={{fontSize: 16, marginBottom: 2}}>{ArticleHelper.procceedTitle(article.title)}</Text>
+                  <Text style={{fontSize: 16, marginBottom: 2}}>{article.title && ArticleHelper.procceedTitle(article.title)}</Text>
                 </TouchableHighlight>
                 <Text style={{color: 'rgb(97, 97, 97)', marginBottom: 3}}>{`(${ArticleHelper.linkHost(article.link, article.articleType)})`}</Text>
               </View>

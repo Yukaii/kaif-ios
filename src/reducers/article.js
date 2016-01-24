@@ -24,7 +24,7 @@ let changeVoteCount = (prevVoteState, curVoteState) => {
   return -1;
 }
 
-export default function article(state={...initialState, zoneArticles: null}, action) {
+export default function articles(state={...initialState, zoneArticles: null}, action) {
   switch(action.type) {
 
     case REQUEST_ARTICLES:

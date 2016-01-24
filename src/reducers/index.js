@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
-import article from './article';
+import articles from './article';
+import debates from './debate';
 
 const rootReducer = combineReducers({
-  article
+  articles,
+  debates
 });
 
 export default rootReducer;

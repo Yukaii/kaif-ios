@@ -4,9 +4,15 @@ import React, {
   Component,
   ScrollView,
   ActivityIndicatorIOS,
-  InteractionManager
+  RefreshControl,
+  InteractionManager,
+  PropTypes
 } from 'react-native';
 import Subscribable from 'Subscribable';
+
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux/native';
+import * as DebateActions from '../actions/debate';
 
 import KaifAPI from '../utils/KaifAPI';
 import Article from './Article';
@@ -14,31 +20,24 @@ import Debate from './Debate';
 import debateModel from '../models/debateModel';
 import articleModel from '../models/articleModel';
 
-export default React.createClass({
+let DebateContainer = React.createClass({
   mixins: [Subscribable.Mixin],
+
+  propTypes: {
+    requestDebates: PropTypes.func.isRequired
+  },
 
   getInitialState() {
     return {
-      debate: null,
       didFocus: false
     }
   },
 
   componentDidMount() {
-    const { article, navigator, events } = this.props;
-    KaifAPI.requestArticleDebates(article.articleId).then(data => {
-      this.setState({
-        debate: data.data
-      });
-    });
-
-    let didFocusCallback = () => {
-      this.setState({
-        didFocus: true,
-      })
-    }
+    const { article, navigator, events, requestDebates } = this.props;
 
     InteractionManager.runAfterInteractions(() => {
+      requestDebates(article.articleId);
       this.setState({didFocus: true});
     });
     this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
@@ -55,8 +54,16 @@ export default React.createClass({
     );
   },
 
+  _onRefresh() {
+    const {article, requestDebates} = this.props;
+    this.setState({isRefreshing: true})
+    requestDebates(article.articleId, () => {
+      this.setState({isRefreshing: false})
+    });
+  },
+
   render() {
-    const { article, navigator, rootNavigator, handleVotePress } = this.props;
+    const { article, navigator, rootNavigator, handleVotePress, debates } = this.props;
 
     if (!this.state.didFocus) {
       return(
@@ -75,6 +82,12 @@ export default React.createClass({
         <ScrollView
           style={{flex: 1}}
           contentContainerStyle={{ paddingBottom: 32, justifyContent: 'space-between', backgroundColor: '#eeeeee'}}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.isRefreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
         >
           <Article
             article={ article }
@@ -88,10 +101,16 @@ export default React.createClass({
             handleVotePress={handleVotePress}
           />
           <View style={{paddingHorizontal: 5}}>
-            { (this.state.debate !== null && this.state.didFocus) ? this.state.debate.children.map(data => this.renderDebate(data)) : null }
+            { (this.state.debate !== null && this.state.didFocus && debates[article.articleId]) ? debates[article.articleId].children.map(data => this.renderDebate(data)) : null }
           </View>
         </ScrollView>
       </View>
     );
   }
 });
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(DebateActions, dispatch);
+}
+
+export default connect(state => state, mapDispatchToProps)(DebateContainer);

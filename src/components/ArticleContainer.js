@@ -18,8 +18,6 @@ import TableView, {
   Cell
 } from 'react-native-tableview';
 
-import RefreshableListView from 'react-native-refreshable-listview';
-
 import Router from '../routers';
 import Article from './Article';
 import ArticleHelper from '../utils/ArticleHelper';
@@ -40,15 +38,15 @@ let ArticleContainer = React.createClass({
 
   _currentArticles: function(_policy=null) {
     const { articleRequestPolicy } = this.state;
-    const { article, zone } = this.props;
+    const { articles, zone } = this.props;
 
     let policy = _policy || articleRequestPolicy;
 
-    if (zone && article.zoneArticles) {
-      return article.zoneArticles[zone] && article.zoneArticles[zone][policy] || [];
+    if (zone && articles.zoneArticles) {
+      return articles.zoneArticles[zone] && articles.zoneArticles[zone][policy] || [];
     }
     else {
-      return article[policy];
+      return articles[policy];
     }
   },
 
@@ -114,7 +112,7 @@ let ArticleContainer = React.createClass({
 
   _onEndReach: function(e) {
     const { articleRequestPolicy }           = this.state;
-    const { article, requestArticles, zone } = this.props;
+    const { requestArticles, zone } = this.props;
 
     let currentArticles = this._currentArticles();
 
@@ -178,8 +176,13 @@ let ArticleContainer = React.createClass({
   reloadArticles: function() {
     const { articleRequestPolicy, zone } = this.state;
     const { reloadArticles, requestArticles } = this.props;
+
+    this.setState({isRefreshing: true});
     reloadArticles(
-      () => { requestArticles(null, null, articleRequestPolicy, zone);},
+      () => {
+        requestArticles(null, null, articleRequestPolicy, zone);
+        this.setState({isRefreshing: false});
+      },
       articleRequestPolicy,
       zone
     )
@@ -203,7 +206,7 @@ let ArticleContainer = React.createClass({
 
   render: function() {
     const {
-      article,
+      articles,
       navigator,
       rootNavigator,
       events,
@@ -219,7 +222,7 @@ let ArticleContainer = React.createClass({
         {
           this.state.changingPolicy || !this.state.didFocus ?
             this._renderActivityIndicator() :
-              <RefreshableListView
+              <ListView
                 showsVerticalScrollIndicator={true}
                 style={{flex: 1}}
                 contentContainerStyle={{justifyContent: 'space-between'}}
@@ -233,7 +236,12 @@ let ArticleContainer = React.createClass({
                 // pageSize={5}
                 // scrollRenderAheadDistance={200}
                 // premptiveLoading={65}
-                loadData={this.reloadArticles}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={this.state.isRefreshing}
+                    onRefresh={this.reloadArticles}
+                  />
+                }
                 renderRow={
                   (article, sectionID, rowID) => {
                     return(
@@ -258,24 +266,24 @@ let ArticleContainer = React.createClass({
 
 function mapStateToProps(state) {
   // via https://github.com/rackt/redux/issues/683
-  const { articleRequestPolicy, zone, article } = state;
+  const { articleRequestPolicy, zone, articles } = state;
   const dataSource = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
   });
 
   let policy = articleRequestPolicy;
-  let articles;
+  let articleRows;
 
-  if (zone && article.zoneArticles) {
-    articles = article.zoneArticles[zone] && article.zoneArticles[zone][policy] || [];
+  if (zone && articles.zoneArticles) {
+    articleRows = articles.zoneArticles[zone] && articles.zoneArticles[zone][policy] || [];
   }
   else {
-    articles = article[policy] || [];
+    articleRows = articles[policy] || [];
   }
 
   return {
     ...state,
-    dataSource: dataSource.cloneWithRows(articles),
+    dataSource: dataSource.cloneWithRows(articleRows),
   };
 }
 
