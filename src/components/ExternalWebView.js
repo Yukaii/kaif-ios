@@ -5,6 +5,7 @@ import React, {
   Text,
   TextInput,
   TouchableOpacity,
+  ActionSheetIOS,
   View,
   WebView,
   Component,
@@ -88,6 +89,20 @@ export default class ExternalWebView extends Component {
     );
   };
 
+  openShareAction() {
+    const { url } = this.props;
+    ActionSheetIOS.showShareActionSheetWithOptions({
+      url: url,
+      message: url,
+      subject: '透過 kaif.io 分享'
+    },
+    (error) => {
+      console.error(error);
+    },
+    (success, method) => {
+    });
+  };
+
   render(){
     const { url, rootNavigator } = this.props;
     return(
@@ -98,7 +113,7 @@ export default class ExternalWebView extends Component {
           </TouchableHighlight>
           <View style={{flex: 1}}/>
           <TouchableHighlight underlayColor="rgba(128, 128, 128, 0)" style={{alignSelf: 'flex-end', alignItems: 'center', flexDirection: 'row', width: 50}} onPress={() => { }}>
-            <Text style={{color: '#5ea7e9', textAlign:'right', fontWeight: 'bold', fontSize: 16, marginBottom: 2}}>分享</Text>
+            <Text style={{color: '#5ea7e9', textAlign:'right', fontWeight: 'bold', fontSize: 16, marginBottom: 2}} onPress={this.openShareAction.bind(this)}>分享</Text>
           </TouchableHighlight>
         </View>
         { this._renderWebView() }

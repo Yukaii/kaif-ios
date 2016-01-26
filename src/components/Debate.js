@@ -1,24 +1,51 @@
 import React, {
   View,
-  Component,
-  Text
+  TouchableHighlight,
+  Text,
+  ActionSheetIOS
 } from 'react-native';
 
-export default class Debate extends Component {
+let Debate = React.createClass({
+  _handleDebateLongPress(event) {
+    const {debate} = this.props;
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: ['贊同', '反對', '回覆', '刪除', '取消'],
+      cancelButtonIndex: 4,
+      destructiveButtonIndex: 3,
+    },
+    (buttonIndex) => {
+      switch(buttonIndex) {
+        case 0:
+          // voteForDebate(debate.debateId, 'UP')
+          return;
+        default:
+          return;
+      }
+    });
+  },
+
   render() {
     const {debate} = this.props;
 
     return(
-      <View style={{flex: 1, backgroundColor: '#eeeeee', marginBottom: 6}}>
-        <View style={{flexDirection: 'row', marginTop: 4, marginBottom: 3}}>
-          <Text style={{color: 'rgb(97, 97, 97)'}}>{debate.debaterName}</Text>
-          <View style={{ borderRadius: 2, borderWidth: 1.5, paddingLeft: 2, paddingRight: 2, marginTop: -1, marginLeft: 4, marginRight: 4, borderColor: '#cccccc' }}>
-            <Text style={{color: '#777777'}}>{debate.upVote - debate.downVote}</Text>
+      <TouchableHighlight
+        underlayColor="#eeeeee"
+        onLongPress={this._handleDebateLongPress}
+      >
+        <View
+          style={{flex: 1, backgroundColor: '#eeeeee', marginBottom: 6}}>
+          <View style={{flexDirection: 'row', marginTop: 4, marginBottom: 3}}>
+            <Text style={{color: 'rgb(97, 97, 97)'}}>{debate.debaterName}</Text>
+            <View style={{ borderRadius: 2, borderWidth: 1.5, paddingLeft: 2, paddingRight: 2, marginTop: -1, marginLeft: 4, marginRight: 4, borderColor: '#cccccc' }}>
+              <Text style={{color: '#777777'}}>{debate.upVote - debate.downVote}</Text>
+            </View>
+            <Text style={{color: '#777777'}}>{debate.lastUpdateTimeFromNow()}</Text>
           </View>
-          <Text style={{color: '#777777'}}>{debate.lastUpdateTimeFromNow()}</Text>
+          <Text>{debate.content}</Text>
         </View>
-        <Text>{debate.content}</Text>
-      </View>
+      </TouchableHighlight>
     );
   }
-}
+});
+
+export default Debate;

@@ -193,7 +193,7 @@ let ArticleContainer = React.createClass({
     const { zone, voteForArticle, navigator } = this.props;
 
     return (event) => {
-      let voteState = (article.vote.voteState == 'EMPTY') ? 'UP' : 'EMPTY';
+      let voteState = (article.vote.voteState == 'EMPTY' || typeof article.vote.voteState === 'undefined') ? 'UP' : 'EMPTY';
       voteForArticle(
         null, // callback
         article.articleId,

@@ -53,9 +53,8 @@ let Article = React.createClass({
       upVote: newArticle.upVote,
     })
 
-    setTimeout(() => {
-      navigator.forceUpdate();
-    }, 1500)
+    // force refresh while we have push props into a navigator
+    navigator.forceUpdate();
   },
 
   _pushDebateRoute: function() {
@@ -100,7 +99,7 @@ let Article = React.createClass({
   },
 
   _handleArticleLongPress: function() {
-    const { article, navigator } = this.props;
+    const { article, navigator, canHandleArticlePress } = this.props;
 
     ActionSheetIOS.showActionSheetWithOptions({
       options: ['打開連結', '複製連結', '進入討論', '分享連結', '取消'],
@@ -118,7 +117,8 @@ let Article = React.createClass({
           });
           return
         case 2:
-          this._pushDebateRoute();
+          canHandleArticlePress && this._pushDebateRoute();
+          if (!canHandleArticlePress) {alert("你已經在討論串啦！（真是個垃圾訊息）")}
           return;
         case 3:
           this.openShareAction(article);

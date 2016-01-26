@@ -24,6 +24,7 @@
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		3225FFB31C414BED0013F55F /* libSafariViewManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3225FFB21C41432B0013F55F /* libSafariViewManager.a */; };
 		323356101C55017100E69D82 /* PasteBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 3233560F1C55017100E69D82 /* PasteBoard.m */; };
+		323356171C567BD100E69D82 /* libRNKeyboardEvents.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 323356161C567B7000E69D82 /* libRNKeyboardEvents.a */; };
 		32C90A8B1C391242002C6355 /* libRNTableView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32C90A8A1C391205002C6355 /* libRNTableView.a */; };
 		32F23FA41C3B3ED6002CE19B /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32F826661C3A8A1200371DF4 /* libRNVectorIcons.a */; };
 		400EA8FEB67F47A8BC8186A6 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06EC2422DB8E47F29104BE80 /* MaterialIcons.ttf */; };
@@ -107,6 +108,13 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = SafariViewManager;
 		};
+		323356151C567B7000E69D82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 323356111C567B6F00E69D82 /* RNKeyboardEvents.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
+			remoteInfo = RNKeyboardEvents;
+		};
 		32C90A891C391205002C6355 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 32C90A7B1C391204002C6355 /* RNTableView.xcodeproj */;
@@ -162,6 +170,7 @@
 		3225FFA11C41432A0013F55F /* SafariViewManager.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SafariViewManager.xcodeproj; path = "../node_modules/react-native-safari-view/SafariViewManager.xcodeproj"; sourceTree = "<group>"; };
 		3233560E1C55017100E69D82 /* PasteBoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasteBoard.h; sourceTree = "<group>"; };
 		3233560F1C55017100E69D82 /* PasteBoard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasteBoard.m; sourceTree = "<group>"; };
+		323356111C567B6F00E69D82 /* RNKeyboardEvents.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNKeyboardEvents.xcodeproj; path = "../node_modules/react-native-keyboardevents/RNKeyboardEvents.xcodeproj"; sourceTree = "<group>"; };
 		32C90A7B1C391204002C6355 /* RNTableView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNTableView.xcodeproj; path = "../node_modules/react-native-tableview/RNTableView.xcodeproj"; sourceTree = "<group>"; };
 		4262B8A2C5064013BCA87F2A /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		4BA56515F5AA4629BC5E885B /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
@@ -186,6 +195,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				323356171C567BD100E69D82 /* libRNKeyboardEvents.a in Frameworks */,
 				3225FFB31C414BED0013F55F /* libSafariViewManager.a in Frameworks */,
 				32F23FA41C3B3ED6002CE19B /* libRNVectorIcons.a in Frameworks */,
 				32C90A8B1C391242002C6355 /* libRNTableView.a in Frameworks */,
@@ -318,6 +328,14 @@
 			path = "../node_modules/react-native-pasteboard/RCTPasteBoard";
 			sourceTree = "<group>";
 		};
+		323356121C567B6F00E69D82 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				323356161C567B7000E69D82 /* libRNKeyboardEvents.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		32C90A7C1C391204002C6355 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -345,6 +363,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				323356111C567B6F00E69D82 /* RNKeyboardEvents.xcodeproj */,
 				3225FFA11C41432A0013F55F /* SafariViewManager.xcodeproj */,
 				32C90A7B1C391204002C6355 /* RNTableView.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -518,6 +537,10 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = 323356121C567B6F00E69D82 /* Products */;
+					ProjectRef = 323356111C567B6F00E69D82 /* RNKeyboardEvents.xcodeproj */;
+				},
+				{
 					ProductGroup = 32C90A7C1C391204002C6355 /* Products */;
 					ProjectRef = 32C90A7B1C391204002C6355 /* RNTableView.xcodeproj */;
 				},
@@ -600,6 +623,13 @@
 			fileType = archive.ar;
 			path = libSafariViewManager.a;
 			remoteRef = 3225FFB11C41432B0013F55F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		323356161C567B7000E69D82 /* libRNKeyboardEvents.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNKeyboardEvents.a;
+			remoteRef = 323356151C567B7000E69D82 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		32C90A8A1C391205002C6355 /* libRNTableView.a */ = {

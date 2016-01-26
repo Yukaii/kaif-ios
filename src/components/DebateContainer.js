@@ -6,8 +6,11 @@ import React, {
   ActivityIndicatorIOS,
   RefreshControl,
   InteractionManager,
-  PropTypes
+  PropTypes,
+  TextInput,
+  LayoutAnimation
 } from 'react-native';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import Subscribable from 'Subscribable';
 
 import { bindActionCreators } from 'redux';
@@ -20,8 +23,10 @@ import Debate from './Debate';
 import debateModel from '../models/debateModel';
 import articleModel from '../models/articleModel';
 
+import TrackKeyboard from '../components/trackKeyboard';
+
 let DebateContainer = React.createClass({
-  mixins: [Subscribable.Mixin],
+  mixins: [Subscribable.Mixin, TrackKeyboard],
 
   propTypes: {
     requestDebates: PropTypes.func.isRequired
@@ -30,6 +35,40 @@ let DebateContainer = React.createClass({
   getInitialState() {
     return {
       didFocus: false
+    }
+  },
+
+  componentWillUpdate(props, state) {
+    const animations = {
+      layout: {
+        spring: {
+          duration: 300,
+          create: {
+            duration: 200,
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity
+          },
+          update: {
+            type: LayoutAnimation.Types.spring,
+            springDamping: 100
+          }
+        },
+        easeInEaseOut: {
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.scaleXY
+          },
+          update: {
+            delay: 100,
+            type: LayoutAnimation.Types.easeInEaseOut
+          }
+        }
+      }
+    };
+
+    if (state.isKeyboardOpened !== this.state.isKeyboardOpened) {
+      LayoutAnimation.configureNext(animations.layout.spring);
     }
   },
 
@@ -64,6 +103,7 @@ let DebateContainer = React.createClass({
 
   render() {
     const { article, navigator, rootNavigator, handleVotePress, debates } = this.props;
+    var marginBottom = this.state.keyboardSpace / 253 * 205 - 5;
 
     if (!this.state.didFocus) {
       return(
@@ -81,7 +121,7 @@ let DebateContainer = React.createClass({
       <View style={{flex: 1, paddingTop: 64, paddingBottom: 48, backgroundColor: '#eeeeee'}}>
         <ScrollView
           style={{flex: 1}}
-          contentContainerStyle={{ paddingBottom: 32, justifyContent: 'space-between', backgroundColor: '#eeeeee'}}
+          contentContainerStyle={{ justifyContent: 'space-between', backgroundColor: '#eeeeee'}}
           refreshControl={
             <RefreshControl
               refreshing={this.state.isRefreshing}
@@ -104,6 +144,8 @@ let DebateContainer = React.createClass({
             { (this.state.debate !== null && this.state.didFocus && debates[article.articleId]) ? debates[article.articleId].children.map(data => this.renderDebate(data)) : null }
           </View>
         </ScrollView>
+        <TextInput style={{backgroundColor: "white", paddingHorizontal: 13, left: 0, right: 0, height: 45, marginBottom: marginBottom, paddingBottom: 5, borderColor: '#7d8287', borderTopWidth: 2}}
+             placeholder={`回覆 ${article.authorName}...`}/>
       </View>
     );
   }

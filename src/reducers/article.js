@@ -17,11 +17,14 @@ let changeVoteCount = (prevVoteState, curVoteState) => {
   if (prevVoteState == curVoteState) {
     return 0;
   }
-  if (prevVoteState == 'EMPTY') {
+  if ( (prevVoteState == 'EMPTY' || typeof prevVoteState === 'undefined') && curVoteState == 'UP' ) {
     return 1;
   }
+  if (prevVoteState == 'UP' && curVoteState == 'EMPTY') {
+    return -1;
+  }
 
-  return -1;
+  alert(`${prevVoteState} => ${curVoteState}`);
 }
 
 export default function articles(state={...initialState, zoneArticles: null}, action) {

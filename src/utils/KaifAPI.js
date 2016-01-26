@@ -204,6 +204,13 @@ requestVoteForArticle = (articleId, voteState='UP') => {
   }), 'POST');
 }
 
+requestVoteForDebate = (debateId, voteState='UP') => {
+  return requestAPI('vote/debate', JSON.stringify({
+    debateId: debateId,
+    voteState: voteState
+  }), 'POST');
+}
+
 /**
  * api endpoint url helper method
  * @param  {string} endpoint
@@ -234,6 +241,7 @@ KaifAPI = {
   requestZoneAll: requestZoneAll,
   requestBasicUserProfile: requestBasicUserProfile,
   requestVoteForArticle: requestVoteForArticle,
+  requestVoteForDebate: requestVoteForDebate,
   apiEndpoint: apiEndpoint,
   logout: logout
 }
