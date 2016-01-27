@@ -111,7 +111,7 @@ let ArticleContainer = React.createClass({
   },
 
   _onEndReach: function(e) {
-    const { articleRequestPolicy }           = this.state;
+    const { articleRequestPolicy }  = this.state;
     const { requestArticles, zone } = this.props;
 
     let currentArticles = this._currentArticles();
@@ -225,7 +225,8 @@ let ArticleContainer = React.createClass({
               <ListView
                 showsVerticalScrollIndicator={true}
                 style={{flex: 1}}
-                contentContainerStyle={{justifyContent: 'space-between'}}
+                contentContainerStyle={{justifyContent: 'flex-start'}}
+                automaticallyAdjustContentInsets={false}
                 dataSource={dataSource.cloneWithRows(this._currentArticles())}
                 onEndReached={this._onEndReach}
                 // onEndReachedThreshold={20}

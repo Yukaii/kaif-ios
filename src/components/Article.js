@@ -178,7 +178,7 @@ let Article = React.createClass({
         onLongPress={this._handleArticleLongPress}
       >
         <View key={article.articleId}
-          style={{paddingTop: 5, paddingLeft: 6, paddingRight: 10, paddingBottom: 5, marginBottom: 5, ...style}}>
+          style={{paddingTop: 5, paddingBottom: 5, paddingLeft: 6, paddingRight: 10, borderColor: "#CCCCCC", borderTopWidth: 0.6, ...style}}>
           <View style={{flexDirection: 'row', flex: 1}}>
             <TouchableHighlight
               underlayColor='rgba(255, 255, 255, 0)'
