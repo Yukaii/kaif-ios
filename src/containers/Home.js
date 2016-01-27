@@ -17,10 +17,10 @@ import { connect } from 'react-redux/native';
 import ExNavigator from '@exponent/react-native-navigator';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import Setting from '../components/Setting';
-import Profile from '../components/Profile';
-import Zone from '../components/Zone';
-import ArticleContainer from '../components/ArticleContainer';
+import Setting from './Setting';
+import Profile from './Profile';
+import Zone from './Zone';
+import ArticleContainer from './ArticleContainer';
 
 import Router from '../routers';
 

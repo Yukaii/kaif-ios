@@ -19,7 +19,7 @@ import TableView, {
 } from 'react-native-tableview';
 
 import Router from '../routers';
-import Article from './Article';
+import Article from '../components/Article';
 import ArticleHelper from '../utils/ArticleHelper';
 
 import { bindActionCreators } from 'redux';

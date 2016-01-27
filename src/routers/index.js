@@ -1,11 +1,11 @@
 import React, { Navigator, Text } from 'react-native';
 import Home from '../containers/Home';
-import Zone from '../components/Zone';
-import Setting from '../components/Setting';
-import Profile from '../components/Profile';
-import DebateContainer from '../components/DebateContainer';
-import ArticleContainer from '../components/ArticleContainer';
-import ExternalWebView from '../components/ExternalWebView';
+import Zone from '../containers/Zone';
+import Setting from '../containers/Setting';
+import Profile from '../containers/Profile';
+import DebateContainer from '../containers/DebateContainer';
+import ArticleContainer from '../containers/ArticleContainer';
+import ExternalWebView from '../containers/ExternalWebView';
 import KaifIcon from '../components/KaifIcon';
 
 let Router = {

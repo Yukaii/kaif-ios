@@ -23,8 +23,8 @@ import { connect } from 'react-redux/native';
 import * as DebateActions from '../actions/debate';
 
 import KaifAPI from '../utils/KaifAPI';
-import Article from './Article';
-import Debate from './Debate';
+import Article from '../components/Article';
+import Debate from '../components/Debate';
 import debateModel from '../models/debateModel';
 import articleModel from '../models/articleModel';
 
