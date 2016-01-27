@@ -8,6 +8,7 @@ import qs from 'shitty-qs';
 import * as utils from './utils'
 
 const ACCESS_TOKEN_STORAGE_KEY = 'ACCESS_TOKEN_STORAGE_KEY';
+const USERNAME_KEY = 'USERNAME_KEY';
 const ACCESS_TOKEN_URL = 'https://kaif.io/oauth/access-token';
 const OAUTH_REDIRECT_URI = 'kaiifios://oauth_callback';
 const API_BASE_URL = 'https://kaif.io/v1'
@@ -20,6 +21,14 @@ getAccessToken = () => {
   return new Promise((resolve, reject) => {
     AsyncStorage.getItem(ACCESS_TOKEN_STORAGE_KEY).then(access_token => {
       resolve(access_token);
+    });
+  });
+}
+
+getUserName = () => {
+  return new Promise((resolve, reject) => {
+    AsyncStorage.getItem(USERNAME_KEY).then(username => {
+      resolve(username);
     });
   });
 }
@@ -90,7 +99,14 @@ oauthCallback = (event, callback) => {
     body:  `client_id=${config.clientId}&client_secret=${config.clientSecret}&code=${params.code}&redirect_uri=${encodeURI(OAUTH_REDIRECT_URI)}&grant_type=authorization_code`
   }).then(response => response.json()).then(data => {
     AsyncStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, data.access_token).then(() => {
-      callback(data.access_token);
+      // save username
+      requestBasicUserProfile().then(profileData => {
+        if (profileData.data) {
+          AsyncStorage.setItem(USERNAME_KEY, profileData.data.username).then(() => {
+            callback(data.access_token);
+          });
+        }
+      })
     });
   }).catch(error => error);
 }
@@ -123,6 +139,18 @@ requestAPI = (endpoint, body=null, method='GET') => {
 
 requestArticle = (articleId) => {
   return requestAPI(`article/${articleId}`);
+}
+
+requestArticleCanDelete = (articleId) => {
+  return new Promise((resolve, reject) => {
+    getUserName().then(username => {
+      requestAPI(`article/${articleId}/can-delete?username=${username}`).then(data => resolve({...data, username: username})).catch(e => reject(e))
+    }).catch(e => reject(e));
+  })
+}
+
+requestDeleteArticle = (articleId) => {
+  return requestAPI(`article/${articleId}`, null, 'DELETE');
 }
 
 /**
@@ -211,6 +239,24 @@ requestVoteForDebate = (debateId, voteState='UP') => {
   }), 'POST');
 }
 
+requestDebate = (debateId) => {
+  return requestAPI(`debate/${debateId}`);
+}
+
+requestCreateDebate = (articleId, parentDebateId, content) => {
+  return requestAPI('debate', JSON.stringify({
+    articleId: articleId,
+    parentDebateId: parentDebateId,
+    content: content
+  }), 'PUT');
+}
+
+requestUpdateDebate = (debateId, content) => {
+  return requestAPI(`debate/${debateId}/content`, {
+    content: content
+  }, 'POST');
+}
+
 /**
  * api endpoint url helper method
  * @param  {string} endpoint
@@ -228,10 +274,12 @@ logout = () => {
 
 KaifAPI = {
   getAccessToken: getAccessToken,
+  getUserName: getUserName,
   getAuthorizeUrl: getAuthorizeUrl,
   oauthLogin: oauthLogin,
   testAPI: testAPI,
   requestArticle: requestArticle,
+  requestArticleCanDelete: requestArticleCanDelete,
   requestHotArticles: requestHotArticles,
   requestLatestArticles: requestLatestArticles,
   requestZoneHotArticles: requestZoneHotArticles,
@@ -242,6 +290,8 @@ KaifAPI = {
   requestBasicUserProfile: requestBasicUserProfile,
   requestVoteForArticle: requestVoteForArticle,
   requestVoteForDebate: requestVoteForDebate,
+  requestCreateDebate: requestCreateDebate,
+  requestUpdateDebate: requestUpdateDebate,
   apiEndpoint: apiEndpoint,
   logout: logout
 }

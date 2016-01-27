@@ -102,9 +102,9 @@ let Article = React.createClass({
     const { article, navigator, canHandleArticlePress } = this.props;
 
     ActionSheetIOS.showActionSheetWithOptions({
-      options: ['打開連結', '複製連結', '進入討論', '分享連結', '取消'],
-      cancelButtonIndex: 4,
-      // destructiveButtonIndex: DESTRUCTIVE_INDEX,
+      options: ['打開連結', '複製連結', '進入討論', '分享連結', '刪除', '取消'],
+      cancelButtonIndex: 5,
+      destructiveButtonIndex: 4
     },
     (buttonIndex) => {
       switch(buttonIndex) {
@@ -122,6 +122,17 @@ let Article = React.createClass({
           return;
         case 3:
           this.openShareAction(article);
+          return;
+        case 4:
+          KaifAPI.requestArticleCanDelete(article.articleId).then(data => {
+            if (data.data) {
+              // yes can delete
+            } else if(data.username != article.authorName) {
+              alert("不能刪除啦！又不是你 PO 的")
+            } else {
+              alert("時間過久無法刪除！")
+            }
+          })
           return;
         default:
           return;
@@ -174,7 +185,7 @@ let Article = React.createClass({
     return(
       <TouchableHighlight
         {...{...defaultTouchableStyle, ...touchableStyle} }
-        onPress={this.handleArticlePress}
+        onPress={this.props.onPress || this.handleArticlePress}
         onLongPress={this._handleArticleLongPress}
       >
         <View key={article.articleId}

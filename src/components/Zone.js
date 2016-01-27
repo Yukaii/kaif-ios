@@ -29,7 +29,11 @@ let Zone = React.createClass({
 
     KaifAPI.requestZoneAll().then(data => {
       if (data.data) {
-        this.setState({zones: data.data});
+        if (__DEV__) {
+          this.setState({zones: [{name: 'test', title: '測試專區'}, ...data.data]});
+        } else {
+          this.setState({zones: data.data});
+        }
       }
     });
 

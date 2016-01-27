@@ -7,7 +7,7 @@ import React, {
 
 let Debate = React.createClass({
   _handleDebateLongPress(event) {
-    const {debate} = this.props;
+    const {debate, onDebateReply} = this.props;
     ActionSheetIOS.showActionSheetWithOptions({
       options: ['贊同', '反對', '回覆', '刪除', '取消'],
       cancelButtonIndex: 4,
@@ -18,19 +18,28 @@ let Debate = React.createClass({
         case 0:
           // voteForDebate(debate.debateId, 'UP')
           return;
+        case 2:
+          onDebateReply(debate);
+          return;
         default:
           return;
       }
     });
   },
 
+  _onDebatePress() {
+    const {onDebateReply, debate} = this.props;
+    onDebateReply(debate);
+  },
+
   render() {
-    const {debate} = this.props;
+    const {debate, onDebateReply} = this.props;
 
     return(
       <TouchableHighlight
         underlayColor="#eeeeee"
         onLongPress={this._handleDebateLongPress}
+        onPress={this._onDebatePress}
       >
         <View
           style={{flex: 1, backgroundColor: '#eeeeee', marginBottom: 6}}>
