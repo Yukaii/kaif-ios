@@ -6,6 +6,7 @@ import {
 import config from '../config/config';
 import qs from 'shitty-qs';
 import * as utils from './utils'
+import Keychain from 'react-native-keychain';
 
 const ACCESS_TOKEN_STORAGE_KEY = 'ACCESS_TOKEN_STORAGE_KEY';
 const USERNAME_KEY = 'USERNAME_KEY';
@@ -103,8 +104,13 @@ oauthCallback = (event, callback) => {
       requestBasicUserProfile().then(profileData => {
         if (profileData.data) {
           AsyncStorage.setItem(USERNAME_KEY, profileData.data.username).then(() => {
-            callback(data.access_token);
+            // save username / access_token to keychain
+            Keychain.setGenericPassword(profileData.data.username, data.access_token).then(() => {
+              alert(`${profileData.data.username}, ${data.access_token}`);
+              callback(data.access_token);
+            })
           });
+
         }
       })
     });
@@ -213,6 +219,22 @@ requestZoneLatestArticles = (zone, startArticleId=null) => {
     requestAPI(`article/zone/${zone}/latest`);
 }
 
+requestUserSubmittedArticles = (username=null, startArticleId) => {
+  return new Promise((resolve, reject) => {
+    if (!username) {
+      getUserName().then(username => {
+        startArticleId ?
+          requestAPI(`article/user/${username}/submitted?start-article-id=${startArticleId}`).then(data => resolve(data)).catch(error => reject(error)) :
+          requestAPI(`article/user/${username}/submitted`).then(data => resolve(data)).catch(error => reject(error))
+      })
+    } else {
+      startArticleId ?
+          requestAPI(`article/user/${username}/submitted?start-article-id=${startArticleId}`).then(data => resolve(data)).catch(error => reject(error)) :
+          requestAPI(`article/user/${username}/submitted`).then(data => resolve(data)).catch(error => reject(error))
+    }
+  });
+}
+
 requestArticleDebates = (articleId) => {
   return requestAPI(`debate/article/${articleId}/tree`);
 }
@@ -285,6 +307,7 @@ KaifAPI = {
   requestZoneHotArticles: requestZoneHotArticles,
   requestZoneLatestArticles: requestZoneLatestArticles,
   requestArticleDebates: requestArticleDebates,
+  requestUserSubmittedArticles: requestUserSubmittedArticles,
   requestIfArticlesVoted: requestIfArticlesVoted,
   requestZoneAll: requestZoneAll,
   requestBasicUserProfile: requestBasicUserProfile,

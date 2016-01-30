@@ -25,6 +25,15 @@
 		3225FFB31C414BED0013F55F /* libSafariViewManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3225FFB21C41432B0013F55F /* libSafariViewManager.a */; };
 		323356101C55017100E69D82 /* PasteBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 3233560F1C55017100E69D82 /* PasteBoard.m */; };
 		323356171C567BD100E69D82 /* libRNKeyboardEvents.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 323356161C567B7000E69D82 /* libRNKeyboardEvents.a */; };
+		323356471C5A4ED600E69D82 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 323356461C5A4ED600E69D82 /* ShareViewController.m */; };
+		3233564A1C5A4ED600E69D82 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 323356481C5A4ED600E69D82 /* MainInterface.storyboard */; };
+		3233564E1C5A4ED600E69D82 /* ShareLink.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 323356431C5A4ED600E69D82 /* ShareLink.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		323356541C5A597100E69D82 /* NewPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 323356531C5A597100E69D82 /* NewPost.m */; };
+		323356571C5A634500E69D82 /* Content.m in Sources */ = {isa = PBXBuildFile; fileRef = 323356561C5A634500E69D82 /* Content.m */; };
+		3233565A1C5C533600E69D82 /* ReactView.m in Sources */ = {isa = PBXBuildFile; fileRef = 323356591C5C533600E69D82 /* ReactView.m */; };
+		3233565B1C5C541E00E69D82 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
+		3233565C1C5C541E00E69D82 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		323356631C5C667400E69D82 /* libRNKeychain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 323356621C5C666700E69D82 /* libRNKeychain.a */; };
 		32C90A8B1C391242002C6355 /* libRNTableView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32C90A8A1C391205002C6355 /* libRNTableView.a */; };
 		32F23FA41C3B3ED6002CE19B /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32F826661C3A8A1200371DF4 /* libRNVectorIcons.a */; };
 		400EA8FEB67F47A8BC8186A6 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06EC2422DB8E47F29104BE80 /* MaterialIcons.ttf */; };
@@ -115,6 +124,20 @@
 			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
 			remoteInfo = RNKeyboardEvents;
 		};
+		3233564C1C5A4ED600E69D82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 323356421C5A4ED600E69D82;
+			remoteInfo = ShareLink;
+		};
+		323356611C5C666700E69D82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3233565D1C5C666700E69D82 /* RNKeychain.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5D82366F1B0CE05B005A9EF3;
+			remoteInfo = RNKeychain;
+		};
 		32C90A891C391205002C6355 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 32C90A7B1C391204002C6355 /* RNTableView.xcodeproj */;
@@ -145,6 +168,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		3233562A1C59174A00E69D82 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				3233564E1C5A4ED600E69D82 /* ShareLink.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTActionSheet.xcodeproj; path = "../node_modules/react-native/Libraries/ActionSheetIOS/RCTActionSheet.xcodeproj"; sourceTree = "<group>"; };
@@ -171,6 +208,18 @@
 		3233560E1C55017100E69D82 /* PasteBoard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasteBoard.h; sourceTree = "<group>"; };
 		3233560F1C55017100E69D82 /* PasteBoard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasteBoard.m; sourceTree = "<group>"; };
 		323356111C567B6F00E69D82 /* RNKeyboardEvents.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNKeyboardEvents.xcodeproj; path = "../node_modules/react-native-keyboardevents/RNKeyboardEvents.xcodeproj"; sourceTree = "<group>"; };
+		323356431C5A4ED600E69D82 /* ShareLink.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareLink.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		323356451C5A4ED600E69D82 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
+		323356461C5A4ED600E69D82 /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
+		323356491C5A4ED600E69D82 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		3233564B1C5A4ED600E69D82 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		323356521C5A597100E69D82 /* NewPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewPost.h; sourceTree = "<group>"; };
+		323356531C5A597100E69D82 /* NewPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewPost.m; sourceTree = "<group>"; };
+		323356551C5A634500E69D82 /* Content.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Content.h; sourceTree = "<group>"; };
+		323356561C5A634500E69D82 /* Content.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Content.m; sourceTree = "<group>"; };
+		323356581C5C533600E69D82 /* ReactView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReactView.h; sourceTree = "<group>"; };
+		323356591C5C533600E69D82 /* ReactView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReactView.m; sourceTree = "<group>"; };
+		3233565D1C5C666700E69D82 /* RNKeychain.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNKeychain.xcodeproj; path = "../node_modules/react-native-keychain/RNKeychain.xcodeproj"; sourceTree = "<group>"; };
 		32C90A7B1C391204002C6355 /* RNTableView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNTableView.xcodeproj; path = "../node_modules/react-native-tableview/RNTableView.xcodeproj"; sourceTree = "<group>"; };
 		4262B8A2C5064013BCA87F2A /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		4BA56515F5AA4629BC5E885B /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
@@ -195,6 +244,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				323356631C5C667400E69D82 /* libRNKeychain.a in Frameworks */,
 				323356171C567BD100E69D82 /* libRNKeyboardEvents.a in Frameworks */,
 				3225FFB31C414BED0013F55F /* libSafariViewManager.a in Frameworks */,
 				32F23FA41C3B3ED6002CE19B /* libRNVectorIcons.a in Frameworks */,
@@ -209,6 +259,15 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		323356401C5A4ED600E69D82 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3233565B1C5C541E00E69D82 /* libRCTLinking.a in Frameworks */,
+				3233565C1C5C541E00E69D82 /* libReact.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,6 +395,31 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		323356441C5A4ED600E69D82 /* ShareLink */ = {
+			isa = PBXGroup;
+			children = (
+				323356451C5A4ED600E69D82 /* ShareViewController.h */,
+				323356461C5A4ED600E69D82 /* ShareViewController.m */,
+				323356481C5A4ED600E69D82 /* MainInterface.storyboard */,
+				3233564B1C5A4ED600E69D82 /* Info.plist */,
+				323356521C5A597100E69D82 /* NewPost.h */,
+				323356531C5A597100E69D82 /* NewPost.m */,
+				323356551C5A634500E69D82 /* Content.h */,
+				323356561C5A634500E69D82 /* Content.m */,
+				323356581C5C533600E69D82 /* ReactView.h */,
+				323356591C5C533600E69D82 /* ReactView.m */,
+			);
+			path = ShareLink;
+			sourceTree = "<group>";
+		};
+		3233565E1C5C666700E69D82 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				323356621C5C666700E69D82 /* libRNKeychain.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		32C90A7C1C391204002C6355 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -363,6 +447,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				3233565D1C5C666700E69D82 /* RNKeychain.xcodeproj */,
 				323356111C567B6F00E69D82 /* RNKeyboardEvents.xcodeproj */,
 				3225FFA11C41432A0013F55F /* SafariViewManager.xcodeproj */,
 				32C90A7B1C391204002C6355 /* RNTableView.xcodeproj */,
@@ -396,6 +481,7 @@
 				13B07FAE1A68108700A75B9A /* KaifIoIos */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* KaifIoIosTests */,
+				323356441C5A4ED600E69D82 /* ShareLink */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				D08B777B4B674AC9B50D673F /* Resources */,
 			);
@@ -408,6 +494,7 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* KaifIoIos.app */,
 				00E356EE1AD99517003FC87E /* KaifIoIosTests.xctest */,
+				323356431C5A4ED600E69D82 /* ShareLink.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -456,15 +543,34 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				3233562A1C59174A00E69D82 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				3233564D1C5A4ED600E69D82 /* PBXTargetDependency */,
 			);
 			name = KaifIoIos;
 			productName = "Hello World";
 			productReference = 13B07F961A680F5B00A75B9A /* KaifIoIos.app */;
 			productType = "com.apple.product-type.application";
+		};
+		323356421C5A4ED600E69D82 /* ShareLink */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3233564F1C5A4ED600E69D82 /* Build configuration list for PBXNativeTarget "ShareLink" */;
+			buildPhases = (
+				3233563F1C5A4ED600E69D82 /* Sources */,
+				323356401C5A4ED600E69D82 /* Frameworks */,
+				323356411C5A4ED600E69D82 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ShareLink;
+			productName = ShareLink;
+			productReference = 323356431C5A4ED600E69D82 /* ShareLink.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -472,6 +578,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
@@ -480,6 +587,10 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = DQE5N5NDYT;
+					};
+					323356421C5A4ED600E69D82 = {
+						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = DQE5N5NDYT;
 					};
 				};
@@ -541,6 +652,10 @@
 					ProjectRef = 323356111C567B6F00E69D82 /* RNKeyboardEvents.xcodeproj */;
 				},
 				{
+					ProductGroup = 3233565E1C5C666700E69D82 /* Products */;
+					ProjectRef = 3233565D1C5C666700E69D82 /* RNKeychain.xcodeproj */;
+				},
+				{
 					ProductGroup = 32C90A7C1C391204002C6355 /* Products */;
 					ProjectRef = 32C90A7B1C391204002C6355 /* RNTableView.xcodeproj */;
 				},
@@ -557,6 +672,7 @@
 			targets = (
 				13B07F861A680F5B00A75B9A /* KaifIoIos */,
 				00E356ED1AD99517003FC87E /* KaifIoIosTests */,
+				323356421C5A4ED600E69D82 /* ShareLink */,
 			);
 		};
 /* End PBXProject section */
@@ -632,6 +748,13 @@
 			remoteRef = 323356151C567B7000E69D82 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		323356621C5C666700E69D82 /* libRNKeychain.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNKeychain.a;
+			remoteRef = 323356611C5C666700E69D82 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		32C90A8A1C391205002C6355 /* libRNTableView.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -687,6 +810,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		323356411C5A4ED600E69D82 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3233564A1C5A4ED600E69D82 /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -725,6 +856,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3233563F1C5A4ED600E69D82 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3233565A1C5C533600E69D82 /* ReactView.m in Sources */,
+				323356541C5A597100E69D82 /* NewPost.m in Sources */,
+				323356571C5A634500E69D82 /* Content.m in Sources */,
+				323356471C5A4ED600E69D82 /* ShareViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -732,6 +874,11 @@
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* KaifIoIos */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+		};
+		3233564D1C5A4ED600E69D82 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 323356421C5A4ED600E69D82 /* ShareLink */;
+			targetProxy = 3233564C1C5A4ED600E69D82 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -743,6 +890,14 @@
 			);
 			name = LaunchScreen.xib;
 			path = KaifIoIos;
+			sourceTree = "<group>";
+		};
+		323356481C5A4ED600E69D82 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				323356491C5A4ED600E69D82 /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -839,6 +994,39 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.tendollarstudio.kaif-ios";
 				PRODUCT_NAME = KaifIoIos;
 				PROVISIONING_PROFILE = "";
+			};
+			name = Release;
+		};
+		323356501C5A4ED600E69D82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = ShareLink/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.tendollarstudio.kaif-ios.ShareLink";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		323356511C5A4ED600E69D82 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = ShareLink/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.tendollarstudio.kaif-ios.ShareLink";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -951,6 +1139,15 @@
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
 				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3233564F1C5A4ED600E69D82 /* Build configuration list for PBXNativeTarget "ShareLink" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				323356501C5A4ED600E69D82 /* Debug */,
+				323356511C5A4ED600E69D82 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
