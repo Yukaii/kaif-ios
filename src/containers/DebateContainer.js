@@ -149,12 +149,19 @@ let DebateContainer = React.createClass({
   },
 
   render() {
-    const { article, navigator, rootNavigator, handleVotePress, debates } = this.props;
+    const {
+      article,
+      navigator,
+      rootNavigator,
+      handleVotePress,
+      debates,
+      showModal
+    } = this.props;
     var marginBottom = this.state.keyboardSpace / 253 * 205 - 5;
 
     if (!this.state.didFocus) {
       return(
-        <View style={{flex: 1, paddingTop: 64, paddingBottom: 48, backgroundColor: '#eeeeee'}}>
+        <View style={{flex: 1, paddingBottom: 48, backgroundColor: '#eeeeee'}}>
           <ActivityIndicatorIOS
               animating={true}
               style={{alignItems: 'center', justifyContent: 'center', height: 80}}
@@ -165,7 +172,7 @@ let DebateContainer = React.createClass({
     }
 
     return(
-      <View style={{flex: 1, paddingTop: 64, paddingBottom: 49, backgroundColor: '#eeeeee'}}>
+      <View style={{flex: 1, backgroundColor: '#eeeeee'}}>
         <ScrollView
           style={{flex: 1}}
           contentContainerStyle={{ justifyContent: 'space-between', backgroundColor: '#eeeeee'}}
@@ -189,13 +196,14 @@ let DebateContainer = React.createClass({
             showVote={this.state.didFocus}
             handleVotePress={handleVotePress}
             onPress={this._onDebateReply}
+            showModal={showModal}
           />
           <View style={{paddingHorizontal: 5}}>
             { (debates.loaded && this.state.didFocus && debates[article.articleId]) ? debates[article.articleId].children.map(data => this.renderDebate(data)) : this._renderActivityIndicator() }
           </View>
         </ScrollView>
-        <View style={{flexDirection: 'row', alignItems: 'stretch', backgroundColor: "white"}}>
-          <TextInput style={{paddingHorizontal: 13, left: 0, right: 0, height: 45, marginBottom: marginBottom, marginRight: 20, paddingBottom: 5, borderColor: 'white', borderTopWidth: 2, alignSelf: 'stretch', flex: 5, fontSize: 15}} placeholder={`回覆 ${this.state.replyingDebate && this.state.replyingDebate.debaterName || article.authorName}...`} multiline={true} enablesReturnKeyAutomatically={true} keyboardAppearance="light" onChangeText={(text) => this.setState({text})} value={this.state.text} ref="DebateInput"/>
+        <View style={{flexDirection: 'row', alignItems: 'stretch', backgroundColor: "white", paddingBottom: 49, marginTop: -49}}>
+          <TextInput style={{paddingHorizontal: 13, left: 0, right: 0, height: 45, marginBottom: marginBottom, marginRight: 20, paddingTop: 5, paddingBottom: 5, borderColor: 'white', borderTopWidth: 2, alignSelf: 'stretch', flex: 5, fontSize: 15}} placeholder={`回覆 ${this.state.replyingDebate && this.state.replyingDebate.debaterName || article.authorName}...`} multiline={true} enablesReturnKeyAutomatically={true} keyboardAppearance="light" onChangeText={(text) => this.setState({text})} value={this.state.text} ref="DebateInput"/>
           <Text style={{marginBottom: marginBottom, paddingTop: 13, flex: 1, fontSize: 15, color: "#2081e4", fontWeight: 'bold'}} onPress={this._onDebateSubmit} suppressHighlighting={false}>送出</Text>
         </View>
       </View>

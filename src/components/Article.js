@@ -5,7 +5,8 @@ import React, {
   TouchableHighlight,
   RCTNativeAppEventEmitter,
   ActionSheetIOS,
-  AlertIOS
+  AlertIOS,
+  Modal
 } from 'react-native';
 
 import SafariView from "react-native-safari-view";
@@ -16,11 +17,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ArticleHelper from '../utils/ArticleHelper';
 import KaifIcon from './KaifIcon';
 import KaifAPI from '../utils/KaifAPI';
+import DebateContainer from '../containers/DebateContainer';
+import ExternalWebView from '../containers/ExternalWebView';
 
 let Article = React.createClass({
   getInitialState: function() {
     return {
-      visibility: true,
+      visibility: true
     }
   },
 
@@ -52,9 +55,6 @@ let Article = React.createClass({
       voteState: newArticle.vote ? newArticle.vote.voteState : 'EMPTY',
       upVote: newArticle.upVote,
     })
-
-    // force refresh while we have push props into a navigator
-    navigator.forceUpdate();
   },
 
   _pushDebateRoute: function() {
@@ -63,14 +63,19 @@ let Article = React.createClass({
       navigator,
       rootNavigator,
       events,
-      handleVotePress
+      handleVotePress,
+      showModal
     } = this.props;
-    let route = Router.getDebateRoute({
-      article: article,
-      rootNavigator: rootNavigator,
-      events: events,
-      handleVotePress: handleVotePress
-    })
+    let route = {
+      component: DebateContainer,
+      passProps: {
+        article: article,
+        rootNavigator: rootNavigator,
+        events: events,
+        handleVotePress: handleVotePress,
+        showModal: showModal
+      }
+    }
     navigator.push(route);
   },
 
@@ -147,20 +152,22 @@ let Article = React.createClass({
   },
 
   openExternalLink: function(event) {
-    const { article, rootNavigator } = this.props;
+    const { article, rootNavigator, showModal } = this.props;
     if (ArticleHelper.isExternalLink(article.articleType)) {
       // SafariView.isAvailable()
       // .then(SafariView.show({
       //   url: article.link
       // }))
+      showModal({url: article.link});
       // .catch(error => {
-        if (rootNavigator) {
-          let route = Router.getWebViewRoute({
-            url: article.link,
-            rootNavigator: rootNavigator
-          })
-          rootNavigator.push(route);
-        }
+        // this.setState({modalVisible: true});
+        // if (rootNavigator) {
+        //   let route = Router.getWebViewRoute({
+        //     url: article.link,
+        //     rootNavigator: rootNavigator
+        //   })
+        //   rootNavigator.push(route);
+        // }
       // });
     } else {
       this._pushDebateRoute();

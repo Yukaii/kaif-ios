@@ -14,6 +14,7 @@ import Subscribable from 'Subscribable';
 
 import KaifAPI from '../utils/KaifAPI';
 import Router from '../routers';
+import ArticleContainer from '../containers/ArticleContainer';
 
 let Zone = React.createClass({
   mixins: [Subscribable.Mixin],
@@ -50,11 +51,15 @@ let Zone = React.createClass({
       }
     }
 
-    let route = Router.getArticleRoute({
-      ...this.props,
-      zone: zoneName,
-      zoneTitle: zoneTitle
-    });
+    let route = {
+      component: ArticleContainer,
+      title: zoneTitle,
+      passProps: {
+        ...this.props,
+        zone: zoneName,
+        zoneTitle: zoneTitle
+      }
+    }
 
     navigator.push(route);
   },

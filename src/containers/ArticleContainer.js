@@ -210,7 +210,8 @@ let ArticleContainer = React.createClass({
       navigator,
       rootNavigator,
       events,
-      dataSource
+      dataSource,
+      showModal
     } = this.props;
 
     return(
@@ -254,6 +255,7 @@ let ArticleContainer = React.createClass({
                         rootNavigator={rootNavigator}
                         canHandleArticlePress={true}
                         handleVotePress={this._handleVotePress(article)}
+                        showModal={showModal}
                       />
                     );
                   }

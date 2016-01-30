@@ -103,18 +103,25 @@ export default class ExternalWebView extends Component {
     });
   };
 
+  renderShareButtom() {
+    const {openShareAction} = this.props;
+    return(
+      <TouchableHighlight underlayColor="rgba(128, 128, 128, 0)" style={{alignSelf: 'flex-end', alignItems: 'center', flexDirection: 'row', width: 50}} onPress={() => { }}>
+        <Text style={{color: '#5ea7e9', textAlign:'right', fontWeight: 'bold', fontSize: 16, marginBottom: 2}} onPress={this.openShareAction.bind(this)}>分享</Text>
+      </TouchableHighlight>
+    );
+  };
+
   render(){
-    const { url, rootNavigator } = this.props;
+    const { url, rootNavigator, closeModal } = this.props;
     return(
       <View style={{flex: 1}}>
         <View style={{height: 64, paddingBottom: 10, flexDirection: 'row', backgroundColor: '#2d3e50', borderWidth: 3, borderColor: '#2d3e50', borderTopLeftRadius: 5,  borderTopRightRadius: 5}}>
-          <TouchableHighlight underlayColor="rgba(128, 128, 128, 0)" style={{alignSelf: 'flex-end', alignItems: 'center', flexDirection: 'row', width: 50}} onPress={() => { rootNavigator.pop(); }}>
+          <TouchableHighlight underlayColor="rgba(128, 128, 128, 0)" style={{alignSelf: 'flex-end', alignItems: 'center', flexDirection: 'row', width: 50}} onPress={() => { closeModal() }}>
             <Icon name="close-round" size={20} color='#5ea7e9' style={{marginLeft: 12}}/>
           </TouchableHighlight>
           <View style={{flex: 1}}/>
-          <TouchableHighlight underlayColor="rgba(128, 128, 128, 0)" style={{alignSelf: 'flex-end', alignItems: 'center', flexDirection: 'row', width: 50}} onPress={() => { }}>
-            <Text style={{color: '#5ea7e9', textAlign:'right', fontWeight: 'bold', fontSize: 16, marginBottom: 2}} onPress={this.openShareAction.bind(this)}>分享</Text>
-          </TouchableHighlight>
+          { /* this.renderShareButtom() */ }
         </View>
         { this._renderWebView() }
       </View>

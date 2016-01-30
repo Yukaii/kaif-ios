@@ -5,7 +5,9 @@ import React, {
   PropTypes,
   Navigator,
   TabBarIOS,
+  NavigatorIOS,
   Button,
+  Modal,
   StatusBarIOS
 } from 'react-native';
 
@@ -21,6 +23,7 @@ import Setting from './Setting';
 import Profile from './Profile';
 import Zone from './Zone';
 import ArticleContainer from './ArticleContainer';
+import ExternalWebView from './ExternalWebView';
 
 import Router from '../routers';
 
@@ -30,7 +33,8 @@ let Home = React.createClass({
   getInitialState: function() {
     return({
       selectedTab: 'articleList',
-      shouldPop: false
+      shouldPop: false,
+      modalVisible: false
     });
   },
 
@@ -42,97 +46,147 @@ let Home = React.createClass({
     StatusBarIOS.setStyle('default');
   },
 
-  render: function() {
-    return (
-        <TabBarIOS
-          tintColor="#0078e7"
-          translucent={true}
-        >
-        <Icon.TabBarItem
-          title="文章"
-          iconName="ios-paper"
-          selectedIconName="ios-paper"
-          selected={this.state.selectedTab === 'articleList'}
-          onPress={() => {
-            if (this.state.selectedTab === 'articleList') {
-              this.eventEmitter.emit('shouldPop');
-            }
-            this.setState({
-              selectedTab: 'articleList',
-            });
-          }}>
-          <ExNavigator
-            initialRoute={Router.getArticleRoute(
-              {...this.props,
-                events: this.eventEmitter,
-                policyFunctions: {
-                  "hot": KaifAPI.requestHotArticles,
-                  "latest": KaifAPI.requestLatestArticles
-                }
-              })
-            }
-            style={{ flex: 1 }}
-            sceneStyle={{  }}
-            configureScene={ (route) => Navigator.SceneConfigs.FloatFromLeft }
-          />
-        </Icon.TabBarItem>
-        <Icon.TabBarItem
-          title="討論區"
-          iconName="chatboxes"
-          selectedIconName="chatboxes"
-          selected={this.state.selectedTab === 'zoneList'}
-          onPress={() => {
-            if (this.state.selectedTab === 'zoneList') {
-              this.eventEmitter.emit('shouldPop');
-            }
-            this.setState({
-              selectedTab: 'zoneList'
-            });
-        }}>
-          <ExNavigator
-            initialRoute={Router.getZoneRoute({...this.props, events: this.eventEmitter})}
-            style={{ flex: 1 }}
-            sceneStyle={{  }}
-            configureScene={ (route) => Navigator.SceneConfigs.FloatFromLeft }
-          />
-        </Icon.TabBarItem>
-        <Icon.TabBarItem
-          title="個人資料"
-          iconName="person"
-          selectedIconName="person"
-          selected={this.state.selectedTab === 'profileTab'}
-          onPress={() => {
-            if (this.state.selectedTab === 'profileTab') {
-              this.eventEmitter.emit('shouldPop');
-            }
-            this.setState({
-              selectedTab: 'profileTab'
-            });
-        }}>
-          <ExNavigator
-            initialRoute={Router.getProfileRoute({...this.props, events: this.eventEmitter})}
-            style={{ flex: 1 }}
-          />
-        </Icon.TabBarItem>
-        <Icon.TabBarItem
-          title="設定"
-          iconName="ios-cog"
-          selectedIconName="ios-cog"
-          selected={this.state.selectedTab === 'settingTab'}
-          onPress={() => {
-            if (this.state.selectedTab === 'settingTab') {
-              this.eventEmitter.emit('shouldPop');
-            }
-            this.setState({
-              selectedTab: 'settingTab'
-            });
-        }}>
-        <ExNavigator
-          initialRoute={Router.getSettingRoute({...this.props, events: this.eventEmitter})}
-          style={{ flex: 1 }}
+  openShareAction: function(url) {
+    return () => {
+      ActionSheetIOS.showShareActionSheetWithOptions({
+        url: url || "http://www.google.com.tw",
+        message: url || "http://www.google.com.tw",
+        subject: '透過 kaif.io 分享'
+      },
+      (error) => {
+        // alert(error);
+      },
+      (success, method) => {
+      });
+    }
+  },
+
+  renderModal: function() {
+    const {modalVisible, modalProps} = this.state;
+
+    return(
+      <Modal
+        animated={true}
+        visible={this.state.modalVisible}
+      >
+        <ExternalWebView
+          {...modalProps}
+          closeModal={() => {
+            this.setState({modalVisible: false});
+          }}
+          openShareAction={this.openShareAction(modalProps.url)}
         />
-        </Icon.TabBarItem>
-      </TabBarIOS>
+      </Modal>
+    );
+  },
+
+  render: function() {
+    let showModal = (modalProps) => {
+      this.setState({modalVisible: true, modalProps: modalProps}) ;
+    };
+
+    return (
+        <View style={{flex: 1}}>
+          {this.state.modalVisible ? this.renderModal() : null }
+          <TabBarIOS
+            tintColor="#0078e7"
+            translucent={true}
+          >
+          <Icon.TabBarItem
+            title="文章"
+            iconName="ios-paper"
+            selectedIconName="ios-paper"
+            selected={this.state.selectedTab === 'articleList'}
+            onPress={() => {
+              if (this.state.selectedTab === 'articleList') {
+                this.eventEmitter.emit('shouldPop');
+              }
+              this.setState({
+                selectedTab: 'articleList',
+              });
+            }}>
+
+            <NavigatorIOS
+              initialRoute={{
+                component: ArticleContainer,
+                title: '綜合文章',
+                passProps: {
+                  ...this.props,
+                  showModal: showModal,
+                  events: this.eventEmitter
+                }
+              }}
+              style={{flex: 1}}/>
+          </Icon.TabBarItem>
+          <Icon.TabBarItem
+            title="討論區"
+            iconName="chatboxes"
+            selectedIconName="chatboxes"
+            selected={this.state.selectedTab === 'zoneList'}
+            onPress={() => {
+              if (this.state.selectedTab === 'zoneList') {
+                this.eventEmitter.emit('shouldPop');
+              }
+              this.setState({
+                selectedTab: 'zoneList'
+              });
+          }}>
+            <NavigatorIOS
+              initialRoute={{
+                component: Zone,
+                title: '討論區',
+                passProps: {
+                  ...this.props,
+                  showModal: showModal,
+                  events: this.eventEmitter
+                }
+              }}
+              style={{flex: 1}}/>
+          </Icon.TabBarItem>
+          <Icon.TabBarItem
+            title="個人資料"
+            iconName="person"
+            selectedIconName="person"
+            selected={this.state.selectedTab === 'profileTab'}
+            onPress={() => {
+              if (this.state.selectedTab === 'profileTab') {
+                this.eventEmitter.emit('shouldPop');
+              }
+              this.setState({
+                selectedTab: 'profileTab'
+              });
+          }}>
+            <ExNavigator
+              initialRoute={Router.getProfileRoute({...this.props, events: this.eventEmitter})}
+              style={{ flex: 1 }}
+            />
+          </Icon.TabBarItem>
+          <Icon.TabBarItem
+            title="設定"
+            iconName="ios-cog"
+            selectedIconName="ios-cog"
+            selected={this.state.selectedTab === 'settingTab'}
+            onPress={() => {
+              if (this.state.selectedTab === 'settingTab') {
+                this.eventEmitter.emit('shouldPop');
+              }
+              this.setState({
+                selectedTab: 'settingTab'
+              });
+          }}>
+            <NavigatorIOS
+              initialRoute={{
+                component: Setting,
+                title: '設定',
+                passProps: {
+                  ...this.props,
+                  events: this.eventEmitter,
+                }
+              }}
+              style={{flex: 1}}/>
+          </Icon.TabBarItem>
+        </TabBarIOS>
+        </View>
     );
   }
 });

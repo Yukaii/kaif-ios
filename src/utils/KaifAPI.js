@@ -106,7 +106,6 @@ oauthCallback = (event, callback) => {
           AsyncStorage.setItem(USERNAME_KEY, profileData.data.username).then(() => {
             // save username / access_token to keychain
             Keychain.setGenericPassword(profileData.data.username, data.access_token).then(() => {
-              alert(`${profileData.data.username}, ${data.access_token}`);
               callback(data.access_token);
             })
           });
