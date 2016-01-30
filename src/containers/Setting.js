@@ -19,6 +19,7 @@ import * as ArticleActions from '../actions/article';
 
 import KaifAPI from '../utils/KaifAPI';
 import ArticleContainer from '../containers/ArticleContainer';
+import About from '../containers/About';
 import Router from '../routers';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -43,7 +44,7 @@ let Setting = React.createClass({
       case "terms":
         navigator.push({
           component: ArticleContainer,
-          title: '常見問題',
+          title: '服務條款',
           passProps: {
             ...this.props,
             zone: "kaif-terms",
@@ -66,6 +67,12 @@ let Setting = React.createClass({
             }
           }]
         )
+        return;
+      case "about":
+        navigator.push({
+          component: About,
+          title: '關於'
+        })
         return;
       default:
         return null;
