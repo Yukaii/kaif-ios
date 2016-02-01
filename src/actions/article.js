@@ -2,6 +2,7 @@ export const REQUEST_ARTICLES = 'REQUEST_ARTICLES';
 export const REQUEST_ZONE_ARTICLES = 'REQUEST_ZONE_ARTICLES';
 export const VOTE_FOR_ARTICLE = 'VOTE_FOR_ARTICLE';
 export const RELOAD_ARTICLES = 'RELOAD_ARTICLES';
+export const REQUEST_USER_ARTICLES = 'REQUEST_USER_ARTICLES';
 export const LOGOUT = 'LOGOUT';
 
 import KaifAPI from '../utils/KaifAPI';
@@ -81,6 +82,20 @@ export function voteForArticle(callback=null, articleId, voteState, articleType,
           articleId: articleId,
           articleType: articleType,
           zone: zone
+        });
+        if (callback) { callback(r.data); }
+      }
+    });
+  }
+}
+
+export function requestUserArticles(username=null, lastArticleId=null) {
+  return dispatch => {
+    KaifAPI.requestUserSubmittedArticles(username, lastArticleId).then(r => {
+      if (r.hasOwnProperty("data")) {
+        dispatch({
+          type: REQUEST_USER_ARTICLES,
+          articles: r.data
         });
         if (callback) { callback(r.data); }
       }

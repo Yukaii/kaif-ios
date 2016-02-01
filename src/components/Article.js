@@ -152,7 +152,7 @@ let Article = React.createClass({
   },
 
   openExternalLink: function(event) {
-    const { article, rootNavigator, showModal } = this.props;
+    const { article, rootNavigator, showModal, canHandleArticlePress } = this.props;
     if (ArticleHelper.isExternalLink(article.articleType)) {
       // SafariView.isAvailable()
       // .then(SafariView.show({
@@ -170,7 +170,7 @@ let Article = React.createClass({
         // }
       // });
     } else {
-      this._pushDebateRoute();
+      canHandleArticlePress && this._pushDebateRoute();
     }
   },
 
@@ -214,7 +214,10 @@ let Article = React.createClass({
                   >
                   <Text style={{fontSize: 16, marginBottom: 2}}>{article.title && ArticleHelper.procceedTitle(article.title)}</Text>
                 </TouchableHighlight>
-                <Text style={{color: 'rgb(97, 97, 97)', marginBottom: 3}}>{`(${ArticleHelper.linkHost(article.link, article.articleType)})`}</Text>
+                { ArticleHelper.isExternalLink(article.articleType) ?
+                    <Text style={{color: 'rgb(97, 97, 97)', marginBottom: 3}}>{`(${ArticleHelper.linkHost(article.link, article.articleType)})`}</Text>
+                    : null
+                }
               </View>
               <View style={{flexDirection: 'row', flex: 1, justifyContent: 'flex-start'}}>
                 <View style={{flexDirection: 'row', flex: 1}}>

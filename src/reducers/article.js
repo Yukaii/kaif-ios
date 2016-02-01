@@ -3,6 +3,7 @@ import {
   REQUEST_ZONE_ARTICLES,
   VOTE_FOR_ARTICLE,
   RELOAD_ARTICLES,
+  REQUEST_USER_ARTICLES,
   LOGOUT
 } from '../actions/article';
 
@@ -10,7 +11,8 @@ import * as _ from 'underscore';
 
 let initialState = {
   hot: [],
-  latest: []
+  latest: [],
+  userSubmittedArticles: []
 }
 
 let changeVoteCount = (prevVoteState, curVoteState) => {
@@ -89,6 +91,17 @@ export default function articles(state={...initialState, zoneArticles: null}, ac
       return newState;
     case LOGOUT:
       return initialState;
+
+    case REQUEST_USER_ARTICLES:
+      if (action.articles.length == 0) { return state; }
+
+      var newState = {...state};
+
+      if (!_.isEqual(newState.userSubmittedArticles, action.articles)) {
+        newState.userSubmittedArticles = newState.userSubmittedArticles.concat(action.articles);
+      }
+      return newState;
+
     default:
       return state;
   }

@@ -156,10 +156,17 @@ let Home = React.createClass({
                 selectedTab: 'profileTab'
               });
           }}>
-            <ExNavigator
-              initialRoute={Router.getProfileRoute({...this.props, events: this.eventEmitter})}
-              style={{ flex: 1 }}
-            />
+            <NavigatorIOS
+              initialRoute={{
+                component: Profile,
+                title: '個人資料',
+                passProps: {
+                  ...this.props,
+                  showModal: showModal,
+                  events: this.eventEmitter,
+                }
+              }}
+              style={{flex: 1}}/>
           </Icon.TabBarItem>
           <Icon.TabBarItem
             title="設定"

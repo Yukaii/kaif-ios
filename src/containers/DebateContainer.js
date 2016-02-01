@@ -8,6 +8,7 @@ import React, {
   InteractionManager,
   PropTypes,
   TextInput,
+  LinkingIOS,
   LayoutAnimation
 } from 'react-native';
 
@@ -15,6 +16,7 @@ import KeyboardEvents from 'react-native-keyboardevents';
 import {
   Emitter as KeyboardEventEmitter
 } from 'react-native-keyboardevents';
+import HTMLWebView from 'react-native-html-webview';
 
 import Subscribable from 'Subscribable';
 
@@ -29,6 +31,8 @@ import debateModel from '../models/debateModel';
 import articleModel from '../models/articleModel';
 
 import TrackKeyboard from '../components/trackKeyboard';
+
+import { renderMarkdown } from '../utils/utils';
 
 let DebateContainer = React.createClass({
   mixins: [Subscribable.Mixin, TrackKeyboard],
@@ -198,6 +202,17 @@ let DebateContainer = React.createClass({
             onPress={this._onDebateReply}
             showModal={showModal}
           />
+          {
+            article.content == null ?
+              null :
+              <HTMLWebView
+                html={renderMarkdown(article.content)}
+                makeSafe={false}
+                autoHeight={true}
+                style={{marginBottom: -10, backgroundColor: '#EEEEEE'}}
+                onLink={(href) => {LinkingIOS.openURL(href)}}
+              />
+          }
           <View style={{paddingHorizontal: 5}}>
             { (debates.loaded && this.state.didFocus && debates[article.articleId]) ? debates[article.articleId].children.map(data => this.renderDebate(data)) : this._renderActivityIndicator() }
           </View>

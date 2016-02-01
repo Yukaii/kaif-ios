@@ -13,7 +13,7 @@ export default React.createClass({
         <head>
           <style>
             html {
-              font-size: 14px;
+              font-size: 17px;
               font-family: Helvetica;
               word-break: break-words;
               background-color: #eeeeee;
