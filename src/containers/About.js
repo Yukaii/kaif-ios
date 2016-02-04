@@ -44,7 +44,7 @@ export default React.createClass({
     `;
 
     return(
-      <ScrollView style={{flex: 1}} bounces={false}>
+      <ScrollView style={{flex: 1}} bounces={true} style={{backgroundColor: '#eeeeee'}}>
         <HTMLWebView
           html={html}
           makeSafe={false}

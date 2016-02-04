@@ -93,7 +93,7 @@ let Home = React.createClass({
             translucent={true}
           >
           <Icon.TabBarItem
-            title="文章"
+            title="綜合"
             iconName="ios-paper"
             selectedIconName="ios-paper"
             selected={this.state.selectedTab === 'articleList'}
