@@ -35,6 +35,7 @@
 		3233565C1C5C541E00E69D82 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		323356631C5C667400E69D82 /* libRNKeychain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 323356621C5C666700E69D82 /* libRNKeychain.a */; };
 		32457A8F1C5CE35400141716 /* libAIBHTMLWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32457A8C1C5CE34B00141716 /* libAIBHTMLWebView.a */; };
+		329948BC1C63A16B00CDD311 /* kaif-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 329948BB1C63A16B00CDD311 /* kaif-icon.png */; };
 		32C90A8B1C391242002C6355 /* libRNTableView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32C90A8A1C391205002C6355 /* libRNTableView.a */; };
 		32F23FA41C3B3ED6002CE19B /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32F826661C3A8A1200371DF4 /* libRNVectorIcons.a */; };
 		400EA8FEB67F47A8BC8186A6 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06EC2422DB8E47F29104BE80 /* MaterialIcons.ttf */; };
@@ -236,6 +237,7 @@
 		323356591C5C533600E69D82 /* ReactView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReactView.m; sourceTree = "<group>"; };
 		3233565D1C5C666700E69D82 /* RNKeychain.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNKeychain.xcodeproj; path = "../node_modules/react-native-keychain/RNKeychain.xcodeproj"; sourceTree = "<group>"; };
 		32457A861C5CE34A00141716 /* AIBHTMLWebView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AIBHTMLWebView.xcodeproj; path = "../node_modules/react-native-html-webview/AIBHTMLWebView.xcodeproj"; sourceTree = "<group>"; };
+		329948BB1C63A16B00CDD311 /* kaif-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "kaif-icon.png"; sourceTree = "<group>"; };
 		32C90A7B1C391204002C6355 /* RNTableView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNTableView.xcodeproj; path = "../node_modules/react-native-tableview/RNTableView.xcodeproj"; sourceTree = "<group>"; };
 		4262B8A2C5064013BCA87F2A /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		4BA56515F5AA4629BC5E885B /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
@@ -367,6 +369,7 @@
 		13B07FAE1A68108700A75B9A /* KaifIoIos */ = {
 			isa = PBXGroup;
 			children = (
+				329948BB1C63A16B00CDD311 /* kaif-icon.png */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -850,6 +853,7 @@
 				AD10F065FAA349C7A7B83B0E /* Foundation.ttf in Resources */,
 				66DED1619BF842B9AEE85527 /* Ionicons.ttf in Resources */,
 				400EA8FEB67F47A8BC8186A6 /* MaterialIcons.ttf in Resources */,
+				329948BC1C63A16B00CDD311 /* kaif-icon.png in Resources */,
 				F75F45DE2B4745FD9EEB8817 /* Octicons.ttf in Resources */,
 				7DAD5125F36C4D6F93628409 /* Zocial.ttf in Resources */,
 			);

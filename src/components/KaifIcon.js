@@ -20,12 +20,6 @@ let styles = StyleSheet.create({
     }
 });
 
-/*
-  <Image
-    source={require("../assets/images/kaif-icon.png")}
-  />
-*/
-
 export default class KaifIcon extends Component {
   render() {
     const { color, width, height, style } = this.props;
