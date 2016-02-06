@@ -2,7 +2,8 @@ import React, {
   Component,
   View,
   ActivityIndicatorIOS,
-  NativeAppEventEmitter
+  NativeAppEventEmitter,
+  Alert
 } from 'react-native';
 
 import TableView, {
@@ -11,6 +12,8 @@ import TableView, {
   Cell
 } from 'react-native-tableview';
 import Subscribable from 'Subscribable';
+
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import KaifAPI from '../utils/KaifAPI';
 import Router from '../routers';
@@ -39,32 +42,44 @@ let Zone = React.createClass({
     });
 
     this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
+
+    Icon.getImageSource('ios-information-outline', 25).then(source => this.setState({infoButton: source}));
   },
 
   onZonePress: function(event) {
     const { navigator } = this.props;
     let [zoneName, zoneTitle] = event.value.split(',');
 
-    let zoneFunction = (func, zone) => {
-      return (startId) => {
-        return func(zone, startId);
-      }
-    }
+    KaifAPI.requestZoneAdmin(zoneName).then(data => {
+      let admins = data.data.join(',')
 
-    let route = {
-      component: ArticleContainer,
-      title: zoneTitle,
-      passProps: {
-        ...this.props,
-        zone: zoneName,
-        zoneTitle: zoneTitle
+      let route = {
+        component: ArticleContainer,
+        title: zoneTitle,
+        passProps: {
+          ...this.props,
+          zone: zoneName,
+          zoneTitle: zoneTitle
+        },
+        rightButtonIcon: this.state.infoButton,
+        onRightButtonPress: () => {
+          Alert.alert(
+            '討論區資訊',
+            `版名：${zoneTitle}\n路徑：/z/${zoneName}\n版主群：${admins}`,
+            [
+              {text: '確定'}
+            ]
+          );
+        }
       }
-    }
 
-    navigator.push(route);
+      navigator.push(route);
+    });
   },
 
   render: function() {
+    if (!this.state.infoButton) { return false }
+
     if (this.state.zones.length == 0) {
       return(
         <View style={{flex: 1, paddingTop: 64, marginBottom: 40, backgroundColor: '#eeeeee'}}>

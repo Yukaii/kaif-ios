@@ -18,6 +18,8 @@ import TableView, {
   Cell
 } from 'react-native-tableview';
 
+import Icon from 'react-native-vector-icons/Ionicons';
+
 import Router from '../routers';
 import Article from '../components/Article';
 import ArticleHelper from '../utils/ArticleHelper';
@@ -84,7 +86,7 @@ let ArticleContainer = React.createClass({
       });
       this.setState({didFocus: true});
     });
-
+    Icon.getImageSource('ios-upload-outline', 25, "#0078e7").then(source => this.setState({shareButtonSource: source}));
     this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
   },
 
@@ -143,7 +145,8 @@ let ArticleContainer = React.createClass({
   _renderTabButton: function(policy) {
     const { articleRequestPolicy } = this.state;
     const { zoneTitle, zone } = this.props;
-    let selectedStyle = (articleRequestPolicy == policy) ? { backgroundColor: '#eeeeee'} : {}
+    let touchSelectedStyle = (articleRequestPolicy == policy) ? {} : {}
+    let textSelectedStyle = (articleRequestPolicy == policy) ? { color: '#0078e7' } : {}
 
     let titleHash = {
       "hot": "熱門",
@@ -153,8 +156,8 @@ let ArticleContainer = React.createClass({
     if (zone == "kaif-faq" || zone == "kaif-terms") return null;
 
     return(
-      <TouchableHighlight underlayColor="transparent" style={{flex: 1, height: 28, justifyContent: 'center', ...selectedStyle}} onPress={this._handleArticleRequestPolicyChange(policy)}>
-        <Text style={{color: 'black', textAlign: 'center'}}>
+      <TouchableHighlight underlayColor="transparent" style={{flex: 1, height: 28, justifyContent: 'center', ...touchSelectedStyle}} onPress={this._handleArticleRequestPolicyChange(policy)}>
+        <Text style={[{color: 'black', textAlign: 'center'}, textSelectedStyle]}>
           {zoneTitle + titleHash[policy]}
         </Text>
       </TouchableHighlight>
@@ -214,10 +217,12 @@ let ArticleContainer = React.createClass({
       showModal
     } = this.props;
 
+    if (!this.state.shareButtonSource) { return false; }
     return(
       <View style={{flex: 1, paddingTop: 64, paddingBottom: 50, overflow: 'hidden'}} >
         <View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5, borderColor: 'rgba(178, 178, 178, 0.62)'}}>
           { this._renderTabButton("hot") }
+          { this._renderTabSeperator() }
           { this._renderTabButton("latest") }
         </View>
         {
@@ -256,6 +261,7 @@ let ArticleContainer = React.createClass({
                         canHandleArticlePress={true}
                         handleVotePress={this._handleVotePress(article)}
                         showModal={showModal}
+                        shareButtonSource={this.state.shareButtonSource}
                       />
                     );
                   }

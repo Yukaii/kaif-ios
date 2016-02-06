@@ -5,8 +5,16 @@ import React, {
   ScrollView
 } from 'react-native'
 import HTMLWebView from 'react-native-html-webview';
+import Subscribable from 'Subscribable';
 
 export default React.createClass({
+  mixins: [Subscribable.Mixin],
+
+  componentDidMount: function() {
+    const { navigator, events } = this.props;
+    this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
+  },
+
   render: function() {
     let html = `
       <html>

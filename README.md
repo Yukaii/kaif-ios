@@ -1,10 +1,11 @@
-# Kaif.io React Native iOS App(At a very early stage)
-[Kaif.io](https://kaif.io) unofficial iOS Client App.
+# Kaif.io iOS Client App
+[Kaif.io](https://kaif.io) unofficial iOS Client App. Made with React Native.
 
 ## Screenshots
-![](screenshots/articles.png)
-![](screenshots/debates.png)
-![](screenshots/webview.png)
+<img width="400" src="./screenshots/article.png">
+<img width="400" src="./screenshots/debate.png">
+<img width="400" src="./screenshots/zone.png">
+<img width="400" src="./screenshots/zone_articles.png">
 
 ## Setup
 

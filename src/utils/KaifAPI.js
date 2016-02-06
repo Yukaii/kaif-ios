@@ -242,6 +242,10 @@ requestZoneAll = () => {
   return requestAPI('zone/all');
 }
 
+requestZoneAdmin = (zone) => {
+  return requestAPI(`zone/${zone}/administrator/username`);
+}
+
 requestBasicUserProfile = () => {
   return requestAPI('user/basic');
 }
@@ -309,6 +313,7 @@ KaifAPI = {
   requestUserSubmittedArticles: requestUserSubmittedArticles,
   requestIfArticlesVoted: requestIfArticlesVoted,
   requestZoneAll: requestZoneAll,
+  requestZoneAdmin: requestZoneAdmin,
   requestBasicUserProfile: requestBasicUserProfile,
   requestVoteForArticle: requestVoteForArticle,
   requestVoteForDebate: requestVoteForDebate,

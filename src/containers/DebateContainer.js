@@ -199,7 +199,7 @@ let DebateContainer = React.createClass({
             rootNavigator={rootNavigator}
             showVote={this.state.didFocus}
             handleVotePress={handleVotePress}
-            onPress={this._onDebateReply}
+            // onPress={this._onDebateReply}
             showModal={showModal}
           />
           {

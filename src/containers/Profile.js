@@ -14,6 +14,9 @@ import Article from '../components/Article';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux/native';
 import * as ArticleActions from '../actions/article';
+import { renderMarkdown } from '../utils/utils';
+
+import HTMLWebView from 'react-native-html-webview';
 
 let Profile = React.createClass({
   propTypes: {
@@ -51,9 +54,9 @@ let Profile = React.createClass({
       );
     } else {
       return(
-        <View style={{marginTop: 20}}>
+        <View style={{marginVertical: 5}}>
           <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold', marginBottom: 10}}>{profile.username}</Text>
-          <Text style={{alignSelf: 'center', paddingLeft: 30, paddingRight: 30, marginBottom: 10, color: 'rgb(122, 122, 122)'}}>{profile.description}</Text>
+          <HTMLWebView style={{alignSelf: 'center', paddingLeft: 30, paddingRight: 30, marginBottom: 10}} html={renderMarkdown(profile.description, {backgroundColor: 'white', color: 'rgb(122, 122, 122)'})} />
           <Text style={{alignSelf: 'center', color: 'rgb(122, 122, 122)'}}>since {moment(profile.createTime).fromNow()}</Text>
         </View>
       );
@@ -68,7 +71,7 @@ let Profile = React.createClass({
 
   _renderHeader() {
     return(
-      <View>
+      <View style={{marginBottom: 5}}>
         { this._renderUserData() }
         <View style={{paddingTop: 10, paddingHorizontal: 5}}>
           <SegmentedControlIOS

@@ -36,7 +36,8 @@ let Setting = React.createClass({
           passProps: {
             ...this.props,
             zone: "kaif-faq",
-            zoneTitle: "常見問題"
+            zoneTitle: "常見問題",
+            events: events
           }
         });
         return;
@@ -48,7 +49,8 @@ let Setting = React.createClass({
           passProps: {
             ...this.props,
             zone: "kaif-terms",
-            zoneTitle: "服務條款"
+            zoneTitle: "服務條款",
+            events: events
           }
         });
         return;
@@ -71,7 +73,11 @@ let Setting = React.createClass({
       case "about":
         navigator.push({
           component: About,
-          title: '關於'
+          title: '關於',
+          passProps: {
+            ...this.props,
+            events: events
+          }
         })
         return;
       default:

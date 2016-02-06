@@ -87,7 +87,7 @@ let Home = React.createClass({
 
     return (
         <View style={{flex: 1}}>
-          {this.state.modalVisible ? this.renderModal() : null }
+          { /* this.state.modalVisible ? this.renderModal() : null */ }
           <TabBarIOS
             tintColor="#0078e7"
             translucent={true}

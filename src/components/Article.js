@@ -6,7 +6,8 @@ import React, {
   RCTNativeAppEventEmitter,
   ActionSheetIOS,
   AlertIOS,
-  Modal
+  Modal,
+  LinkingIOS,
 } from 'react-native';
 
 import SafariView from "react-native-safari-view";
@@ -64,7 +65,8 @@ let Article = React.createClass({
       rootNavigator,
       events,
       handleVotePress,
-      showModal
+      showModal,
+      shareButtonSource
     } = this.props;
     let route = {
       component: DebateContainer,
@@ -74,7 +76,9 @@ let Article = React.createClass({
         events: events,
         handleVotePress: handleVotePress,
         showModal: showModal
-      }
+      },
+      rightButtonIcon: shareButtonSource,
+      onRightButtonPress: this._articleActions
     }
     navigator.push(route);
   },
@@ -82,11 +86,14 @@ let Article = React.createClass({
   handleArticlePress: function(event) {
     const {
       navigator,
-      canHandleArticlePress
+      canHandleArticlePress,
+      handleVotePress
     } = this.props;
 
     if (navigator && canHandleArticlePress) {
       this._pushDebateRoute();
+    } else {
+      handleVotePress();
     }
   },
 
@@ -103,13 +110,14 @@ let Article = React.createClass({
     });
   },
 
-  _handleArticleLongPress: function() {
-    const { article, navigator, canHandleArticlePress } = this.props;
+  _articleActions: function() {
+    const { article, navigator, canHandleArticlePress, handleVotePress } = this.props;
+    let voteAction = this.state.voteState == "UP" ? '收回贊同' : '贊同'
 
     ActionSheetIOS.showActionSheetWithOptions({
-      options: ['打開連結', '複製連結', '進入討論', '分享連結', '刪除', '取消'],
-      cancelButtonIndex: 5,
-      destructiveButtonIndex: 4
+      options: ['打開連結', '複製連結', '進入討論', '分享連結', voteAction, '刪除', '取消'],
+      cancelButtonIndex: 6,
+      destructiveButtonIndex: 5
     },
     (buttonIndex) => {
       switch(buttonIndex) {
@@ -129,6 +137,9 @@ let Article = React.createClass({
           this.openShareAction(article);
           return;
         case 4:
+          handleVotePress();
+          return;
+        case 5:
           KaifAPI.requestArticleCanDelete(article.articleId).then(data => {
             if (data.data) {
               // yes can delete
@@ -154,20 +165,21 @@ let Article = React.createClass({
   openExternalLink: function(event) {
     const { article, rootNavigator, showModal, canHandleArticlePress } = this.props;
     if (ArticleHelper.isExternalLink(article.articleType)) {
+      LinkingIOS.openURL(article.link);
+      // showModal({url: article.link});
       // SafariView.isAvailable()
       // .then(SafariView.show({
       //   url: article.link
       // }))
-      showModal({url: article.link});
       // .catch(error => {
-        // this.setState({modalVisible: true});
-        // if (rootNavigator) {
-        //   let route = Router.getWebViewRoute({
-        //     url: article.link,
-        //     rootNavigator: rootNavigator
-        //   })
-        //   rootNavigator.push(route);
-        // }
+      //   this.setState({modalVisible: true});
+      //   if (rootNavigator) {
+      //     let route = Router.getWebViewRoute({
+      //       url: article.link,
+      //       rootNavigator: rootNavigator
+      //     })
+      //     rootNavigator.push(route);
+      //   }
       // });
     } else {
       canHandleArticlePress && this._pushDebateRoute();
@@ -183,17 +195,10 @@ let Article = React.createClass({
 
     let voteColor = this.state.voteState == "UP" ? '#ff5619' : '#b3b3b3'
 
-    if (!this.state.visibility) {
-      return(
-        <View style={{width: this.viewProperties.width, height: this.viewProperties.height}}></View>
-      );
-    }
-
     return(
       <TouchableHighlight
         {...{...defaultTouchableStyle, ...touchableStyle} }
         onPress={this.props.onPress || this.handleArticlePress}
-        onLongPress={this._handleArticleLongPress}
       >
         <View key={article.articleId}
           style={{paddingTop: 5, paddingBottom: 5, paddingLeft: 6, paddingRight: 10, borderColor: "#CCCCCC", borderTopWidth: 0.6, ...style}}>

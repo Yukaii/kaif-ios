@@ -31,7 +31,7 @@ marked.setOptions({
   gfm: true,
   tables: true
 });
-exports.renderMarkdown = (md) => {
+exports.renderMarkdown = (md, options={}) => {
   let parsedHTML = marked(md);
   let regex = /<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g
   var m, links = [];
@@ -40,18 +40,27 @@ exports.renderMarkdown = (md) => {
       links = links.concat(m);
   }
 
+  let defaultStyle = {
+    backgroundColor: '#EEEEEE',
+    hrefColor: '#2081e4',
+    color: 'black',
+    ...options
+  };
+
   return `
   <html>
     <head>
       <style>
         html {
-          background-color: #EEEEEE;
+          background-color: ${defaultStyle.backgroundColor};
           font-size: 15px;
           font-family: Helvetica;
           word-break: break-words;
+          overflow-wrap: break-word;
+          color: ${defaultStyle.color};
         }
         a {
-          color: #2081e4;
+          color: ${defaultStyle.hrefColor};
         }
       </style>
     </head>
