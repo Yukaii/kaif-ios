@@ -83,6 +83,22 @@ let Profile = React.createClass({
     );
   },
 
+  _handleVotePress: function(article) {
+    const { articleRequestPolicy } = this.state;
+    const { zone, voteForArticle, navigator } = this.props;
+
+    return (event) => {
+      let voteState = (article.vote.voteState == 'EMPTY' || typeof article.vote.voteState === 'undefined') ? 'UP' : 'EMPTY';
+      voteForArticle(
+        null, // callback
+        article.articleId,
+        voteState,
+        articleRequestPolicy,
+        (zone || article.zone)
+      );
+    }
+  },
+
   render: function() {
     const {
       dataSource,
@@ -117,7 +133,7 @@ let Profile = React.createClass({
                   events={events}
                   rootNavigator={rootNavigator}
                   canHandleArticlePress={true}
-                  // handleVotePress={this._handleVotePress(article)}
+                  handleVotePress={this._handleVotePress(article)}
                   showModal={showModal}
                 />
               );
@@ -137,7 +153,7 @@ function mapStateToProps(state) {
 
   return {
     ...state,
-    submittedArticles: articles.userSubmittedArticles,
+    submittedArticles: articles.userSubmittedArticleIds.map(articleId => articles.articleHash[articleId]),
     dataSource: dataSource.cloneWithRows([]),
   };
 }

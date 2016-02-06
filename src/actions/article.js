@@ -10,7 +10,6 @@ import KaifAPI from '../utils/KaifAPI';
 let fetchArticleVotes = (articles) => {
   return new Promise((resolve, reject) => {
     KaifAPI.requestIfArticlesVoted(articles.map(_ => _.articleId)).then(voteData => {
-
       let newArticles = articles.map(art => {
         art.vote = {}
         if (!voteData.data || voteData.data.length == 0) { return art; }
@@ -93,11 +92,13 @@ export function requestUserArticles(username=null, lastArticleId=null) {
   return dispatch => {
     KaifAPI.requestUserSubmittedArticles(username, lastArticleId).then(r => {
       if (r.hasOwnProperty("data")) {
-        dispatch({
-          type: REQUEST_USER_ARTICLES,
-          articles: r.data
+        fetchArticleVotes(r.data).then(articles => {
+          dispatch({
+            type: REQUEST_USER_ARTICLES,
+            articles: articles
+          });
+          if (callback) { callback(articles); }
         });
-        if (callback) { callback(r.data); }
       }
     });
   }

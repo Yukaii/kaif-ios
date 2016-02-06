@@ -44,11 +44,11 @@ let ArticleContainer = React.createClass({
 
     let policy = _policy || articleRequestPolicy;
 
-    if (zone && articles.zoneArticles) {
-      return articles.zoneArticles[zone] && articles.zoneArticles[zone][policy] || [];
+    if (zone && articles.zoneArticleIdArray) {
+      return articles.zoneArticleIdArray[zone] && articles.zoneArticleIdArray[zone][policy].map(articleId => articles.articleHash[articleId]) || [];
     }
     else {
-      return articles[policy];
+      return articles.articleIdArray[policy] && articles.articleIdArray[policy].map(articleId  => articles.articleHash[articleId]);
     }
   },
 
@@ -153,7 +153,7 @@ let ArticleContainer = React.createClass({
       "latest": "最新"
     }
 
-    if (zone == "kaif-faq" || zone == "kaif-terms") return null;
+    if (zone == "kaif-faq" || zone == "kaif-terms") return false;
 
     return(
       <TouchableHighlight underlayColor="transparent" style={{flex: 1, height: 28, justifyContent: 'center', ...touchSelectedStyle}} onPress={this._handleArticleRequestPolicyChange(policy)}>
@@ -165,6 +165,9 @@ let ArticleContainer = React.createClass({
   },
 
   _renderTabSeperator: function() {
+    const { zoneTitle, zone } = this.props;
+
+    if (zone == "kaif-faq" || zone == "kaif-terms") return false;
     return(
       <View style={{width: 1, height: 18, borderLeftWidth: 0.5, borderColor: 'rgba(178, 178, 178, 0.62)'}}/>
     );
@@ -284,10 +287,10 @@ function mapStateToProps(state) {
   let articleRows;
 
   if (zone && articles.zoneArticles) {
-    articleRows = articles.zoneArticles[zone] && articles.zoneArticles[zone][policy] || [];
+    articleRows = articles.zoneArticleIdArray[zone] && articles.zoneArticleIdArray[zone][policy].map(articleId => articles.articleHash[articleId]);
   }
   else {
-    articleRows = articles[policy] || [];
+    articleRows = articles.articleIdArray[policy] && articles.articleIdArray[policy].map(articleId => articles.articleHash[articleId]) || [];
   }
 
   return {

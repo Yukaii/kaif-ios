@@ -10,22 +10,22 @@ import {
 import * as _ from 'underscore';
 
 let initialState = {
-  hot: [],
-  latest: [],
-  userSubmittedArticles: []
+  userSubmittedArticleIds: [],
+  articleIdArray: {hot: [], latest: []},
+  zoneArticleIdArray: {},
+  articleHash: {},
 }
 
 let changeVoteCount = (prevVoteState, curVoteState) => {
   if (prevVoteState == curVoteState) {
     return 0;
-  }
-  if ( (prevVoteState == 'EMPTY' || typeof prevVoteState === 'undefined') && curVoteState == 'UP' ) {
+  } else if ( (prevVoteState == 'EMPTY' || typeof prevVoteState === 'undefined') && curVoteState == 'UP' ) {
     return 1;
-  }
-  if (prevVoteState == 'UP' && curVoteState == 'EMPTY') {
+  } else if (prevVoteState == 'UP' && curVoteState == 'EMPTY') {
     return -1;
   }
 
+  // should never run this line :p
   alert(`${prevVoteState} => ${curVoteState}`);
 }
 
@@ -34,49 +34,53 @@ export default function articles(state={...initialState, zoneArticles: null}, ac
 
     case REQUEST_ARTICLES:
       var newState = {...state};
-      if (!_.isEqual(state[action.articleType], action.articles)) {
-        newState[action.articleType] = state[action.articleType].concat(action.articles);
+      var articleIds = action.articles.map(article => article.articleId);
+
+      if (!_.isEqual(state.articleIdArray[action.articleType], articleIds)) {
+        // concat to artitle id array
+        if (typeof newState.articleIdArray[action.articleType] === 'undefined') {
+          newState.articleIdArray[action.articleType] = []
+        }
+
+        newState.articleIdArray[action.articleType] = newState.articleIdArray[action.articleType].concat(articleIds)
+
+        // update to article hash
+        if (typeof newState.articleHash === 'undefined') {
+          newState.articleHash = {}
+        }
+        for (let i = 0; i < action.articles.length; i++) {
+          newState.articleHash[action.articles[i].articleId] = action.articles[i];
+        }
       }
+
       return newState;
 
     case REQUEST_ZONE_ARTICLES:
+
       var zoneName = action.zone;
-      var currentZoneArticles = state.zoneArticles && state.zoneArticles[zoneName] && state.zoneArticles[zoneName][action.articleType] || []
-
       var newState = {...state}
+      var articleIds = action.articles.map(article => article.articleId);
 
-      if(!newState.zoneArticles){ newState.zoneArticles = {} }
-      if(!newState.zoneArticles[zoneName]){ newState.zoneArticles[zoneName] = {} }
-      if(!newState.zoneArticles[zoneName][action.articleType]){ newState.zoneArticles[zoneName][action.articleType] = [] }
+      if (!newState.zoneArticleIdArray[zoneName]) {newState.zoneArticleIdArray[zoneName] = {hot: [], latest: []}}
+      if (!_.isEqual(newState.zoneArticleIdArray[zoneName][action.articleType], articleIds)) {
+        newState.zoneArticleIdArray[zoneName][action.articleType]
+           = newState.zoneArticleIdArray[zoneName][action.articleType].concat(articleIds);
 
-      if (!_.isEqual(newState.zoneArticles[zoneName][action.articleType], action.articles)) {
-        newState.zoneArticles[zoneName][action.articleType]
-          = newState.zoneArticles[zoneName][action.articleType]
-            .concat(action.articles)
+        for (let i = 0; i < action.articles.length; i++) {
+          newState.articleHash[action.articles[i].articleId] = action.articles[i];
+        }
       }
+
       return newState;
 
     case VOTE_FOR_ARTICLE:
       var newState = {...state};
       var { voteState, articleId, articleType, zone } = action;
+      var newArticle = newState.articleHash[articleId];
 
-      if (zone && newState.zoneArticles && newState.zoneArticles[zone]) {
-        var articleIndex = newState.zoneArticles[zone][articleType].findIndex(art => art.articleId == articleId);
-        if (articleIndex != -1) {
-          var newArticle = newState.zoneArticles[zone][articleType][articleIndex];
-          newArticle.upVote += changeVoteCount(newArticle.vote.voteState, voteState);
-          newArticle.vote.voteState = voteState;
-          newState.zoneArticles[zone][articleType][articleIndex] = newArticle;
-        }
-      }
-
-      var articleIndex = newState[articleType].findIndex(art => art.articleId == articleId);
-      if (articleIndex != -1) {
-        var newArticle = newState[articleType][articleIndex];
-        newArticle.upVote += changeVoteCount(newArticle.vote.voteState, voteState);
-        newArticle.vote.voteState = voteState;
-        newState[articleType][articleIndex] = newArticle;
-      }
+      newArticle.upVote += changeVoteCount(newArticle.vote.voteState, voteState);
+      newArticle.vote.voteState = voteState;
+      newState.articleHash[articleId] = newArticle;
 
       return newState;
 
@@ -84,9 +88,9 @@ export default function articles(state={...initialState, zoneArticles: null}, ac
       var { articleType, zone } = action;
       var newState = {...state};
       if (zone) {
-        newState.zoneArticles[zone][articleType] = [];
+        newState.zoneArticleIdArray[zone][articleType] = [];
       } else {
-        newState[articleType] = []
+        newState.articleIdArray[articleType] = []
       }
       return newState;
     case LOGOUT:
@@ -96,9 +100,14 @@ export default function articles(state={...initialState, zoneArticles: null}, ac
       if (action.articles.length == 0) { return state; }
 
       var newState = {...state};
+      var articleIds = action.articles.map(article => article.articleId);
 
-      if (!_.isEqual(newState.userSubmittedArticles, action.articles)) {
-        newState.userSubmittedArticles = newState.userSubmittedArticles.concat(action.articles);
+      if (!_.isEqual(newState.userSubmittedArticleIds, articleIds)) {
+        newState.userSubmittedArticleIds = newState.userSubmittedArticleIds.concat(articleIds);
+
+        for (let i = 0; i < action.articles.length; i++) {
+          newState.articleHash[action.articles[i].articleId] = action.articles[i];
+        }
       }
       return newState;
 

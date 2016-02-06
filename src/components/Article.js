@@ -156,12 +156,6 @@ let Article = React.createClass({
     });
   },
 
-  onLayout: function(evt) {
-    // When the cell has actually been layed out, record the rendered width & height
-    this.viewProperties.width = evt.nativeEvent.layout.width;
-    this.viewProperties.height = evt.nativeEvent.layout.height;
-  },
-
   openExternalLink: function(event) {
     const { article, rootNavigator, showModal, canHandleArticlePress } = this.props;
     if (ArticleHelper.isExternalLink(article.articleType)) {
