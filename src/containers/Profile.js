@@ -27,7 +27,8 @@ let Profile = React.createClass({
   getInitialState: function() {
     return({
       profile: null,
-      selectedIndex: 0
+      selectedIndex: 0,
+      fetchingArticles: false
     });
   },
 
@@ -99,6 +100,22 @@ let Profile = React.createClass({
     }
   },
 
+  _onEndReach: function() {
+    const {
+      submittedArticles,
+      requestUserArticles
+    } = this.props;
+
+    if (submittedArticles.length == 0) { return false; }
+
+    this.setState({fetchingArticles: true});
+    requestUserArticles(
+      null,
+      submittedArticles[submittedArticles.length-1].articleId,
+      () => { this.setState({fetchingArticles: false}); }
+    )
+  },
+
   render: function() {
     const {
       dataSource,
@@ -117,9 +134,7 @@ let Profile = React.createClass({
           contentContainerStyle={{justifyContent: 'flex-start'}}
           automaticallyAdjustContentInsets={false}
           dataSource={dataSource.cloneWithRows(submittedArticles)}
-          // onEndReached={this._onEndReach}
-          // onEndReachedThreshold={20}
-          // renderFooter={this._renderFooter}
+          onEndReached={this._onEndReach}
           removeClippedSubviews={true}
           renderHeader={this._renderHeader}
           initialListSize={10}

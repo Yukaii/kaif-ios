@@ -88,7 +88,7 @@ export function voteForArticle(callback=null, articleId, voteState, articleType,
   }
 }
 
-export function requestUserArticles(username=null, lastArticleId=null) {
+export function requestUserArticles(username=null, lastArticleId=null, callback=null) {
   return dispatch => {
     KaifAPI.requestUserSubmittedArticles(username, lastArticleId).then(r => {
       if (r.hasOwnProperty("data")) {
