@@ -118,9 +118,9 @@ let Article = React.createClass({
     let voteAction = this.state.voteState == "UP" ? '收回贊同' : '贊同'
 
     ActionSheetIOS.showActionSheetWithOptions({
-      options: ['打開連結', '複製連結', '進入討論', '分享連結', voteAction, '刪除', '取消'],
-      cancelButtonIndex: 6,
-      destructiveButtonIndex: 5
+      options: ['打開連結', '複製連結', '分享連結', voteAction, '刪除', '取消'],
+      cancelButtonIndex: 5,
+      destructiveButtonIndex: 4
     },
     (buttonIndex) => {
       switch(buttonIndex) {
@@ -133,16 +133,12 @@ let Article = React.createClass({
           });
           return
         case 2:
-          canHandleArticlePress && this._pushDebateRoute();
-          if (!canHandleArticlePress) {alert("你已經在討論串啦！（真是個垃圾訊息）")}
-          return;
-        case 3:
           this.openShareAction(article);
           return;
-        case 4:
+        case 3:
           handleVotePress();
           return;
-        case 5:
+        case 4:
           KaifAPI.requestArticleCanDelete(article.articleId).then(data => {
             if (data.data) {
               AlertIOS.alert(
@@ -154,9 +150,9 @@ let Article = React.createClass({
                 ]
               );
             } else if(data.username != article.authorName) {
-              alert("不能刪除啦！又不是你 PO 的")
+              AlertIOS.alert("吼", "不能刪除啦！又不是你 PO 的")
             } else {
-              alert("時間過久無法刪除！")
+              AlertIOS.alert("唉", "時間過久無法刪除！")
             }
           })
           return;
