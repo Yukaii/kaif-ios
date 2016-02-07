@@ -12,9 +12,12 @@ import React, {
 
 import SafariView from "react-native-safari-view";
 import PasteBoard from 'react-native-pasteboard';
+import { connect } from 'react-redux/native';
+import Icon from 'react-native-vector-icons/Ionicons';
+
+import {deleteArticle} from '../actions/article';
 
 import Router from '../routers';
-import Icon from 'react-native-vector-icons/Ionicons';
 import ArticleHelper from '../utils/ArticleHelper';
 import KaifIcon from './KaifIcon';
 import KaifAPI from '../utils/KaifAPI';
@@ -111,7 +114,7 @@ let Article = React.createClass({
   },
 
   _articleActions: function() {
-    const { article, navigator, canHandleArticlePress, handleVotePress } = this.props;
+    const { article, navigator, canHandleArticlePress, handleVotePress, dispatch } = this.props;
     let voteAction = this.state.voteState == "UP" ? '收回贊同' : '贊同'
 
     ActionSheetIOS.showActionSheetWithOptions({
@@ -142,7 +145,14 @@ let Article = React.createClass({
         case 5:
           KaifAPI.requestArticleCanDelete(article.articleId).then(data => {
             if (data.data) {
-              // yes can delete
+              AlertIOS.alert(
+                '刪除文章',
+                '刪除就無法再復原囉，確定刪除嗎？',
+                [
+                  {text: '取消', style: 'cancel'},
+                  {text: '刪除', onPress: () => { deleteArticle(article.articleId)(dispatch); navigator.pop(); }, style: 'destructive'}
+                ]
+              );
             } else if(data.username != article.authorName) {
               alert("不能刪除啦！又不是你 PO 的")
             } else {
@@ -240,4 +250,4 @@ let Article = React.createClass({
 });
 
 
-export default Article;
+export default connect()(Article);

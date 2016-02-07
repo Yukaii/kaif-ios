@@ -304,6 +304,7 @@ KaifAPI = {
   oauthLogin: oauthLogin,
   testAPI: testAPI,
   requestArticle: requestArticle,
+  requestDeleteArticle: requestDeleteArticle,
   requestArticleCanDelete: requestArticleCanDelete,
   requestHotArticles: requestHotArticles,
   requestLatestArticles: requestLatestArticles,

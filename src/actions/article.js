@@ -4,6 +4,7 @@ export const VOTE_FOR_ARTICLE = 'VOTE_FOR_ARTICLE';
 export const RELOAD_ARTICLES = 'RELOAD_ARTICLES';
 export const REQUEST_USER_ARTICLES = 'REQUEST_USER_ARTICLES';
 export const LOGOUT = 'LOGOUT';
+export const DELETE_ARTICLE = 'DELETE_ARTICLE';
 
 import KaifAPI from '../utils/KaifAPI';
 
@@ -71,7 +72,7 @@ export function requestArticles(callback=null, lastArticleId=null, articleType="
   }
 }
 
-export function voteForArticle(callback=null, articleId, voteState, articleType, zone) {
+export function voteForArticle(callback=null, articleId, voteState, zone) {
   return dispatch => {
     KaifAPI.requestVoteForArticle(articleId, voteState).then(r => {
       if (r.hasOwnProperty("data")) {
@@ -79,7 +80,6 @@ export function voteForArticle(callback=null, articleId, voteState, articleType,
           type: VOTE_FOR_ARTICLE,
           voteState: voteState,
           articleId: articleId,
-          articleType: articleType,
           zone: zone
         });
         if (callback) { callback(r.data); }
@@ -100,6 +100,17 @@ export function requestUserArticles(username=null, lastArticleId=null, callback=
           if (callback) { callback(articles); }
         });
       }
+    });
+  }
+}
+
+export function deleteArticle(articleId) {
+  return dispatch => {
+    KaifAPI.requestDeleteArticle(articleId).then(data => {
+      dispatch({
+        type: DELETE_ARTICLE,
+        articleId: articleId
+      });
     });
   }
 }

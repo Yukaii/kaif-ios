@@ -4,6 +4,7 @@ import {
   VOTE_FOR_ARTICLE,
   RELOAD_ARTICLES,
   REQUEST_USER_ARTICLES,
+  DELETE_ARTICLE,
   LOGOUT
 } from '../actions/article';
 
@@ -111,6 +112,21 @@ export default function articles(state={...initialState, zoneArticles: null}, ac
       }
       return newState;
 
+    case DELETE_ARTICLE:
+      var newState = {...state};
+      delete newState.articleHash[action.articleId];
+
+      for (let articleType in newState.articleIdArray) {
+        newState.articleIdArray[articleType] = newState.articleIdArray[articleType].filter(art => art.articleId != action.articleId);
+      }
+
+      for (let zone in newState.zoneArticleIdArray) {
+        for (let articleType in newState.zoneArticleIdArray[zone]) {
+          newState.zoneArticleIdArray[zone][articleType] = newState.zoneArticleIdArray[zone][articleType].filter(art => art.articleId != action.articleId);
+        }
+      }
+
+      return newState;
     default:
       return state;
   }

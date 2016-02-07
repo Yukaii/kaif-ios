@@ -9,14 +9,22 @@ import React, {
 } from 'react-native';
 import moment from 'moment';
 import KaifAPI from '../utils/KaifAPI';
-import Article from '../components/Article';
 
+
+import Article from '../components/Article';
+import ArticleListView from '../components/ArticleListView';
+
+import Icon from 'react-native-vector-icons/Ionicons';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux/native';
 import * as ArticleActions from '../actions/article';
 import { renderMarkdown } from '../utils/utils';
 
 import HTMLWebView from 'react-native-html-webview';
+
+const dataSource = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1 !== r2,
+});
 
 let Profile = React.createClass({
   propTypes: {
@@ -39,6 +47,8 @@ let Profile = React.createClass({
         this.setState({profile: data.data});
       }
     });
+
+    Icon.getImageSource('ios-upload-outline', 25, "#0078e7").then(source => this.setState({shareButtonSource: source}));
 
     requestUserArticles(null, null);
   },
@@ -84,22 +94,6 @@ let Profile = React.createClass({
     );
   },
 
-  _handleVotePress: function(article) {
-    const { articleRequestPolicy } = this.state;
-    const { zone, voteForArticle, navigator } = this.props;
-
-    return (event) => {
-      let voteState = (article.vote.voteState == 'EMPTY' || typeof article.vote.voteState === 'undefined') ? 'UP' : 'EMPTY';
-      voteForArticle(
-        null, // callback
-        article.articleId,
-        voteState,
-        articleRequestPolicy,
-        (zone || article.zone)
-      );
-    }
-  },
-
   _onEndReach: function() {
     const {
       submittedArticles,
@@ -126,34 +120,22 @@ let Profile = React.createClass({
       showModal
     } = this.props;
 
+    if (!this.state.shareButtonSource) { return false; }
+
     return(
       <View style={{flex:1, paddingTop: 64, marginBottom: 48}}>
-        <ListView
-          showsVerticalScrollIndicator={false}
-          style={{flex: 1}}
-          contentContainerStyle={{justifyContent: 'flex-start'}}
-          automaticallyAdjustContentInsets={false}
+        <ArticleListView
           dataSource={dataSource.cloneWithRows(submittedArticles)}
           onEndReached={this._onEndReach}
-          removeClippedSubviews={true}
           renderHeader={this._renderHeader}
-          initialListSize={10}
-          renderRow={
-            (article, sectionID, rowID) => {
-              return(
-                <Article
-                  article={ article }
-                  key={ article.articleId }
-                  navigator={navigator}
-                  events={events}
-                  rootNavigator={rootNavigator}
-                  canHandleArticlePress={true}
-                  handleVotePress={this._handleVotePress(article)}
-                  showModal={showModal}
-                />
-              );
-            }
-          }
+          articleProps={{
+            navigator: navigator,
+            events: events,
+            rootNavigator: rootNavigator,
+            handleVotePress: this._handleVotePress,
+            canHandleArticlePress: true,
+            shareButtonSource: this.state.shareButtonSource
+          }}
         />
       </View>
     );
@@ -162,13 +144,10 @@ let Profile = React.createClass({
 
 function mapStateToProps(state) {
   const { articles } = state;
-  const dataSource = new ListView.DataSource({
-    rowHasChanged: (r1, r2) => r1 !== r2,
-  });
 
   return {
     ...state,
-    submittedArticles: articles.userSubmittedArticleIds.map(articleId => articles.articleHash[articleId]),
+    submittedArticles: articles.userSubmittedArticleIds.map(articleId => articles.articleHash[articleId]).filter(article => typeof article != 'undefined'),
     dataSource: dataSource.cloneWithRows([]),
   };
 }

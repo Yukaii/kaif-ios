@@ -22,6 +22,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import Router from '../routers';
 import Article from '../components/Article';
+import ArticleListView from '../components/ArticleListView';
 import ArticleHelper from '../utils/ArticleHelper';
 
 import { bindActionCreators } from 'redux';
@@ -29,6 +30,10 @@ import { connect } from 'react-redux/native';
 import * as ArticleActions from '../actions/article';
 
 import KaifAPI from '../utils/KaifAPI';
+
+const dataSource = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1 !== r2,
+});
 
 let ArticleContainer = React.createClass({
   mixins: [Subscribable.Mixin],
@@ -45,10 +50,10 @@ let ArticleContainer = React.createClass({
     let policy = _policy || articleRequestPolicy;
 
     if (zone && articles.zoneArticleIdArray) {
-      return articles.zoneArticleIdArray[zone] && articles.zoneArticleIdArray[zone][policy].map(articleId => articles.articleHash[articleId]) || [];
+      return articles.zoneArticleIdArray[zone] && articles.zoneArticleIdArray[zone][policy].map(articleId => articles.articleHash[articleId]).filter(article => typeof article != 'undefined') || [];
     }
     else {
-      return articles.articleIdArray[policy] && articles.articleIdArray[policy].map(articleId  => articles.articleHash[articleId]);
+      return articles.articleIdArray[policy] && articles.articleIdArray[policy].map(articleId  => articles.articleHash[articleId]).filter(article => typeof article != 'undefined');
     }
   },
 
@@ -176,7 +181,7 @@ let ArticleContainer = React.createClass({
   _renderFooter: function() {
     if (this.state.isLoadingMore)
       return this._renderActivityIndicator();
-    else {return null};
+    else { return false; }
   },
 
   reloadArticles: function() {
@@ -194,22 +199,6 @@ let ArticleContainer = React.createClass({
     )
   },
 
-  _handleVotePress: function(article) {
-    const { articleRequestPolicy } = this.state;
-    const { zone, voteForArticle, navigator } = this.props;
-
-    return (event) => {
-      let voteState = (article.vote.voteState == 'EMPTY' || typeof article.vote.voteState === 'undefined') ? 'UP' : 'EMPTY';
-      voteForArticle(
-        null, // callback
-        article.articleId,
-        voteState,
-        articleRequestPolicy,
-        (zone || article.zone)
-      );
-    }
-  },
-
   render: function() {
     const {
       articles,
@@ -221,6 +210,7 @@ let ArticleContainer = React.createClass({
     } = this.props;
 
     if (!this.state.shareButtonSource) { return false; }
+
     return(
       <View style={{flex: 1, paddingTop: 64, paddingBottom: 50, overflow: 'hidden'}} >
         <View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5, borderColor: 'rgba(178, 178, 178, 0.62)'}}>
@@ -231,44 +221,23 @@ let ArticleContainer = React.createClass({
         {
           this.state.changingPolicy || !this.state.didFocus ?
             this._renderActivityIndicator() :
-              <ListView
-                showsVerticalScrollIndicator={true}
-                style={{flex: 1}}
-                contentContainerStyle={{justifyContent: 'flex-start'}}
-                automaticallyAdjustContentInsets={false}
+              <ArticleListView
                 dataSource={dataSource.cloneWithRows(this._currentArticles())}
                 onEndReached={this._onEndReach}
-                // onEndReachedThreshold={20}
                 renderFooter={this._renderFooter}
-                removeClippedSubviews={true}
-                initialListSize={10}
-                onChangeVisibleRows={this._onChangeVisibleRows}
-                // pageSize={5}
-                // scrollRenderAheadDistance={200}
-                // premptiveLoading={65}
                 refreshControl={
                   <RefreshControl
                     refreshing={this.state.isRefreshing}
                     onRefresh={this.reloadArticles}
                   />
                 }
-                renderRow={
-                  (article, sectionID, rowID) => {
-                    return(
-                      <Article
-                        article={ article }
-                        key={ article.articleId }
-                        navigator={navigator}
-                        events={events}
-                        rootNavigator={rootNavigator}
-                        canHandleArticlePress={true}
-                        handleVotePress={this._handleVotePress(article)}
-                        showModal={showModal}
-                        shareButtonSource={this.state.shareButtonSource}
-                      />
-                    );
-                  }
-                }
+                articleProps={{
+                  navigator: navigator,
+                  events: events,
+                  rootNavigator: rootNavigator,
+                  canHandleArticlePress: true,
+                  shareButtonSource: this.state.shareButtonSource
+                }}
               />
         }
       </View>
@@ -279,18 +248,15 @@ let ArticleContainer = React.createClass({
 function mapStateToProps(state) {
   // via https://github.com/rackt/redux/issues/683
   const { articleRequestPolicy, zone, articles } = state;
-  const dataSource = new ListView.DataSource({
-    rowHasChanged: (r1, r2) => r1 !== r2,
-  });
 
   let policy = articleRequestPolicy;
   let articleRows;
 
   if (zone && articles.zoneArticles) {
-    articleRows = articles.zoneArticleIdArray[zone] && articles.zoneArticleIdArray[zone][policy].map(articleId => articles.articleHash[articleId]);
+    articleRows = articles.zoneArticleIdArray[zone] && articles.zoneArticleIdArray[zone][policy].map(articleId => articles.articleHash[articleId]).filter(article => typeof article != 'undefined');
   }
   else {
-    articleRows = articles.articleIdArray[policy] && articles.articleIdArray[policy].map(articleId => articles.articleHash[articleId]) || [];
+    articleRows = articles.articleIdArray[policy] && articles.articleIdArray[policy].map(articleId => articles.articleHash[articleId]).filter(article => typeof article != 'undefined') || [];
   }
 
   return {
