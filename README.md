@@ -9,15 +9,22 @@
 
 ## Setup
 
-### React Native 的部分
+### React Native
 
 ```bash
 npm install
-cp src/config/config.sample.js src/config/config.js # and edit corresponding fields.
+cp src/config/config.sample.js src/config/config.js
+```
+
+然後在 `config.js` 填入在 [kaif client apps](https://kaif.io/developer/client-app) 新增應用程式的 `client id` 還有 `client secret`，最後：
+
+```bash
 npm start
 ```
 
-### Xcode的部分
+會跑起 react native 的 packager。接下來我們要設定 Xcode的部分。
+
+### Xcode
 打開 `ios` 資料夾理的 `KaifIoIos.xcodeproj`，更改 bundle identifier（如果要的話）、fix issues（如果要的話）。Build and Run!
 
 ## Development

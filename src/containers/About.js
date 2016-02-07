@@ -36,10 +36,11 @@ export default React.createClass({
           <h3>關於 App</h3>
           <p><del>總之懶的煩惱排版的問題，所以就直接寫成 WebView 了</del></p>
           <p>這個 App 是用 <a href="https://facebook.github.io/react-native/">React Native</a> 以及 <a href="https://github.com/rackt/redux">Redux</a>，這套目前很紅的 Flux 實作，在我工作之餘做出來的，打開 wakatime 就可以看到平日假日的專案完美的在週末黃金交叉，寫來最愉快的地方就是 hot reload，不用等著慢吞吞的 build 真是愉快。</p>
+          <p>yukai</p>
           <p><a href="https://github.com/Yukaii/kaif-ios">Github</a></p>
           <p><a href="https://www.facebook.com/pages/十塊錢工作室-aka-Ten-Dollars-Studio/889348287790119">Ten Dollars Studio</a></p>
           <h3>關於 kaif.io</h3>
-          以下引用自<a href="https://kaif.io/z/kaif-faq/debates/bLg6Pu0cLd"> IngramChen 大大的這篇回覆</a>
+          以下引用自<a href="https://kaif.io/z/kaif-faq/debates/bLg6Pu0cLd"> IngramChen 大的這篇回覆</a>
             <hr />
 
             <p>一句話：kaif 是讓大家可以討論各式各樣話題的網站。</p>
