@@ -2,10 +2,9 @@ import React, {
   Component,
   View,
   ActivityIndicatorIOS,
-  NativeAppEventEmitter,
   Alert,
   ListView,
-  ScrollView
+  RefreshControl
 } from 'react-native';
 import Subscribable from 'Subscribable';
 
@@ -16,16 +15,18 @@ import ArticleContainer from '../containers/ArticleContainer';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Cell from '../components/Cell';
 
-const dataSource = new ListView.DataSource({
-  rowHasChanged: (r1, r2) => r1 !== r2
-});
-
 let Zone = React.createClass({
   mixins: [Subscribable.Mixin],
 
   getInitialState: function() {
+    let dataSource = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
+
     return({
-      zones: []
+      zones: [],
+      isRefreshing: false,
+      dataSource: dataSource.cloneWithRows([])
     });
   },
 
@@ -34,11 +35,16 @@ let Zone = React.createClass({
 
     KaifAPI.requestZoneAll().then(data => {
       if (data.data) {
+        let zones = [];
         if (__DEV__) {
-          this.setState({zones: [{name: 'test', title: '測試專區'}, ...data.data]});
+          zones = [{name: 'test', title: '測試專區'}, ...data.data];
         } else {
-          this.setState({zones: data.data});
+          zones = data.data;
         }
+        this.setState({
+          dataSource: this.state.dataSource.cloneWithRows(zones),
+          zones: zones
+        });
       }
     });
 
@@ -78,6 +84,25 @@ let Zone = React.createClass({
     });
   },
 
+  reloadZones() {
+    this.setState({isRefreshing: true});
+    KaifAPI.requestZoneAll().then(data => {
+      if (data.data) {
+        let zones = [];
+        if (__DEV__) {
+          zones = [{name: 'test', title: '測試專區'}, ...data.data];
+        } else {
+          zones = data.data;
+        }
+        this.setState({
+          dataSource: this.state.dataSource.cloneWithRows(zones),
+          zones: zones
+        });
+      }
+      this.setState({isRefreshing: false});
+    });
+  },
+
   render: function() {
     if (!this.state.infoButton) { return false }
 
@@ -95,10 +120,16 @@ let Zone = React.createClass({
 
     return(
       <ListView
-        style={{flex:1, paddingTop: 64, marginBottom: 48}}
+        style={{flex:1, marginTop: 64, marginBottom: 48}}
         automaticallyAdjustContentInsets={false}
         removeClippedSubviews={true}
-        dataSource={dataSource.cloneWithRows(this.state.zones)}
+        dataSource={this.state.dataSource}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.isRefreshing}
+            onRefresh={this.reloadZones}
+          />
+        }
         renderRow={
           (zone, sectionID, rowID) => {
             return(
