@@ -163,7 +163,7 @@ let ArticleContainer = React.createClass({
     return(
       <TouchableHighlight underlayColor="transparent" style={{flex: 1, height: 28, justifyContent: 'center', ...touchSelectedStyle}} onPress={this._handleArticleRequestPolicyChange(policy)}>
         <Text style={[{color: 'black', textAlign: 'center'}, textSelectedStyle]}>
-          {zoneTitle + titleHash[policy]}
+          {titleHash[policy]}
         </Text>
       </TouchableHighlight>
     );

@@ -3,21 +3,22 @@ import React, {
   View,
   ActivityIndicatorIOS,
   NativeAppEventEmitter,
-  Alert
+  Alert,
+  ListView,
+  ScrollView
 } from 'react-native';
-
-import TableView, {
-  Section,
-  Item,
-  Cell
-} from 'react-native-tableview';
 import Subscribable from 'Subscribable';
-
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import KaifAPI from '../utils/KaifAPI';
 import Router from '../routers';
 import ArticleContainer from '../containers/ArticleContainer';
+
+import Icon from 'react-native-vector-icons/Ionicons';
+import Cell from '../components/Cell';
+
+const dataSource = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1 !== r2
+});
 
 let Zone = React.createClass({
   mixins: [Subscribable.Mixin],
@@ -46,9 +47,9 @@ let Zone = React.createClass({
     Icon.getImageSource('ios-information-outline', 25).then(source => this.setState({infoButton: source}));
   },
 
-  onZonePress: function(event) {
+  onZoneItemPress: function(value) {
     const { navigator } = this.props;
-    let [zoneName, zoneTitle] = event.value.split(',');
+    let [zoneName, zoneTitle] = value.split(',');
 
     KaifAPI.requestZoneAdmin(zoneName).then(data => {
       let admins = data.data.join(',')
@@ -93,16 +94,25 @@ let Zone = React.createClass({
     }
 
     return(
-      <View style={{flex:1, paddingTop: 64, marginBottom: 48}}>
-        <TableView style={{flex:1}}
-          tableViewStyle={TableView.Consts.Style.Plain}
-          tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
-          onPress={this.onZonePress}>
-          <Section arrow={true}>
-            { this.state.zones.map(zone => <Item value={zone.name + ',' + zone.title} key={zone.name}>{zone.title}</Item>) }
-          </Section>
-        </TableView>
-      </View>
+      <ListView
+        style={{flex:1, paddingTop: 64, marginBottom: 48}}
+        automaticallyAdjustContentInsets={false}
+        removeClippedSubviews={true}
+        dataSource={dataSource.cloneWithRows(this.state.zones)}
+        renderRow={
+          (zone, sectionID, rowID) => {
+            return(
+              <Cell
+                value={`${zone.name},${zone.title}`}
+                key={zone.name}
+                text={zone.title}
+                onPress={this.onZoneItemPress}
+                arrow={true}
+              />
+            );
+          }
+        }
+      />
     );
   }
 });
