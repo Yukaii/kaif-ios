@@ -8,6 +8,7 @@ import React, {
 
 import HTMLWebView from 'react-native-html-webview';
 import { renderMarkdown } from '../utils/utils';
+import DebateHelper from '../utils/DebateHelper';
 
 let Debate = React.createClass({
   _handleDebateLongPress(event) {
@@ -52,7 +53,7 @@ let Debate = React.createClass({
             <View style={{ borderRadius: 2, borderWidth: 1.5, paddingLeft: 2, paddingRight: 2, marginTop: -1, marginLeft: 4, marginRight: 4, borderColor: '#cccccc' }}>
               <Text style={{color: '#777777'}}>{debate.upVote - debate.downVote}</Text>
             </View>
-            <Text style={{color: '#777777'}}>{debate.lastUpdateTimeFromNow()}</Text>
+            <Text style={{color: '#777777'}}>{DebateHelper.lastUpdateTimeFromNow(debate.lastUpdateTime)}</Text>
           </View>
           <HTMLWebView
             html={renderMarkdown(debate.content)}

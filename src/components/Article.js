@@ -40,15 +40,10 @@ let Article = React.createClass({
   componentDidMount: function() {
     const { article } = this.props;
 
-    this.viewProperties = {
-      width: 0,
-      height: 0
-    }
-
     this.setState({
       voteState: article.vote ? article.vote.voteState : 'EMPTY',
       upVote: article.upVote
-    })
+    });
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -71,6 +66,7 @@ let Article = React.createClass({
       showModal,
       shareButtonSource
     } = this.props;
+
     let route = {
       component: DebateContainer,
       passProps: {
@@ -114,7 +110,13 @@ let Article = React.createClass({
   },
 
   _articleActions: function() {
-    const { article, navigator, canHandleArticlePress, handleVotePress, dispatch } = this.props;
+    const {
+      article,
+      navigator,
+      canHandleArticlePress,
+      handleVotePress
+    } = this.props;
+
     let voteAction = this.state.voteState == "UP" ? '收回贊同' : '贊同'
 
     ActionSheetIOS.showActionSheetWithOptions({
@@ -244,6 +246,5 @@ let Article = React.createClass({
     );
   }
 });
-
 
 export default connect()(Article);

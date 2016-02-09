@@ -8,7 +8,7 @@ import {
   LOGOUT
 } from '../actions/article';
 
-import * as _ from 'underscore';
+import _ from 'lodash';
 
 let initialState = {
   userSubmittedArticleIds: [],
@@ -94,6 +94,7 @@ export default function articles(state={...initialState, zoneArticles: null}, ac
         newState.articleIdArray[articleType] = []
       }
       return newState;
+
     case LOGOUT:
       return initialState;
 
@@ -125,8 +126,8 @@ export default function articles(state={...initialState, zoneArticles: null}, ac
           newState.zoneArticleIdArray[zone][articleType] = newState.zoneArticleIdArray[zone][articleType].filter(art => art.articleId != action.articleId);
         }
       }
-
       return newState;
+
     default:
       return state;
   }

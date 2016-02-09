@@ -27,8 +27,6 @@ import * as DebateActions from '../actions/debate';
 import KaifAPI from '../utils/KaifAPI';
 import Article from '../components/Article';
 import Debate from '../components/Debate';
-import debateModel from '../models/debateModel';
-import articleModel from '../models/articleModel';
 
 import TrackKeyboard from '../components/trackKeyboard';
 
@@ -126,7 +124,7 @@ let DebateContainer = React.createClass({
   renderDebate(data) {
     return(
       <View key={data.debate.debateId} style={{paddingLeft: 5, paddingRight: 5}}>
-        <Debate debate={new debateModel(data.debate)} onDebateReply={this._onDebateReply}/>
+        <Debate debate={data.debate} onDebateReply={this._onDebateReply}/>
         <View style={{marginLeft: 5, borderColor: '#d2dbe6', borderLeftWidth: 2, paddingLeft: 5, backgroundColor: '#eeeeee'}} >
           { data.children.map(data => this.renderDebate(data)) }
         </View>

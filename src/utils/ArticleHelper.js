@@ -1,7 +1,20 @@
+/*
+ * String zone,
+ * String zoneTitle,
+ * String articleId,
+ * String title,
+ * Date createTime,
+ * String link,
+ * String content,
+ * enum articleType: EXTERNAL_LINK, SPEAK
+ * String authorName,
+ * long upVote,
+ * long debateCount
+ */
+
 import moment from 'moment';
 import * as he from './he';
 import { parseUri } from '../utils/parseUri';
-
 
 const ARTICLE_TYPE = {
   EXTERNAL_LINK: 'EXTERNAL_LINK',
