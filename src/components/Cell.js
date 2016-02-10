@@ -22,7 +22,7 @@ export default React.createClass({
       },
       defaultDescriptionStyle: {
         paddingHorizontal: 14,
-        paddingVertical: 5,
+        paddingVertical: 8,
         color: '#747479'
       }
     });

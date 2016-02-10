@@ -203,6 +203,7 @@ let ArticleContainer = React.createClass({
     const {
       articles,
       navigator,
+      navigatorType,
       rootNavigator,
       events,
       dataSource,
@@ -232,6 +233,7 @@ let ArticleContainer = React.createClass({
                   />
                 }
                 articleProps={{
+                  navigatorType: navigatorType,
                   navigator: navigator,
                   events: events,
                   rootNavigator: rootNavigator,

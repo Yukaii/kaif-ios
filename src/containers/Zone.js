@@ -15,6 +15,8 @@ import ArticleContainer from '../containers/ArticleContainer';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Cell from '../components/Cell';
 
+import { createRoute } from '../components/Navigator';
+
 let Zone = React.createClass({
   mixins: [Subscribable.Mixin],
 
@@ -54,19 +56,20 @@ let Zone = React.createClass({
   },
 
   onZoneItemPress: function(value) {
-    const { navigator } = this.props;
+    const { navigator, navigatorType } = this.props;
     let [zoneName, zoneTitle] = value.split(',');
 
     KaifAPI.requestZoneAdmin(zoneName).then(data => {
       let admins = data.data.join(',')
 
-      let route = {
+      let route = createRoute({
+        navigatorType: navigatorType,
         component: ArticleContainer,
         title: zoneTitle,
         passProps: {
           ...this.props,
           zone: zoneName,
-          zoneTitle: zoneTitle
+          zoneTitle: zoneTitle,
         },
         rightButtonIcon: this.state.infoButton,
         onRightButtonPress: () => {
@@ -78,7 +81,7 @@ let Zone = React.createClass({
             ]
           );
         }
-      }
+      })
 
       navigator.push(route);
     });

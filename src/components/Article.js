@@ -16,7 +16,7 @@ import { connect } from 'react-redux/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {deleteArticle} from '../actions/article';
-
+import { createRoute } from '../components/Navigator';
 import Router from '../routers';
 import ArticleHelper from '../utils/ArticleHelper';
 import KaifIcon from './KaifIcon';
@@ -67,7 +67,10 @@ let Article = React.createClass({
       shareButtonSource
     } = this.props;
 
-    let route = {
+    let componentStyle = this.props.navigatorType == 'ios' ? {} : {paddingTop: 64};
+
+    let route = createRoute({
+      navigatorType: this.props.navigatorType,
       component: DebateContainer,
       passProps: {
         article: article,
@@ -76,9 +79,15 @@ let Article = React.createClass({
         handleVotePress: handleVotePress,
         showModal: showModal
       },
+      componentStyle: componentStyle,
+      rightButtonText: '分享',
       rightButtonIcon: shareButtonSource,
-      onRightButtonPress: this._articleActions
-    }
+      onRightButtonPress: this._articleActions,
+      renderRightButton: () => {
+        return <TouchableHighlight underlayColor="transparent" onPress={this._articleActions}><Icon name="ios-upload-outline" size={25} color="#1986fb" style={{marginTop: 8, marginRight: 15}} /></TouchableHighlight>
+      }
+    });
+
     navigator.push(route);
   },
 

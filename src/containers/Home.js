@@ -3,7 +3,6 @@ import React, {
   View,
   Text,
   PropTypes,
-  Navigator,
   TabBarIOS,
   NavigatorIOS,
   Button,
@@ -25,6 +24,7 @@ import Zone from './Zone';
 import ArticleContainer from './ArticleContainer';
 import ExternalWebView from './ExternalWebView';
 
+import Navigator from '../components/Navigator';
 import Router from '../routers';
 
 import KaifAPI from '../utils/KaifAPI';
@@ -106,17 +106,15 @@ let Home = React.createClass({
               });
             }}>
 
-            <NavigatorIOS
-              initialRoute={{
-                component: ArticleContainer,
-                title: '綜合文章',
-                passProps: {
-                  ...this.props,
-                  showModal: showModal,
-                  events: this.eventEmitter
-                }
+            <Navigator
+              component={ArticleContainer}
+              title='綜合文章'
+              passProps={{
+                ...this.props,
+                showModal: showModal,
+                events: this.eventEmitter
               }}
-              style={{flex: 1}}/>
+            />
           </Icon.TabBarItem>
           <Icon.TabBarItem
             title="討論區"
@@ -131,15 +129,14 @@ let Home = React.createClass({
                 selectedTab: 'zoneList'
               });
           }}>
-            <NavigatorIOS
-              initialRoute={{
-                component: Zone,
-                title: '討論區',
-                passProps: {
-                  ...this.props,
-                  showModal: showModal,
-                  events: this.eventEmitter
-                }
+            <Navigator
+              navigatorType='ios'
+              component={Zone}
+              title='討論區'
+              passProps={{
+                ...this.props,
+                showModal: showModal,
+                events: this.eventEmitter
               }}
               style={{flex: 1}}/>
           </Icon.TabBarItem>
@@ -156,15 +153,14 @@ let Home = React.createClass({
                 selectedTab: 'profileTab'
               });
           }}>
-            <NavigatorIOS
-              initialRoute={{
-                component: Profile,
-                title: '個人資料',
-                passProps: {
-                  ...this.props,
-                  showModal: showModal,
-                  events: this.eventEmitter,
-                }
+            <Navigator
+              navigatorType='ios'
+              component={Profile}
+              title='個人資料'
+              passProps={{
+                ...this.props,
+                showModal: showModal,
+                events: this.eventEmitter,
               }}
               style={{flex: 1}}/>
           </Icon.TabBarItem>

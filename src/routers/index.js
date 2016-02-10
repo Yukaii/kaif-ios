@@ -60,7 +60,7 @@ let Router = {
   getDebateRoute(props) {
     return {
       renderScene(navigator) {
-        return <DebateContainer navigator={navigator} {...props} />;
+        return <DebateContainer navigator={navigator} {...props}/>;
       },
       onDidFocus(event) {
       },
@@ -69,6 +69,9 @@ let Router = {
       },
       configureScene() {
         return Navigator.SceneConfigs.FloatFromRight;
+      },
+      renderRightButton() {
+        return <Text onPress={props.onRightButtonPress}>分享</Text>
       }
     }
   },

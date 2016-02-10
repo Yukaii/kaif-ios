@@ -92,7 +92,10 @@ let DebateContainer = React.createClass({
       requestDebates(article.articleId);
       this.setState({didFocus: true});
     });
-    this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
+    this.addListenerOn(events, 'shouldPop', () => {
+      // var routes = navigator.getCurrentRoutes();
+      navigator.pop();
+    });
     KeyboardEventEmitter.on(KeyboardEvents.KeyboardWillHideEvent, this.resetReplyingDebate);
   },
 
@@ -157,7 +160,8 @@ let DebateContainer = React.createClass({
       rootNavigator,
       handleVotePress,
       debates,
-      showModal
+      showModal,
+      style
     } = this.props;
     var marginBottom = this.state.keyboardSpace / 253 * 205 - 5;
 
@@ -174,7 +178,7 @@ let DebateContainer = React.createClass({
     }
 
     return(
-      <View style={{flex: 1, backgroundColor: '#eeeeee'}}>
+      <View style={[{flex: 1, backgroundColor: '#eeeeee'}, style]}>
         <ScrollView
           style={{flex: 1}}
           contentContainerStyle={{ justifyContent: 'space-between', backgroundColor: '#eeeeee'}}
