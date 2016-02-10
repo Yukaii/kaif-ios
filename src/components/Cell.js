@@ -29,7 +29,7 @@ export default React.createClass({
   },
 
   renderArrow() {
-    const { arrowStyle } = this.props;
+    const { arrowStyle, renderArrow } = this.props;
 
     let defaultArrowStyle = {
       position: 'absolute',
@@ -39,6 +39,8 @@ export default React.createClass({
       color: '#C8C7CC',
       alignSelf: 'flex-end'
     }
+
+    if (renderArrow) { return renderArrow(); }
 
     return(
       <Icon style={[defaultArrowStyle, arrowStyle]} name='angle-right' size={22.5} />

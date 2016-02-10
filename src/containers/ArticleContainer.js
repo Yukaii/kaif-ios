@@ -237,8 +237,7 @@ let ArticleContainer = React.createClass({
                   navigator: navigator,
                   events: events,
                   rootNavigator: rootNavigator,
-                  canHandleArticlePress: true,
-                  shareButtonSource: this.state.shareButtonSource
+                  shareButtonSource: this.state.shareButtonSource,
                 }}
               />
         }

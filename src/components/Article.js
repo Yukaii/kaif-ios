@@ -68,6 +68,8 @@ let Article = React.createClass({
       shareButtonSource
     } = this.props;
 
+    if (typeof navigator === 'undefined') { return; }
+
     let componentStyle = navigatorType == 'ios' ? {} : {paddingTop: 64};
 
     let route = createRoute({
@@ -96,11 +98,10 @@ let Article = React.createClass({
   handleArticlePress: function(event) {
     const {
       navigator,
-      canHandleArticlePress,
       handleVotePress
     } = this.props;
 
-    if (navigator && canHandleArticlePress) {
+    if (navigator) {
       this._pushDebateRoute();
     } else {
       handleVotePress();
@@ -124,7 +125,6 @@ let Article = React.createClass({
     const {
       article,
       navigator,
-      canHandleArticlePress,
       handleVotePress
     } = this.props;
 
@@ -176,7 +176,7 @@ let Article = React.createClass({
   },
 
   openExternalLink: function(event) {
-    const { article, rootNavigator, showModal, canHandleArticlePress } = this.props;
+    const { article, rootNavigator, showModal } = this.props;
     if (ArticleHelper.isExternalLink(article.articleType)) {
       LinkingIOS.openURL(article.link);
       // showModal({url: article.link});
@@ -195,7 +195,7 @@ let Article = React.createClass({
       //   }
       // });
     } else {
-      canHandleArticlePress && this._pushDebateRoute();
+      this._pushDebateRoute();
     }
   },
 
@@ -217,7 +217,7 @@ let Article = React.createClass({
           style={{paddingTop: 5, paddingBottom: 5, paddingLeft: 6, paddingRight: 10, borderColor: "#CCCCCC", borderTopWidth: 0.6, ...style}}>
           <View style={{flexDirection: 'row', flex: 1}}>
             <TouchableHighlight
-              underlayColor='rgba(255, 255, 255, 0)'
+              underlayColor='transparent'
               style={{marginRight: 8, paddingTop: 1}}
               onPress={handleVotePress}>
               <View style={{flexDirection: 'column', width: 22, alignItems: 'center'}}>
@@ -227,7 +227,7 @@ let Article = React.createClass({
             </TouchableHighlight>
             <View style={{flexDirection: 'column', flex: 1}}>
               <View style={{flex: 3}}>
-                <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)'
+                <TouchableHighlight underlayColor='transparent'
                   onPress={this.openExternalLink}
                   >
                   <Text style={{fontSize: 16, marginBottom: 2}}>{article.title && ArticleHelper.procceedTitle(article.title)}</Text>

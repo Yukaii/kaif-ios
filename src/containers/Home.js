@@ -109,6 +109,7 @@ let Home = React.createClass({
             }}>
 
             <Navigator
+              navigatorType="ios"
               component={ArticleContainer}
               title='綜合文章'
               passProps={{

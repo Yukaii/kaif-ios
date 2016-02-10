@@ -8,11 +8,6 @@ import React, {
   ScrollView
 } from 'react-native';
 
-import TableView, {
-  Section,
-  Item,
-} from 'react-native-tableview';
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux/native';
 import * as ArticleActions from '../actions/article';
@@ -20,6 +15,7 @@ import * as ArticleActions from '../actions/article';
 import KaifAPI from '../utils/KaifAPI';
 import Cell from '../components/Cell';
 import ArticleContainer from '../containers/ArticleContainer';
+import InterfaceSetting from '../containers/Settings/InterfaceSetting';
 import About from '../containers/About';
 import Router from '../routers';
 
@@ -35,6 +31,17 @@ let Setting = React.createClass({
     } = this.props;
 
     switch(value) {
+      case "interface":
+        navigator.push({
+          component: InterfaceSetting,
+          title: '界面設定',
+          passProps: {
+            ...this.props,
+            events: events
+          }
+        });
+        return;
+
       case "faq":
         navigator.push({
           component: ArticleContainer,
@@ -92,7 +99,7 @@ let Setting = React.createClass({
   },
 
   render: function() {
-    let rows = [['常見問題', "faq"], ['服務條款', "terms"], ['關於', "about"]]
+    let rows = [["顯示設定", "interface"], ['常見問題', "faq"], ['服務條款', "terms"], ['關於', "about"]]
 
     let logoutButtomStyle = {
       paddingVertical: 13,

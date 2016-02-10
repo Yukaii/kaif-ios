@@ -3,7 +3,6 @@ import ExNavigator from '@exponent/react-native-navigator';
 import Router from '../routers';
 import Home from './Home'
 
-
 export default class App extends Component {
 
   render() {

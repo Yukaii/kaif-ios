@@ -194,7 +194,6 @@ let DebateContainer = React.createClass({
               borderTopWidth: 0,
               marginBottom: 5
             }}
-            navigator={navigator}
             rootNavigator={rootNavigator}
             showVote={this.state.didFocus}
             handleVotePress={handleVotePress}
