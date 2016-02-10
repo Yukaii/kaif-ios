@@ -75,7 +75,7 @@ let ArticleContainer = React.createClass({
   },
 
   componentDidMount: function() {
-    const { requestArticles, zone, events, navigator } = this.props;
+    const { requestArticles, zone, events, navigator, navigatorType } = this.props;
     const { articleRequestPolicy }  = this.state;
 
     this.setState({zone: zone});

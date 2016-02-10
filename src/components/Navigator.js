@@ -2,8 +2,10 @@ import React, {
   Navigator,
   NavigatorIOS,
   Text,
+  View,
   PropTypes,
-  TouchableHighlight
+  TouchableHighlight,
+  TouchableOpacity
 } from 'react-native';
 
 import ExNavigator from '@exponent/react-native-navigator';
@@ -41,9 +43,9 @@ export function createExRoute(props) {
   let _renderRightButton = typeof rightButtonText !== 'undefined' ?
     () => {
       return(
-        <TouchableHighlight underlayColor="transparent" onPress={onRightButtonPress} style={{marginTop: 10, marginRight: 10}}>
+        <TouchableOpacity underlayColor="transparent" onPress={onRightButtonPress} style={{marginTop: 10, marginRight: 10}}>
           <Text style={{color: '#0078e7', fontSize: 16}}>{rightButtonText}</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       );
     } :
     false;

@@ -6,7 +6,6 @@ import React, {
   ListView,
   RefreshControl
 } from 'react-native';
-import Subscribable from 'Subscribable';
 
 import KaifAPI from '../utils/KaifAPI';
 import Router from '../routers';
@@ -18,8 +17,6 @@ import Cell from '../components/Cell';
 import { createRoute } from '../components/Navigator';
 
 let Zone = React.createClass({
-  mixins: [Subscribable.Mixin],
-
   getInitialState: function() {
     let dataSource = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2
@@ -49,8 +46,6 @@ let Zone = React.createClass({
         });
       }
     });
-
-    this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
 
     Icon.getImageSource('ios-information-outline', 25).then(source => this.setState({infoButton: source}));
   },

@@ -61,23 +61,25 @@ let Article = React.createClass({
       article,
       navigator,
       rootNavigator,
+      navigatorType,
       events,
       handleVotePress,
       showModal,
       shareButtonSource
     } = this.props;
 
-    let componentStyle = this.props.navigatorType == 'ios' ? {} : {paddingTop: 64};
+    let componentStyle = navigatorType == 'ios' ? {} : {paddingTop: 64};
 
     let route = createRoute({
-      navigatorType: this.props.navigatorType,
+      navigatorType: navigatorType,
       component: DebateContainer,
       passProps: {
         article: article,
         rootNavigator: rootNavigator,
         events: events,
         handleVotePress: handleVotePress,
-        showModal: showModal
+        showModal: showModal,
+        navigatorType: navigatorType,
       },
       componentStyle: componentStyle,
       rightButtonText: '分享',

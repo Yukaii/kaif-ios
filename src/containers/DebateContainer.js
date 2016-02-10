@@ -18,22 +18,19 @@ import {
 } from 'react-native-keyboardevents';
 import HTMLWebView from 'react-native-html-webview';
 
-import Subscribable from 'Subscribable';
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux/native';
 import * as DebateActions from '../actions/debate';
 
-import KaifAPI from '../utils/KaifAPI';
 import Article from '../components/Article';
 import Debate from '../components/Debate';
-
 import TrackKeyboard from '../components/trackKeyboard';
 
+import KaifAPI from '../utils/KaifAPI';
 import { renderMarkdown } from '../utils/utils';
 
 let DebateContainer = React.createClass({
-  mixins: [Subscribable.Mixin, TrackKeyboard],
+  mixins: [TrackKeyboard],
 
   propTypes: {
     requestDebates: PropTypes.func.isRequired,
@@ -86,15 +83,11 @@ let DebateContainer = React.createClass({
   },
 
   componentDidMount() {
-    const { article, navigator, events, requestDebates } = this.props;
+    const { article, navigator, events, requestDebates, navigatorType } = this.props;
 
     InteractionManager.runAfterInteractions(() => {
       requestDebates(article.articleId);
       this.setState({didFocus: true});
-    });
-    this.addListenerOn(events, 'shouldPop', () => {
-      // var routes = navigator.getCurrentRoutes();
-      navigator.pop();
     });
     KeyboardEventEmitter.on(KeyboardEvents.KeyboardWillHideEvent, this.resetReplyingDebate);
   },
@@ -158,11 +151,13 @@ let DebateContainer = React.createClass({
       article,
       navigator,
       rootNavigator,
+      navigatorType,
       handleVotePress,
       debates,
       showModal,
       style
     } = this.props;
+
     var marginBottom = this.state.keyboardSpace / 253 * 205 - 5;
 
     if (!this.state.didFocus) {
@@ -177,10 +172,12 @@ let DebateContainer = React.createClass({
       );
     }
 
+    let scrollViewStyle = typeof navigatorType !== 'undefined' && navigatorType == 'ios' ? {} : {marginBottom: 48};
+
     return(
       <View style={[{flex: 1, backgroundColor: '#eeeeee'}, style]}>
         <ScrollView
-          style={{flex: 1}}
+          style={[{flex: 1}, scrollViewStyle]}
           contentContainerStyle={{ justifyContent: 'space-between', backgroundColor: '#eeeeee'}}
           refreshControl={
             <RefreshControl
