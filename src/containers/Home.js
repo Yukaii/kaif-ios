@@ -5,6 +5,7 @@ import React, {
   PropTypes,
   TabBarIOS,
   NavigatorIOS,
+  Navigator as RnNavigator,
   Button,
   Modal,
   StatusBarIOS
@@ -17,6 +18,7 @@ import { connect } from 'react-redux/native';
 
 import ExNavigator from '@exponent/react-native-navigator';
 import Icon from 'react-native-vector-icons/Ionicons';
+import KaifIcon from '../components/KaifIcon';
 
 import Setting from './Setting';
 import Profile from './Profile';
@@ -113,6 +115,11 @@ let Home = React.createClass({
                 ...this.props,
                 showModal: showModal,
                 events: this.eventEmitter
+              }}
+              renderTitle={() => <KaifIcon width={18} height={17} style={{ marginTop: 14}}/>}
+              renderNavigationBar={(props) => {
+                const { style, ...otherProps } = props;
+                return <RnNavigator.NavigationBar {...otherProps} style={[style]}/>
               }}
             />
           </Icon.TabBarItem>

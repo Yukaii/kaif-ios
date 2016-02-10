@@ -35,6 +35,8 @@ export function createExRoute(props) {
     title,
     rightButtonText,
     onRightButtonPress,
+    renderNavigationBar,
+    renderTitle,
     renderRightButton,
     componentStyle,
     ...otherProps
@@ -61,7 +63,10 @@ export function createExRoute(props) {
       return title || '';
     },
 
-    renderRightButton: renderRightButton || _renderRightButton
+    renderRightButton: renderRightButton || _renderRightButton,
+
+    renderNavigationBar: renderNavigationBar,
+    renderTitle: renderTitle
   });
 }
 
