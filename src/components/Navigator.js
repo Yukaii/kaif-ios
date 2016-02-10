@@ -61,10 +61,6 @@ export function createExRoute(props) {
       return title || '';
     },
 
-    configureScene() {
-      return Navigator.SceneConfigs.FloatFromRight;
-    },
-
     renderRightButton: renderRightButton || _renderRightButton
   });
 }
