@@ -178,22 +178,23 @@ let Article = React.createClass({
   openExternalLink: function(event) {
     const { article, rootNavigator, showModal } = this.props;
     if (ArticleHelper.isExternalLink(article.articleType)) {
-      LinkingIOS.openURL(article.link);
+      // LinkingIOS.openURL(article.link);
       // showModal({url: article.link});
-      // SafariView.isAvailable()
-      // .then(SafariView.show({
-      //   url: article.link
-      // }))
-      // .catch(error => {
-      //   this.setState({modalVisible: true});
-      //   if (rootNavigator) {
-      //     let route = Router.getWebViewRoute({
-      //       url: article.link,
-      //       rootNavigator: rootNavigator
-      //     })
-      //     rootNavigator.push(route);
-      //   }
-      // });
+      SafariView.isAvailable()
+      .then(SafariView.show({
+        url: article.link
+      }))
+      .catch(error => {
+        LinkingIOS.openURL(article.link);
+        // this.setState({modalVisible: true});
+        // if (rootNavigator) {
+        //   let route = Router.getWebViewRoute({
+        //     url: article.link,
+        //     rootNavigator: rootNavigator
+        //   })
+        //   rootNavigator.push(route);
+        // }
+      });
     } else {
       this._pushDebateRoute();
     }
