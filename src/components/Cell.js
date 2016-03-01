@@ -22,14 +22,14 @@ export default React.createClass({
       },
       defaultDescriptionStyle: {
         paddingHorizontal: 14,
-        paddingVertical: 5,
+        paddingVertical: 8,
         color: '#747479'
       }
     });
   },
 
   renderArrow() {
-    const { arrowStyle } = this.props;
+    const { arrowStyle, renderArrow } = this.props;
 
     let defaultArrowStyle = {
       position: 'absolute',
@@ -39,6 +39,8 @@ export default React.createClass({
       color: '#C8C7CC',
       alignSelf: 'flex-end'
     }
+
+    if (renderArrow) { return renderArrow(); }
 
     return(
       <Icon style={[defaultArrowStyle, arrowStyle]} name='angle-right' size={22.5} />

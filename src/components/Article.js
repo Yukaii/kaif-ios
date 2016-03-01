@@ -16,7 +16,7 @@ import { connect } from 'react-redux/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {deleteArticle} from '../actions/article';
-
+import { createRoute } from '../components/Navigator';
 import Router from '../routers';
 import ArticleHelper from '../utils/ArticleHelper';
 import KaifIcon from './KaifIcon';
@@ -61,35 +61,49 @@ let Article = React.createClass({
       article,
       navigator,
       rootNavigator,
+      navigatorType,
       events,
       handleVotePress,
       showModal,
-      shareButtonSource
+      shareButtonSource,
+      emitMessage
     } = this.props;
 
-    let route = {
+    if (typeof navigator === 'undefined') { return; }
+
+    let componentStyle = navigatorType == 'ios' ? {} : {paddingTop: 64};
+
+    let route = createRoute({
+      navigatorType: navigatorType,
       component: DebateContainer,
       passProps: {
         article: article,
         rootNavigator: rootNavigator,
         events: events,
+        emitMessage: emitMessage,
         handleVotePress: handleVotePress,
-        showModal: showModal
+        showModal: showModal,
+        navigatorType: navigatorType,
       },
+      componentStyle: componentStyle,
+      rightButtonText: '分享',
       rightButtonIcon: shareButtonSource,
-      onRightButtonPress: this._articleActions
-    }
+      onRightButtonPress: this._articleActions,
+      renderRightButton: () => {
+        return <TouchableHighlight underlayColor="transparent" onPress={this._articleActions}><Icon name="ios-upload-outline" size={25} color="#1986fb" style={{marginTop: 8, marginRight: 15}} /></TouchableHighlight>
+      }
+    });
+
     navigator.push(route);
   },
 
   handleArticlePress: function(event) {
     const {
       navigator,
-      canHandleArticlePress,
       handleVotePress
     } = this.props;
 
-    if (navigator && canHandleArticlePress) {
+    if (navigator) {
       this._pushDebateRoute();
     } else {
       handleVotePress();
@@ -113,7 +127,6 @@ let Article = React.createClass({
     const {
       article,
       navigator,
-      canHandleArticlePress,
       handleVotePress
     } = this.props;
 
@@ -165,26 +178,27 @@ let Article = React.createClass({
   },
 
   openExternalLink: function(event) {
-    const { article, rootNavigator, showModal, canHandleArticlePress } = this.props;
+    const { article, rootNavigator, showModal } = this.props;
     if (ArticleHelper.isExternalLink(article.articleType)) {
-      LinkingIOS.openURL(article.link);
+      // LinkingIOS.openURL(article.link);
       // showModal({url: article.link});
-      // SafariView.isAvailable()
-      // .then(SafariView.show({
-      //   url: article.link
-      // }))
-      // .catch(error => {
-      //   this.setState({modalVisible: true});
-      //   if (rootNavigator) {
-      //     let route = Router.getWebViewRoute({
-      //       url: article.link,
-      //       rootNavigator: rootNavigator
-      //     })
-      //     rootNavigator.push(route);
-      //   }
-      // });
+      SafariView.isAvailable()
+      .then(SafariView.show({
+        url: article.link
+      }))
+      .catch(error => {
+        LinkingIOS.openURL(article.link);
+        // this.setState({modalVisible: true});
+        // if (rootNavigator) {
+        //   let route = Router.getWebViewRoute({
+        //     url: article.link,
+        //     rootNavigator: rootNavigator
+        //   })
+        //   rootNavigator.push(route);
+        // }
+      });
     } else {
-      canHandleArticlePress && this._pushDebateRoute();
+      this._pushDebateRoute();
     }
   },
 
@@ -206,7 +220,7 @@ let Article = React.createClass({
           style={{paddingTop: 5, paddingBottom: 5, paddingLeft: 6, paddingRight: 10, borderColor: "#CCCCCC", borderTopWidth: 0.6, ...style}}>
           <View style={{flexDirection: 'row', flex: 1}}>
             <TouchableHighlight
-              underlayColor='rgba(255, 255, 255, 0)'
+              underlayColor='transparent'
               style={{marginRight: 8, paddingTop: 1}}
               onPress={handleVotePress}>
               <View style={{flexDirection: 'column', width: 22, alignItems: 'center'}}>
@@ -216,7 +230,7 @@ let Article = React.createClass({
             </TouchableHighlight>
             <View style={{flexDirection: 'column', flex: 1}}>
               <View style={{flex: 3}}>
-                <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)'
+                <TouchableHighlight underlayColor='transparent'
                   onPress={this.openExternalLink}
                   >
                   <Text style={{fontSize: 16, marginBottom: 2}}>{article.title && ArticleHelper.procceedTitle(article.title)}</Text>

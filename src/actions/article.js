@@ -10,7 +10,7 @@ import KaifAPI from '../utils/KaifAPI';
 
 let fetchArticleVotes = (articles) => {
   return new Promise((resolve, reject) => {
-    KaifAPI.requestIfArticlesVoted(articles.map(_ => _.articleId)).then(voteData => {
+    KaifAPI.requestArticlesVoteState(articles.map(_ => _.articleId)).then(voteData => {
       let newArticles = articles.map(art => {
         art.vote = {}
         if (!voteData.data || voteData.data.length == 0) { return art; }

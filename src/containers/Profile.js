@@ -10,7 +10,6 @@ import React, {
 import moment from 'moment';
 import KaifAPI from '../utils/KaifAPI';
 
-
 import Article from '../components/Article';
 import ArticleListView from '../components/ArticleListView';
 
@@ -117,7 +116,8 @@ let Profile = React.createClass({
       rootNavigator,
       events,
       navigator,
-      showModal
+      showModal,
+      emitMessage
     } = this.props;
 
     if (!this.state.shareButtonSource) { return false; }
@@ -129,12 +129,14 @@ let Profile = React.createClass({
           onEndReached={this._onEndReach}
           renderHeader={this._renderHeader}
           articleProps={{
+            navigatorType: this.props.navigatorType,
             navigator: navigator,
             events: events,
             rootNavigator: rootNavigator,
             handleVotePress: this._handleVotePress,
             canHandleArticlePress: true,
-            shareButtonSource: this.state.shareButtonSource
+            shareButtonSource: this.state.shareButtonSource,
+            emitMessage: emitMessage,
           }}
         />
       </View>

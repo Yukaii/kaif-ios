@@ -11,6 +11,7 @@ import React, {
   LinkingIOS,
   LayoutAnimation
 } from 'react-native';
+import Subscribable from 'Subscribable';
 
 import KeyboardEvents from 'react-native-keyboardevents';
 import {
@@ -18,26 +19,24 @@ import {
 } from 'react-native-keyboardevents';
 import HTMLWebView from 'react-native-html-webview';
 
-import Subscribable from 'Subscribable';
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux/native';
 import * as DebateActions from '../actions/debate';
 
-import KaifAPI from '../utils/KaifAPI';
 import Article from '../components/Article';
 import Debate from '../components/Debate';
-
 import TrackKeyboard from '../components/trackKeyboard';
 
+import KaifAPI from '../utils/KaifAPI';
 import { renderMarkdown } from '../utils/utils';
 
 let DebateContainer = React.createClass({
-  mixins: [Subscribable.Mixin, TrackKeyboard],
+  mixins: [TrackKeyboard, Subscribable.Mixin],
 
   propTypes: {
     requestDebates: PropTypes.func.isRequired,
-    createDebate: PropTypes.func.isRequired
+    createDebate: PropTypes.func.isRequired,
+    voteForDebate: PropTypes.func.isRequired
   },
 
   getInitialState() {
@@ -86,14 +85,15 @@ let DebateContainer = React.createClass({
   },
 
   componentDidMount() {
-    const { article, navigator, events, requestDebates } = this.props;
+    const { article, navigator, events, requestDebates, navigatorType, emitMessage } = this.props;
 
     InteractionManager.runAfterInteractions(() => {
       requestDebates(article.articleId);
       this.setState({didFocus: true});
     });
-    this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
     KeyboardEventEmitter.on(KeyboardEvents.KeyboardWillHideEvent, this.resetReplyingDebate);
+
+    this.addListenerOn(events, emitMessage, () => { navigator.pop() });
   },
 
   componentWillUnmount() {
@@ -122,9 +122,11 @@ let DebateContainer = React.createClass({
   },
 
   renderDebate(data) {
+    const { article, voteForDebate } = this.props;
+
     return(
       <View key={data.debate.debateId} style={{paddingLeft: 5, paddingRight: 5}}>
-        <Debate debate={data.debate} onDebateReply={this._onDebateReply}/>
+        <Debate debate={data.debate} onDebateReply={this._onDebateReply} article={article} voteForDebate={voteForDebate}/>
         <View style={{marginLeft: 5, borderColor: '#d2dbe6', borderLeftWidth: 2, paddingLeft: 5, backgroundColor: '#eeeeee'}} >
           { data.children.map(data => this.renderDebate(data)) }
         </View>
@@ -155,10 +157,13 @@ let DebateContainer = React.createClass({
       article,
       navigator,
       rootNavigator,
+      navigatorType,
       handleVotePress,
       debates,
-      showModal
+      showModal,
+      style
     } = this.props;
+
     var marginBottom = this.state.keyboardSpace / 253 * 205 - 5;
 
     if (!this.state.didFocus) {
@@ -173,10 +178,12 @@ let DebateContainer = React.createClass({
       );
     }
 
+    let scrollViewStyle = typeof navigatorType !== 'undefined' && navigatorType == 'ios' ? {} : {marginBottom: 48};
+
     return(
-      <View style={{flex: 1, backgroundColor: '#eeeeee'}}>
+      <View style={[{flex: 1, backgroundColor: '#eeeeee'}, style]}>
         <ScrollView
-          style={{flex: 1}}
+          style={[{flex: 1}, scrollViewStyle]}
           contentContainerStyle={{ justifyContent: 'space-between', backgroundColor: '#eeeeee'}}
           refreshControl={
             <RefreshControl
@@ -193,7 +200,6 @@ let DebateContainer = React.createClass({
               borderTopWidth: 0,
               marginBottom: 5
             }}
-            navigator={navigator}
             rootNavigator={rootNavigator}
             showVote={this.state.didFocus}
             handleVotePress={handleVotePress}

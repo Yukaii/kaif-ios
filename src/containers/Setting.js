@@ -8,11 +8,6 @@ import React, {
   ScrollView
 } from 'react-native';
 
-import TableView, {
-  Section,
-  Item,
-} from 'react-native-tableview';
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux/native';
 import * as ArticleActions from '../actions/article';
@@ -20,6 +15,7 @@ import * as ArticleActions from '../actions/article';
 import KaifAPI from '../utils/KaifAPI';
 import Cell from '../components/Cell';
 import ArticleContainer from '../containers/ArticleContainer';
+import InterfaceSetting from '../containers/Settings/InterfaceSetting';
 import About from '../containers/About';
 import Router from '../routers';
 
@@ -31,19 +27,36 @@ let Setting = React.createClass({
       navigator,
       rootNavigator,
       logout,
-      events
+      events,
+      emitMessage,
+      navigatorType
     } = this.props;
 
     switch(value) {
+      case "interface":
+        navigator.push({
+          component: InterfaceSetting,
+          navigatorType: navigatorType,
+          title: '界面設定',
+          passProps: {
+            ...this.props,
+            events: events,
+            emitMessage: emitMessage
+          }
+        });
+        return;
+
       case "faq":
         navigator.push({
           component: ArticleContainer,
+          navigatorType: navigatorType,
           title: '常見問題',
           passProps: {
             ...this.props,
             zone: "kaif-faq",
             zoneTitle: "常見問題",
-            events: events
+            events: events,
+            emitMessage: emitMessage
           }
         });
         return;
@@ -51,12 +64,14 @@ let Setting = React.createClass({
       case "terms":
         navigator.push({
           component: ArticleContainer,
+          navigatorType: navigatorType,
           title: '服務條款',
           passProps: {
             ...this.props,
             zone: "kaif-terms",
             zoneTitle: "服務條款",
-            events: events
+            events: events,
+            emitMessage: emitMessage
           }
         });
         return;
@@ -82,7 +97,8 @@ let Setting = React.createClass({
           title: '關於',
           passProps: {
             ...this.props,
-            events: events
+            events: events,
+            emitMessage: emitMessage
           }
         })
         return;
@@ -92,7 +108,7 @@ let Setting = React.createClass({
   },
 
   render: function() {
-    let rows = [['常見問題', "faq"], ['服務條款', "terms"], ['關於', "about"]]
+    let rows = [["顯示設定", "interface"], ['常見問題', "faq"], ['服務條款', "terms"], ['關於', "about"]]
 
     let logoutButtomStyle = {
       paddingVertical: 13,

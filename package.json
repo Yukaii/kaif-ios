@@ -9,7 +9,7 @@
     "start": "node_modules/react-native/packager/packager.sh"
   },
   "dependencies": {
-    "@exponent/react-native-navigator": "^0.3.5",
+    "@exponent/react-native-navigator": "^0.4.1",
     "lodash": "^4.3.0",
     "marked": "^0.3.5",
     "react-addons-update": "^0.14.6",
@@ -22,9 +22,10 @@
     "react-native-keychain": "^0.2.7",
     "react-native-pasteboard": "^1.3.0",
     "react-native-router-flux": "^2.0.4",
-    "react-native-safari-view": "^0.3.0",
+    "react-native-safari-view": "^0.4.0",
     "react-native-sglistview": "^0.1.3",
     "react-native-tableview": "^1.4.6",
+    "react-native-tableview-simple": "^0.6.0",
     "react-native-user-defaults": "^0.1.1",
     "react-native-vector-icons": "^1.0.4",
     "react-redux": "^3.1.2",

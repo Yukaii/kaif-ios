@@ -75,7 +75,7 @@ let ArticleContainer = React.createClass({
   },
 
   componentDidMount: function() {
-    const { requestArticles, zone, events, navigator } = this.props;
+    const { requestArticles, zone, events, navigator, navigatorType, emitMessage } = this.props;
     const { articleRequestPolicy }  = this.state;
 
     this.setState({zone: zone});
@@ -92,7 +92,7 @@ let ArticleContainer = React.createClass({
       this.setState({didFocus: true});
     });
     Icon.getImageSource('ios-upload-outline', 25, "#0078e7").then(source => this.setState({shareButtonSource: source}));
-    this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
+    this.addListenerOn(events, emitMessage, () => { navigator.pop() });
   },
 
   _handleArticleRequestPolicyChange: function(policy) {
@@ -203,6 +203,7 @@ let ArticleContainer = React.createClass({
     const {
       articles,
       navigator,
+      navigatorType,
       rootNavigator,
       events,
       dataSource,
@@ -232,11 +233,11 @@ let ArticleContainer = React.createClass({
                   />
                 }
                 articleProps={{
+                  navigatorType: navigatorType,
                   navigator: navigator,
                   events: events,
                   rootNavigator: rootNavigator,
-                  canHandleArticlePress: true,
-                  shareButtonSource: this.state.shareButtonSource
+                  shareButtonSource: this.state.shareButtonSource,
                 }}
               />
         }
