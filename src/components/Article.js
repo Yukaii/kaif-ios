@@ -65,7 +65,8 @@ let Article = React.createClass({
       events,
       handleVotePress,
       showModal,
-      shareButtonSource
+      shareButtonSource,
+      emitMessage
     } = this.props;
 
     if (typeof navigator === 'undefined') { return; }
@@ -79,6 +80,7 @@ let Article = React.createClass({
         article: article,
         rootNavigator: rootNavigator,
         events: events,
+        emitMessage: emitMessage,
         handleVotePress: handleVotePress,
         showModal: showModal,
         navigatorType: navigatorType,

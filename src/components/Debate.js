@@ -12,7 +12,8 @@ import DebateHelper from '../utils/DebateHelper';
 
 let Debate = React.createClass({
   _handleDebateLongPress(event) {
-    const {debate, onDebateReply} = this.props;
+    const {debate, onDebateReply, article, voteForDebate} = this.props;
+
     ActionSheetIOS.showActionSheetWithOptions({
       options: ['贊同', '反對', '回覆', '刪除', '取消'],
       cancelButtonIndex: 4,
@@ -21,7 +22,10 @@ let Debate = React.createClass({
     (buttonIndex) => {
       switch(buttonIndex) {
         case 0:
-          // voteForDebate(debate.debateId, 'UP')
+          voteForDebate(debate, article.articleId, 'UP');
+          return;
+        case 1:
+          voteForDebate(debate, article.articleId, 'DOWN');
           return;
         case 2:
           onDebateReply(debate);

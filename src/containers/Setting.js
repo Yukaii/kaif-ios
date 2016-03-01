@@ -27,17 +27,21 @@ let Setting = React.createClass({
       navigator,
       rootNavigator,
       logout,
-      events
+      events,
+      emitMessage,
+      navigatorType
     } = this.props;
 
     switch(value) {
       case "interface":
         navigator.push({
           component: InterfaceSetting,
+          navigatorType: navigatorType,
           title: '界面設定',
           passProps: {
             ...this.props,
-            events: events
+            events: events,
+            emitMessage: emitMessage
           }
         });
         return;
@@ -45,12 +49,14 @@ let Setting = React.createClass({
       case "faq":
         navigator.push({
           component: ArticleContainer,
+          navigatorType: navigatorType,
           title: '常見問題',
           passProps: {
             ...this.props,
             zone: "kaif-faq",
             zoneTitle: "常見問題",
-            events: events
+            events: events,
+            emitMessage: emitMessage
           }
         });
         return;
@@ -58,12 +64,14 @@ let Setting = React.createClass({
       case "terms":
         navigator.push({
           component: ArticleContainer,
+          navigatorType: navigatorType,
           title: '服務條款',
           passProps: {
             ...this.props,
             zone: "kaif-terms",
             zoneTitle: "服務條款",
-            events: events
+            events: events,
+            emitMessage: emitMessage
           }
         });
         return;
@@ -89,7 +97,8 @@ let Setting = React.createClass({
           title: '關於',
           passProps: {
             ...this.props,
-            events: events
+            events: events,
+            emitMessage: emitMessage
           }
         })
         return;

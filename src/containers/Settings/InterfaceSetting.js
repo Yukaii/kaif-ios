@@ -16,8 +16,8 @@ let InterfaceSetting = React.createClass({
   mixins: [Subscribable.Mixin],
 
   componentDidMount() {
-    const { events, navigator } = this.props;
-    this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
+    const { events, navigator, emitMessage } = this.props;
+    this.addListenerOn(events, emitMessage, () => { navigator.pop() });
   },
 
   render() {

@@ -11,8 +11,8 @@ export default React.createClass({
   mixins: [Subscribable.Mixin],
 
   componentDidMount: function() {
-    const { navigator, events } = this.props;
-    this.addListenerOn(events, 'shouldPop', () => { navigator.pop() });
+    const { navigator, events, emitMessage } = this.props;
+    this.addListenerOn(events, emitMessage, () => { navigator.pop() });
   },
 
   render: function() {

@@ -116,7 +116,8 @@ let Profile = React.createClass({
       rootNavigator,
       events,
       navigator,
-      showModal
+      showModal,
+      emitMessage
     } = this.props;
 
     if (!this.state.shareButtonSource) { return false; }
@@ -134,7 +135,8 @@ let Profile = React.createClass({
             rootNavigator: rootNavigator,
             handleVotePress: this._handleVotePress,
             canHandleArticlePress: true,
-            shareButtonSource: this.state.shareButtonSource
+            shareButtonSource: this.state.shareButtonSource,
+            emitMessage: emitMessage,
           }}
         />
       </View>

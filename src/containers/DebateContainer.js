@@ -11,6 +11,7 @@ import React, {
   LinkingIOS,
   LayoutAnimation
 } from 'react-native';
+import Subscribable from 'Subscribable';
 
 import KeyboardEvents from 'react-native-keyboardevents';
 import {
@@ -30,11 +31,12 @@ import KaifAPI from '../utils/KaifAPI';
 import { renderMarkdown } from '../utils/utils';
 
 let DebateContainer = React.createClass({
-  mixins: [TrackKeyboard],
+  mixins: [TrackKeyboard, Subscribable.Mixin],
 
   propTypes: {
     requestDebates: PropTypes.func.isRequired,
-    createDebate: PropTypes.func.isRequired
+    createDebate: PropTypes.func.isRequired,
+    voteForDebate: PropTypes.func.isRequired
   },
 
   getInitialState() {
@@ -83,13 +85,15 @@ let DebateContainer = React.createClass({
   },
 
   componentDidMount() {
-    const { article, navigator, events, requestDebates, navigatorType } = this.props;
+    const { article, navigator, events, requestDebates, navigatorType, emitMessage } = this.props;
 
     InteractionManager.runAfterInteractions(() => {
       requestDebates(article.articleId);
       this.setState({didFocus: true});
     });
     KeyboardEventEmitter.on(KeyboardEvents.KeyboardWillHideEvent, this.resetReplyingDebate);
+
+    this.addListenerOn(events, emitMessage, () => { navigator.pop() });
   },
 
   componentWillUnmount() {
@@ -118,9 +122,11 @@ let DebateContainer = React.createClass({
   },
 
   renderDebate(data) {
+    const { article, voteForDebate } = this.props;
+
     return(
       <View key={data.debate.debateId} style={{paddingLeft: 5, paddingRight: 5}}>
-        <Debate debate={data.debate} onDebateReply={this._onDebateReply}/>
+        <Debate debate={data.debate} onDebateReply={this._onDebateReply} article={article} voteForDebate={voteForDebate}/>
         <View style={{marginLeft: 5, borderColor: '#d2dbe6', borderLeftWidth: 2, paddingLeft: 5, backgroundColor: '#eeeeee'}} >
           { data.children.map(data => this.renderDebate(data)) }
         </View>

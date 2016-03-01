@@ -51,7 +51,7 @@ let Zone = React.createClass({
   },
 
   onZoneItemPress: function(value) {
-    const { navigator, navigatorType } = this.props;
+    const { navigator, navigatorType, emitMessage } = this.props;
     let [zoneName, zoneTitle] = value.split(',');
 
     KaifAPI.requestZoneAdmin(zoneName).then(data => {
@@ -63,6 +63,7 @@ let Zone = React.createClass({
         title: zoneTitle,
         passProps: {
           ...this.props,
+          emitMessage: emitMessage,
           zone: zoneName,
           zoneTitle: zoneTitle,
         },

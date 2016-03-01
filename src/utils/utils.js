@@ -62,6 +62,14 @@ exports.renderMarkdown = (md, options={}) => {
         a {
           color: ${defaultStyle.hrefColor};
         }
+
+        blockquote {
+          border-left: 2px solid #ccc;
+          margin-left: 0.5em;
+          background: #f9f9f9;
+          padding: 1px 0.8em;
+          color: #808083;
+        }
       </style>
     </head>
     <body>

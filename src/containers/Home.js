@@ -40,6 +40,17 @@ let Home = React.createClass({
     });
   },
 
+  getDefaultProps: function() {
+    return({
+      tabEmitMessage: [
+        'shouldPop1',
+        'shouldPop2',
+        'shouldPop3',
+        'shouldPop4',
+      ]
+    });
+  },
+
   componentWillMount: function() {
     this.eventEmitter = new EventEmitter();
   },
@@ -101,7 +112,7 @@ let Home = React.createClass({
             selected={this.state.selectedTab === 'articleList'}
             onPress={() => {
               if (this.state.selectedTab === 'articleList') {
-                this.eventEmitter.emit('shouldPop');
+                this.eventEmitter.emit(this.props.tabEmitMessage[0]);
               }
               this.setState({
                 selectedTab: 'articleList',
@@ -115,7 +126,8 @@ let Home = React.createClass({
               passProps={{
                 ...this.props,
                 showModal: showModal,
-                events: this.eventEmitter
+                events: this.eventEmitter,
+                emitMessage: this.props.tabEmitMessage[0]
               }}
               renderTitle={() => <KaifIcon width={18} height={17} style={{ marginTop: 14}}/>}
               renderNavigationBar={(props) => {
@@ -131,7 +143,7 @@ let Home = React.createClass({
             selected={this.state.selectedTab === 'zoneList'}
             onPress={() => {
               if (this.state.selectedTab === 'zoneList') {
-                this.eventEmitter.emit('shouldPop');
+                this.eventEmitter.emit(this.props.tabEmitMessage[1]);
               }
               this.setState({
                 selectedTab: 'zoneList'
@@ -144,7 +156,8 @@ let Home = React.createClass({
               passProps={{
                 ...this.props,
                 showModal: showModal,
-                events: this.eventEmitter
+                events: this.eventEmitter,
+                emitMessage: this.props.tabEmitMessage[1]
               }}
               style={{flex: 1}}/>
           </Icon.TabBarItem>
@@ -155,7 +168,7 @@ let Home = React.createClass({
             selected={this.state.selectedTab === 'profileTab'}
             onPress={() => {
               if (this.state.selectedTab === 'profileTab') {
-                this.eventEmitter.emit('shouldPop');
+                this.eventEmitter.emit(this.props.tabEmitMessage[2]);
               }
               this.setState({
                 selectedTab: 'profileTab'
@@ -169,6 +182,7 @@ let Home = React.createClass({
                 ...this.props,
                 showModal: showModal,
                 events: this.eventEmitter,
+                emitMessage: this.props.tabEmitMessage[2]
               }}
               style={{flex: 1}}/>
           </Icon.TabBarItem>
@@ -179,20 +193,21 @@ let Home = React.createClass({
             selected={this.state.selectedTab === 'settingTab'}
             onPress={() => {
               if (this.state.selectedTab === 'settingTab') {
-                this.eventEmitter.emit('shouldPop');
+                this.eventEmitter.emit(this.props.tabEmitMessage[3]);
               }
               this.setState({
                 selectedTab: 'settingTab'
               });
           }}>
-            <NavigatorIOS
-              initialRoute={{
-                component: Setting,
-                title: '設定',
-                passProps: {
-                  ...this.props,
-                  events: this.eventEmitter,
-                }
+            <Navigator
+              navigatorType='ios'
+              component={Setting}
+              title='設定'
+              passProps={{
+                ...this.props,
+                showModal: showModal,
+                events: this.eventEmitter,
+                emitMessage: this.props.tabEmitMessage[3]
               }}
               style={{flex: 1}}/>
           </Icon.TabBarItem>

@@ -188,8 +188,12 @@ requestVotedArticles = (startArticleId=null) => {
     requestAPI(`article/voted`);
 }
 
-requestIfArticlesVoted = (articleIds) => {
+requestArticlesVoteState = (articleIds) => {
   return requestAPI(`vote/article?${utils.toQueryString({'article-id': articleIds.join(',')})}`)
+}
+
+requestDebatesVoteState = (debateIds) => {
+  return requestAPI(`vote/debate?${utils.toQueryString({'debate-id': debateIds.join(',')})}`)
 }
 
 testAPI = () => {
@@ -297,31 +301,30 @@ logout = () => {
   });
 }
 
-KaifAPI = {
-  getAccessToken: getAccessToken,
-  getUserName: getUserName,
-  getAuthorizeUrl: getAuthorizeUrl,
-  oauthLogin: oauthLogin,
-  testAPI: testAPI,
-  requestArticle: requestArticle,
-  requestDeleteArticle: requestDeleteArticle,
-  requestArticleCanDelete: requestArticleCanDelete,
-  requestHotArticles: requestHotArticles,
-  requestLatestArticles: requestLatestArticles,
-  requestZoneHotArticles: requestZoneHotArticles,
-  requestZoneLatestArticles: requestZoneLatestArticles,
-  requestArticleDebates: requestArticleDebates,
-  requestUserSubmittedArticles: requestUserSubmittedArticles,
-  requestIfArticlesVoted: requestIfArticlesVoted,
-  requestZoneAll: requestZoneAll,
-  requestZoneAdmin: requestZoneAdmin,
-  requestBasicUserProfile: requestBasicUserProfile,
-  requestVoteForArticle: requestVoteForArticle,
-  requestVoteForDebate: requestVoteForDebate,
-  requestCreateDebate: requestCreateDebate,
-  requestUpdateDebate: requestUpdateDebate,
-  apiEndpoint: apiEndpoint,
-  logout: logout
+export default {
+  getAccessToken,
+  getUserName,
+  getAuthorizeUrl,
+  oauthLogin,
+  testAPI,
+  requestArticle,
+  requestDeleteArticle,
+  requestArticleCanDelete,
+  requestHotArticles,
+  requestLatestArticles,
+  requestZoneHotArticles,
+  requestZoneLatestArticles,
+  requestArticleDebates,
+  requestUserSubmittedArticles,
+  requestArticlesVoteState,
+  requestDebatesVoteState,
+  requestZoneAll,
+  requestZoneAdmin,
+  requestBasicUserProfile,
+  requestVoteForArticle,
+  requestVoteForDebate,
+  requestCreateDebate,
+  requestUpdateDebate,
+  apiEndpoint,
+  logout
 }
-
-export default KaifAPI;
